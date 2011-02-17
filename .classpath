@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/ecj-3.6.1.jar" sourcepath="lib/ecjsrc-3.6.1.zip"/>
+	<classpathentry kind="lib" path="/Applications/eclipse_3.6/plugins/org.eclipse.jdt_3.6.1.v201009090800.jar" sourcepath="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.source_3.6.1.v201009090800.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
