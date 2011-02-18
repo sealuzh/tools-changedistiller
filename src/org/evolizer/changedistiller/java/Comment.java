@@ -57,4 +57,20 @@ public class Comment extends ASTNode {
         JAVA_DOC
     }
 
+    public int getLength() {
+        return sourceEnd() - sourceStart();
+    }
+
+    public void setComment(String comment) {
+        fComment = comment;
+    }
+
+    public boolean isLineComment() {
+        return getType() == CommentType.LINE_COMMENT;
+    }
+
+    public boolean isJavadocComment() {
+        return getType() == CommentType.JAVA_DOC;
+    }
+
 }
