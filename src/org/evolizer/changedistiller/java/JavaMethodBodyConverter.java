@@ -21,74 +21,53 @@ import java.util.Stack;
 
 import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
-import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
-import org.eclipse.jdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.jdt.internal.compiler.ast.AssertStatement;
 import org.eclipse.jdt.internal.compiler.ast.Assignment;
-import org.eclipse.jdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.Block;
 import org.eclipse.jdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.jdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.jdt.internal.compiler.ast.CastExpression;
-import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
-import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
-import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoStatement;
-import org.eclipse.jdt.internal.compiler.ast.DoubleLiteral;
 import org.eclipse.jdt.internal.compiler.ast.EmptyStatement;
-import org.eclipse.jdt.internal.compiler.ast.EqualExpression;
 import org.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
-import org.eclipse.jdt.internal.compiler.ast.ExtendedStringLiteral;
-import org.eclipse.jdt.internal.compiler.ast.FalseLiteral;
-import org.eclipse.jdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.jdt.internal.compiler.ast.ForStatement;
 import org.eclipse.jdt.internal.compiler.ast.ForeachStatement;
 import org.eclipse.jdt.internal.compiler.ast.IfStatement;
-import org.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;
-import org.eclipse.jdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.jdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.jdt.internal.compiler.ast.MessageSend;
 import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
-import org.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.jdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
-import org.eclipse.jdt.internal.compiler.ast.StringLiteral;
-import org.eclipse.jdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
-import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.jdt.internal.compiler.ast.TryStatement;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;
 import org.eclipse.jdt.internal.compiler.parser.TerminalTokens;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
+import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 
 /**
  * Visitor to generate an intermediate tree (general, rooted, labeled, valued tree) out of a method body.
  * 
- * @author fluri
+ * @author Beat Fluri
  * 
  */
-public class JavaASTBodyTransformer extends ASTVisitor {
+public class JavaMethodBodyConverter extends ASTVisitor {
 
     private static final String COLON = ":";
     private List<Comment> fComments;
@@ -99,32 +78,32 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     private ASTNode fLastVisitedNode;
     private Node fLastAddedNode;
 
-    private Stack<ASTNode[]> fLastCommentTuples = new Stack<ASTNode[]>();
+    private Stack<ASTNode[]> fLastAssociationCandidate = new Stack<ASTNode[]>();
     private Stack<Node[]> fLastCommentNodeTuples = new Stack<Node[]>();
     private ASTHelper fASTHelper;
 
     /**
-     * Creates a new structure transformer.
+     * Creates a new method body converter.
      * 
      * @param root
      *            the root node of the tree to generate
-     * @param astRoot
-     *            the AST root node, necessary for comment attachment
+     * @param methodRoot
+     *            the method AST root node, necessary for comment attachment
      * @param comments
-     *            to attach
+     *            to associate
      * @param scanner
      *            the scanner with which the AST was created
      * @param astHelper
      *            the helper that helps with conversions for the change history meta model.
      */
-    public JavaASTBodyTransformer(
+    public JavaMethodBodyConverter(
             Node root,
-            ASTNode astRoot,
+            ASTNode methodRoot,
             List<Comment> comments,
             Scanner scanner,
             ASTHelper astHelper) {
         fNodeStack.clear();
-        fLastVisitedNode = astRoot;
+        fLastVisitedNode = methodRoot;
         fLastAddedNode = root;
         fNodeStack.push(root);
         fComments = comments;
@@ -134,10 +113,10 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     }
 
     /**
-     * Prepares node for comment attachment.
+     * Prepares node for comment association.
      * 
      * @param node
-     *            the node to prepare for comment attachment
+     *            the node to prepare for comment association
      */
     public void preVisit(ASTNode node) {
         if (!hasComments() || isUnusableNode(node)) {
@@ -146,26 +125,32 @@ public class JavaASTBodyTransformer extends ASTVisitor {
         int i = 0;
         while (i < fComments.size()) {
             Comment comment = fComments.get(i);
-            if ((fLastVisitedNode != null) && (fLastVisitedNode.sourceStart() > 0)
-                    && (fLastVisitedNode.sourceStart() < comment.sourceStart())
-                    && (comment.sourceStart() < node.sourceStart())) {
-                String commentString = fSource.substring(comment.sourceStart(), comment.sourceEnd());
-
-                ASTNode[] commentTuple = new ASTNode[]{fLastVisitedNode, comment, node};
-                fLastCommentTuples.push(commentTuple);
-
+            if (previousNodeExistsAndIsNotTheFirstNode() && isCommentBetweenCurrentNodeAndLastNode(comment, node)) {
+                ASTNode[] candidate = new ASTNode[]{fLastVisitedNode, comment, node};
+                fLastAssociationCandidate.push(candidate);
                 Node[] nodeTuple = new Node[2];
                 nodeTuple[0] = fLastAddedNode; // preceeding node
-
-                pushValuedNode(comment, commentString);
-                pop(comment);
+                insertCommentIntoTree(comment);
                 nodeTuple[1] = fLastAddedNode; // comment
                 fLastCommentNodeTuples.push(nodeTuple);
-
                 fComments.remove(i--);
             }
             i++;
         }
+    }
+
+    private void insertCommentIntoTree(Comment comment) {
+        pushValuedNode(comment, getSource(comment.sourceStart(), comment.sourceEnd() - 1));
+        pop(comment);
+    }
+
+    private boolean previousNodeExistsAndIsNotTheFirstNode() {
+        return (fLastVisitedNode != null) && (fLastVisitedNode.sourceStart() > 0);
+    }
+
+    private boolean isCommentBetweenCurrentNodeAndLastNode(Comment comment, ASTNode currentNode) {
+        return (fLastVisitedNode.sourceStart() < comment.sourceStart())
+                && (comment.sourceStart() < currentNode.sourceStart());
     }
 
     private boolean hasComments() {
@@ -173,7 +158,7 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     }
 
     /**
-     * Does the comment to code association for the triple {preceedingNode, comment, succeedingNode}
+     * Associates a comment to code with the candidate triple {preceedingNode, comment, succeedingNode}
      * 
      * @param node
      *            succeeding node of the triple
@@ -182,22 +167,18 @@ public class JavaASTBodyTransformer extends ASTVisitor {
         if (isUnusableNode(node)) {
             return;
         }
-        if (!fLastCommentTuples.isEmpty() && (node == fLastCommentTuples.peek()[2])) {
-            ASTNode preceedingNode = fLastCommentTuples.peek()[0];
-            ASTNode commentNode = fLastCommentTuples.peek()[1];
-            ASTNode succeedingNode = fLastCommentTuples.peek()[2];
+        if (!fLastAssociationCandidate.isEmpty() && (node == fLastAssociationCandidate.peek()[2])) {
+            ASTNode preceedingNode = fLastAssociationCandidate.peek()[0];
+            ASTNode commentNode = fLastAssociationCandidate.peek()[1];
+            ASTNode succeedingNode = fLastAssociationCandidate.peek()[2];
 
             if ((preceedingNode != null) && (succeedingNode != null)) {
                 String preceedingNodeString = getASTString(preceedingNode);
                 String succeedingNodeString = getASTString(succeedingNode);
                 String commentNodeString = getCommentString(commentNode);
 
-                int rateForPreceeding = 0;
-                int rateForSucceeding = 0;
-
-                rateForPreceeding += proximityRating(preceedingNode, commentNode);
-                rateForSucceeding += proximityRating(commentNode, succeedingNode);
-
+                int rateForPreceeding = proximityRating(preceedingNode, commentNode);
+                int rateForSucceeding = proximityRating(commentNode, succeedingNode);
                 if (rateForPreceeding == rateForSucceeding) {
                     rateForPreceeding += wordMatching(preceedingNodeString, commentNodeString);
                     rateForSucceeding += wordMatching(succeedingNodeString, commentNodeString);
@@ -215,7 +196,7 @@ public class JavaASTBodyTransformer extends ASTVisitor {
                     fLastAddedNode.addAssociatedNode(nodeTuple[1]);
                 }
             }
-            fLastCommentTuples.pop();
+            fLastAssociationCandidate.pop();
             fLastCommentNodeTuples.pop();
         }
     }
@@ -324,6 +305,8 @@ public class JavaASTBodyTransformer extends ASTVisitor {
         }
         String result = node.toString();
         int start = 0;
+        // method and type declaration strings contain their javadoc
+        // get rid of the javadoc
         if (node instanceof MethodDeclaration) {
             MethodDeclaration method = (MethodDeclaration) node;
             if (method.javadoc != null) {
@@ -343,26 +326,6 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     }
 
     @Override
-    public boolean visit(ArrayAllocationExpression arrayAllocationExpression, BlockScope scope) {
-        return visitExpression(arrayAllocationExpression, scope);
-    }
-
-    @Override
-    public void endVisit(ArrayAllocationExpression arrayAllocationExpression, BlockScope scope) {
-        endVisitExpression(arrayAllocationExpression, scope);
-    }
-
-    @Override
-    public boolean visit(ArrayInitializer arrayInitializer, BlockScope scope) {
-        return visitExpression(arrayInitializer, scope);
-    }
-
-    @Override
-    public void endVisit(ArrayInitializer arrayInitializer, BlockScope scope) {
-        endVisitExpression(arrayInitializer, scope);
-    }
-
-    @Override
     public boolean visit(Assignment assignment, BlockScope scope) {
         return visitExpression(assignment, scope);
     }
@@ -373,46 +336,6 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     }
 
     @Override
-    public boolean visit(CastExpression castExpression, BlockScope scope) {
-        return visitExpression(castExpression, scope);
-    }
-
-    @Override
-    public void endVisit(CastExpression castExpression, BlockScope scope) {
-        endVisitExpression(castExpression, scope);
-    }
-
-    @Override
-    public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-        return visitExpression(charLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(CharLiteral charLiteral, BlockScope scope) {
-        endVisitExpression(charLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(ClassLiteralAccess classLiteral, BlockScope scope) {
-        return visitExpression(classLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(ClassLiteralAccess classLiteral, BlockScope scope) {
-        endVisitExpression(classLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(FalseLiteral falseLiteral, BlockScope scope) {
-        return visitExpression(falseLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(FalseLiteral falseLiteral, BlockScope scope) {
-        endVisitExpression(falseLiteral, scope);
-    }
-
-    @Override
     public boolean visit(CompoundAssignment compoundAssignment, BlockScope scope) {
         return visitExpression(compoundAssignment, scope);
     }
@@ -420,36 +343,6 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     @Override
     public void endVisit(CompoundAssignment compoundAssignment, BlockScope scope) {
         endVisitExpression(compoundAssignment, scope);
-    }
-
-    @Override
-    public boolean visit(FloatLiteral floatLiteral, BlockScope scope) {
-        return visitExpression(floatLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(FloatLiteral floatLiteral, BlockScope scope) {
-        endVisitExpression(floatLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(DoubleLiteral doubleLiteral, BlockScope scope) {
-        return visitExpression(doubleLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(DoubleLiteral doubleLiteral, BlockScope scope) {
-        endVisitExpression(doubleLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(NullLiteral nullLiteral, BlockScope scope) {
-        return visitExpression(nullLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(NullLiteral nullLiteral, BlockScope scope) {
-        endVisitExpression(nullLiteral, scope);
     }
 
     @Override
@@ -490,144 +383,6 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     @Override
     public void endVisit(QualifiedAllocationExpression qualifiedAllocationExpression, BlockScope scope) {
         endVisitExpression(qualifiedAllocationExpression, scope);
-    }
-
-    @Override
-    public boolean visit(TrueLiteral trueLiteral, BlockScope scope) {
-        return visitExpression(trueLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(TrueLiteral trueLiteral, BlockScope scope) {
-        endVisitExpression(trueLiteral, scope);
-    }
-
-    @Override
-    // CHECKSTYLE:OFF
-    public boolean visit(AND_AND_Expression and_and_Expression, BlockScope scope) {
-        // CHECKSTYLE:ON
-        return visitExpression(and_and_Expression, scope);
-    }
-
-    @Override
-    // CHECKSTYLE:OFF
-    public void endVisit(AND_AND_Expression and_and_Expression, BlockScope scope) {
-        // CHECKSTYLE:ON
-        endVisitExpression(and_and_Expression, scope);
-    }
-
-    @Override
-    public boolean visit(BinaryExpression binaryExpression, BlockScope scope) {
-        return visitExpression(binaryExpression, scope);
-    }
-
-    @Override
-    public void endVisit(BinaryExpression binaryExpression, BlockScope scope) {
-        endVisitExpression(binaryExpression, scope);
-    }
-
-    @Override
-    public boolean visit(ConditionalExpression conditionalExpression, BlockScope scope) {
-        return visitExpression(conditionalExpression, scope);
-    }
-
-    @Override
-    public void endVisit(ConditionalExpression conditionalExpression, BlockScope scope) {
-        endVisitExpression(conditionalExpression, scope);
-    }
-
-    @Override
-    public boolean visit(EqualExpression equalExpression, BlockScope scope) {
-        return visitExpression(equalExpression, scope);
-    }
-
-    @Override
-    public void endVisit(EqualExpression equalExpression, BlockScope scope) {
-        endVisitExpression(equalExpression, scope);
-    }
-
-    @Override
-    public boolean visit(ExtendedStringLiteral extendedStringLiteral, BlockScope scope) {
-        return visitExpression(extendedStringLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(ExtendedStringLiteral extendedStringLiteral, BlockScope scope) {
-        endVisitExpression(extendedStringLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(InstanceOfExpression instanceOfExpression, BlockScope scope) {
-        return visitExpression(instanceOfExpression, scope);
-    }
-
-    @Override
-    public void endVisit(InstanceOfExpression instanceOfExpression, BlockScope scope) {
-        endVisitExpression(instanceOfExpression, scope);
-    }
-
-    @Override
-    public boolean visit(IntLiteral intLiteral, BlockScope scope) {
-        return visitExpression(intLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(IntLiteral intLiteral, BlockScope scope) {
-        endVisitExpression(intLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(LongLiteral longLiteral, BlockScope scope) {
-        return visitExpression(longLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(LongLiteral longLiteral, BlockScope scope) {
-        endVisitExpression(longLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(StringLiteralConcatenation literal, BlockScope scope) {
-        return visitExpression(literal, scope);
-    }
-
-    @Override
-    public void endVisit(StringLiteralConcatenation literal, BlockScope scope) {
-        endVisitExpression(literal, scope);
-    }
-
-    @Override
-    // CHECKSTYLE:OFF
-    public boolean visit(OR_OR_Expression or_or_Expression, BlockScope scope) {
-        // CHECKSTYLE:ON
-        return visitExpression(or_or_Expression, scope);
-    }
-
-    @Override
-    // CHECKSTYLE:OFF
-    public void endVisit(OR_OR_Expression or_or_Expression, BlockScope scope) {
-        // CHECKSTYLE:ON
-        endVisitExpression(or_or_Expression, scope);
-    }
-
-    @Override
-    public boolean visit(StringLiteral stringLiteral, BlockScope scope) {
-        return visitExpression(stringLiteral, scope);
-    }
-
-    @Override
-    public void endVisit(StringLiteral stringLiteral, BlockScope scope) {
-        endVisitExpression(stringLiteral, scope);
-    }
-
-    @Override
-    public boolean visit(UnaryExpression unaryExpression, BlockScope scope) {
-        return visitExpression(unaryExpression, scope);
-    }
-
-    @Override
-    public void endVisit(UnaryExpression unaryExpression, BlockScope scope) {
-        endVisitExpression(unaryExpression, scope);
     }
 
     @Override
@@ -806,10 +561,10 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     public boolean visit(IfStatement ifStatement, BlockScope scope) {
         preVisit(ifStatement);
         String expression = ifStatement.condition.toString();
-        push(EntityType.IF_STATEMENT, expression, ifStatement.sourceStart(), ifStatement.sourceEnd());
+        push(JavaEntityType.IF_STATEMENT, expression, ifStatement.sourceStart(), ifStatement.sourceEnd());
         if (ifStatement.thenStatement != null) {
             push(
-                    EntityType.THEN_STATEMENT,
+                    JavaEntityType.THEN_STATEMENT,
                     expression,
                     ifStatement.thenStatement.sourceStart(),
                     ifStatement.thenStatement.sourceEnd());
@@ -818,7 +573,7 @@ public class JavaASTBodyTransformer extends ASTVisitor {
         }
         if (ifStatement.elseStatement != null) {
             push(
-                    EntityType.ELSE_STATEMENT,
+                    JavaEntityType.ELSE_STATEMENT,
                     expression,
                     ifStatement.elseStatement.sourceStart(),
                     ifStatement.elseStatement.sourceEnd());
@@ -949,17 +704,31 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     public boolean visit(TryStatement node, BlockScope scope) {
         preVisit(node);
         pushEmptyNode(node);
-        push(EntityType.BODY, "", node.tryBlock.sourceStart(), node.tryBlock.sourceEnd());
+        push(JavaEntityType.BODY, "", node.tryBlock.sourceStart(), node.tryBlock.sourceEnd());
         node.tryBlock.traverse(this, scope);
         pop(node.tryBlock);
+        visitCatchClauses(node, scope);
+        visitFinally(node, scope);
+        return false;
+    }
+
+    private void visitFinally(TryStatement node, BlockScope scope) {
+        if (node.finallyBlock != null) {
+            push(JavaEntityType.FINALLY, "", node.finallyBlock.sourceStart(), node.finallyBlock.sourceEnd());
+            node.finallyBlock.traverse(this, scope);
+            pop(node.finallyBlock);
+        }
+    }
+
+    private void visitCatchClauses(TryStatement node, BlockScope scope) {
         if ((node.catchBlocks != null) && (node.catchBlocks.length > 0)) {
             Block lastCatchBlock = node.catchBlocks[node.catchBlocks.length - 1];
-            push(EntityType.CATCH_CLAUSES, "", node.tryBlock.sourceEnd + 1, lastCatchBlock.sourceEnd);
+            push(JavaEntityType.CATCH_CLAUSES, "", node.tryBlock.sourceEnd + 1, lastCatchBlock.sourceEnd);
             int start = node.tryBlock.sourceEnd();
             for (int i = 0; i < node.catchArguments.length; i++) {
                 int catchClauseSourceStart = retrieveStartingCatchPosition(start, node.catchArguments[i].sourceStart);
                 push(
-                        EntityType.CATCH_CLAUSE,
+                        JavaEntityType.CATCH_CLAUSE,
                         node.catchArguments[i].type.toString(),
                         catchClauseSourceStart,
                         node.catchBlocks[i].sourceEnd);
@@ -969,12 +738,6 @@ public class JavaASTBodyTransformer extends ASTVisitor {
             }
             pop(null);
         }
-        if (node.finallyBlock != null) {
-            push(EntityType.FINALLY, "", node.finallyBlock.sourceStart(), node.finallyBlock.sourceEnd());
-            node.finallyBlock.traverse(this, scope);
-            pop(node.finallyBlock);
-        }
-        return false;
     }
 
     // logic taken from org.eclipse.jdt.core.dom.ASTConverter
@@ -1035,7 +798,7 @@ public class JavaASTBodyTransformer extends ASTVisitor {
     }
 
     private void push(EntityType label, String value, int start, int end) {
-        Node n = new Node(label, value.trim(), new SourceCodeEntity(value.trim(), label, new SourceRange(start, end)));
+        Node n = new Node(new SourceCodeEntity(value.trim(), label, new SourceRange(start, end)));
         getCurrentParent().add(n);
         fNodeStack.push(n);
     }

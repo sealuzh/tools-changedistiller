@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.evolizer.changedistiller.model.classifiers.EntityType;
+import org.evolizer.changedistiller.model.classifiers.SourceRange;
+import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
+import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
@@ -30,10 +32,10 @@ public class WhenCommentsAreAssociatedToSourceCode {
             visitor.process(comment);
         }
         sComments = visitor.getComments();
-        sRoot = new Node(EntityType.METHOD, "foo", null);
+        sRoot = new Node(new SourceCodeEntity("foo", JavaEntityType.METHOD, new SourceRange()));
         AbstractMethodDeclaration method = CompilationUtils.findMethod(sCompilation.getCompilationUnit(), "foo");
-        JavaASTBodyTransformer bodyT =
-                new JavaASTBodyTransformer(sRoot, method, sComments, sCompilation.getScanner(), new JavaASTHelper());
+        JavaMethodBodyConverter bodyT =
+                new JavaMethodBodyConverter(sRoot, method, sComments, sCompilation.getScanner(), new JavaASTHelper());
         method.traverse(bodyT, (ClassScope) null);
     }
 

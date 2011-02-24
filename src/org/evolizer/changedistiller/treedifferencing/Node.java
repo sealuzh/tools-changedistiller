@@ -16,7 +16,7 @@ import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
  * {@link TreeDifferencer} can only apply the matching and edit script generation if the two trees are made out of such
  * nodes.
  * 
- * @author fluri
+ * @author Beat Fluri
  * @see TreeDifferencer
  */
 public class Node extends DefaultMutableTreeNode {
@@ -25,8 +25,6 @@ public class Node extends DefaultMutableTreeNode {
 
     private boolean fMatched;
     private boolean fOrdered;
-    private EntityType fLabel;
-    private String fValue;
     private SourceCodeEntity fEntity;
     private List<Node> fAssociatedNodes = new ArrayList<Node>();
 
@@ -62,17 +60,11 @@ public class Node extends DefaultMutableTreeNode {
     /**
      * Creates a new node.
      * 
-     * @param label
-     *            the label this node has
-     * @param value
-     *            the value this node has
      * @param entity
      *            the entity that node represents
      */
-    public Node(EntityType label, String value, SourceCodeEntity entity) {
+    public Node(SourceCodeEntity entity) {
         super();
-        fLabel = label;
-        fValue = value;
         fEntity = entity;
     }
 
@@ -128,7 +120,7 @@ public class Node extends DefaultMutableTreeNode {
      * @return the label of this node
      */
     public EntityType getLabel() {
-        return fLabel;
+        return fEntity.getType();
     }
 
     /**
@@ -137,17 +129,7 @@ public class Node extends DefaultMutableTreeNode {
      * @return the value of this node
      */
     public String getValue() {
-        return fValue;
-    }
-
-    /**
-     * Sets the value of this node.
-     * 
-     * @param value
-     *            of this node
-     */
-    public void setValue(String value) {
-        fValue = value;
+        return fEntity.getUniqueName();
     }
 
     /**
@@ -170,9 +152,6 @@ public class Node extends DefaultMutableTreeNode {
         getEntity().addAssociatedEntity(node.getEntity());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return getValue();

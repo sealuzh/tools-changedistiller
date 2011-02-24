@@ -1,18 +1,20 @@
 package org.evolizer.changedistiller.java;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.evolizer.changedistiller.model.classifiers.EntityType;
+import org.evolizer.changedistiller.model.classifiers.SourceRange;
+import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-public class WhenASTBodyPartsAreTransformed {
+public class WhenMethodBodiesAreConverted {
 
     private String fStatement;
     private Compilation fCompilation;
@@ -23,7 +25,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "b = foo.bar();";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.ASSIGNMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSIGNMENT));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -33,7 +35,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "b += foo.bar();";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.ASSIGNMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSIGNMENT));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -43,7 +45,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "b ++;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.POSTFIX_EXPRESSION));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.POSTFIX_EXPRESSION));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -53,7 +55,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "++ b;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.PREFIX_EXPRESSION));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.PREFIX_EXPRESSION));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -63,7 +65,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "new Foo(bar);";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.CLASS_INSTANCE_CREATION));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CLASS_INSTANCE_CREATION));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -73,7 +75,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "foo.new Bar();";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.CLASS_INSTANCE_CREATION));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CLASS_INSTANCE_CREATION));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -83,7 +85,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "assert list.isEmpty();";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.ASSERT_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSERT_STATEMENT));
         assertThat(getTreeString(), is("method { list.isEmpty() }"));
         assertSourceRangeCorrectness();
     }
@@ -93,7 +95,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "assert list.isEmpty(): \"list not empty\";";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.ASSERT_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSERT_STATEMENT));
         assertThat(getTreeString(), is("method { list.isEmpty():\"list not empty\" }"));
         assertSourceRangeCorrectness();
     }
@@ -103,7 +105,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "break;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.BREAK_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.BREAK_STATEMENT));
         assertThat(getTreeString(), is("method {  }"));
         assertSourceRangeCorrectness();
     }
@@ -113,7 +115,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "break foo;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.BREAK_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.BREAK_STATEMENT));
         assertThat(getTreeString(), is("method { foo }"));
         assertSourceRangeCorrectness();
     }
@@ -123,7 +125,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "this(a);";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.CONSTRUCTOR_INVOCATION));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CONSTRUCTOR_INVOCATION));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -133,7 +135,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "continue;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.CONTINUE_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CONTINUE_STATEMENT));
         assertThat(getTreeString(), is("method {  }"));
         assertSourceRangeCorrectness();
     }
@@ -143,7 +145,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "continue foo;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.CONTINUE_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CONTINUE_STATEMENT));
         assertThat(getTreeString(), is("method { foo }"));
         assertSourceRangeCorrectness();
     }
@@ -153,7 +155,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "do { System.out.print('.'); } while (!list.isEmpty());";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.DO_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.DO_STATEMENT));
         assertThat(getTreeString(), is("method { (! list.isEmpty()) { System.out.print('.'); } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -163,7 +165,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "for (String st : list) { System.out.print('.'); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.FOREACH_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOREACH_STATEMENT));
         assertThat(getTreeString(), is("method { String st:list { System.out.print('.'); } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -173,7 +175,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "for (int i = 0; i < list.size(); i++) { System.out.print('.'); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.FOR_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOR_STATEMENT));
         assertThat(getTreeString(), is("method { (i < list.size()) { System.out.print('.'); } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -183,7 +185,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "for (;;) { System.out.print('.'); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.FOR_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOR_STATEMENT));
         assertThat(getTreeString(), is("method {  { System.out.print('.'); } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -193,9 +195,9 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "if (list.isEmpty()) { System.out.print(\"empty\"); } else { System.out.print(\"not empty\"); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.IF_STATEMENT));
-        assertThat(((Node) getFirstChild().getFirstChild()).getLabel(), is(EntityType.THEN_STATEMENT));
-        assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(EntityType.ELSE_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.IF_STATEMENT));
+        assertThat(((Node) getFirstChild().getFirstChild()).getLabel(), is(JavaEntityType.THEN_STATEMENT));
+        assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(JavaEntityType.ELSE_STATEMENT));
         assertThat(
                 getTreeString(),
                 is("method { list.isEmpty() { list.isEmpty() { System.out.print(\"empty\"); },list.isEmpty() { System.out.print(\"not empty\"); } } }"));
@@ -207,8 +209,8 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "if (list.isEmpty()) { System.out.print(\"empty\"); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.IF_STATEMENT));
-        assertThat(((Node) getFirstChild().getFirstChild()).getLabel(), is(EntityType.THEN_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.IF_STATEMENT));
+        assertThat(((Node) getFirstChild().getFirstChild()).getLabel(), is(JavaEntityType.THEN_STATEMENT));
         assertThat(getTreeString(), is("method { list.isEmpty() { list.isEmpty() { System.out.print(\"empty\"); } } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -218,7 +220,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "label: a = 24;";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.LABELED_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.LABELED_STATEMENT));
         assertThat(getTreeString(), is("method { label { a = 24; } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -228,7 +230,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "float a = 24.0f;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.VARIABLE_DECLARATION_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.VARIABLE_DECLARATION_STATEMENT));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -238,7 +240,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "foo.bar(anInteger);";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.METHOD_INVOCATION));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.METHOD_INVOCATION));
         assertTreeStringCorrectness();
         assertSourceRangeCorrectness();
     }
@@ -248,7 +250,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "return;";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.RETURN_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.RETURN_STATEMENT));
         assertThat(getTreeString(), is("method {  }"));
         assertSourceRangeCorrectness();
     }
@@ -258,7 +260,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "return Math.min(a, b);";
         prepareCompilation();
         transform();
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.RETURN_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.RETURN_STATEMENT));
         assertThat(getTreeString(), is("method { Math.min(a, b); }"));
         assertSourceRangeCorrectness();
     }
@@ -268,8 +270,8 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "switch (foo) { case ONE: a = 1; break; default: a = 2; }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.SWITCH_STATEMENT));
-        assertThat(getFirstLeaf().getLabel(), is(EntityType.SWITCH_CASE));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.SWITCH_STATEMENT));
+        assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.SWITCH_CASE));
         assertThat(getTreeString(), is("method { foo { ONE,a = 1;,,default,a = 2; } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -279,7 +281,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "synchronized(foo) { foo.bar(b); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.SYNCHRONIZED_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.SYNCHRONIZED_STATEMENT));
         assertThat(getTreeString(), is("method { foo { foo.bar(b); } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -289,7 +291,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "throw new RuntimeException(e);";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.THROW_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.THROW_STATEMENT));
         assertThat(getTreeString(), is("method { new RuntimeException(e); }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -300,14 +302,14 @@ public class WhenASTBodyPartsAreTransformed {
                 "try { foo.bar(e); } catch (IOException e) { return 2; } catch (Exception e) { return 3; } finally { cleanup(); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.TRY_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.TRY_STATEMENT));
         assertThat(
                 ((Node) ((Node) getFirstChild().getFirstChild()).getNextSibling()).getLabel(),
-                is(EntityType.CATCH_CLAUSES));
+                is(JavaEntityType.CATCH_CLAUSES));
         assertThat(
                 ((Node) ((Node) getFirstChild().getFirstChild()).getNextSibling().getFirstChild()).getLabel(),
-                is(EntityType.CATCH_CLAUSE));
-        assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(EntityType.FINALLY));
+                is(JavaEntityType.CATCH_CLAUSE));
+        assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(JavaEntityType.FINALLY));
         assertThat(
                 getTreeString(),
                 is("method {  {  { foo.bar(e); }, { IOException { 2; },Exception { 3; } }, { cleanup(); } } }"));
@@ -319,7 +321,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "try { foo.bar(e); } finally { cleanup(); }";
         prepareCompilation();
         transform();
-        assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(EntityType.FINALLY));
+        assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(JavaEntityType.FINALLY));
         assertThat(getTreeString(), is("method {  {  { foo.bar(e); }, { cleanup(); } } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -331,10 +333,10 @@ public class WhenASTBodyPartsAreTransformed {
         transform();
         assertThat(
                 ((Node) ((Node) getFirstChild().getFirstChild()).getNextSibling()).getLabel(),
-                is(EntityType.CATCH_CLAUSES));
+                is(JavaEntityType.CATCH_CLAUSES));
         assertThat(
                 ((Node) ((Node) getFirstChild().getFirstChild()).getNextSibling().getFirstChild()).getLabel(),
-                is(EntityType.CATCH_CLAUSE));
+                is(JavaEntityType.CATCH_CLAUSE));
         assertThat(getTreeString(), is("method {  {  { foo.bar(e); }, { IOException { 2; },Exception { 3; } } } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -344,7 +346,7 @@ public class WhenASTBodyPartsAreTransformed {
         fStatement = "while (i < a.length) { System.out.print('.'); }";
         prepareCompilation();
         transform();
-        assertThat(getFirstChild().getLabel(), is(EntityType.WHILE_STATEMENT));
+        assertThat(getFirstChild().getLabel(), is(JavaEntityType.WHILE_STATEMENT));
         assertThat(getTreeString(), is("method { (i < a.length) { System.out.print('.'); } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
@@ -387,10 +389,10 @@ public class WhenASTBodyPartsAreTransformed {
     }
 
     private void transform() {
-        fRoot = new Node(EntityType.METHOD, "method", null);
+        fRoot = new Node(new SourceCodeEntity("method", JavaEntityType.METHOD, new SourceRange()));
         AbstractMethodDeclaration method = CompilationUtils.findMethod(fCompilation.getCompilationUnit(), "method");
-        JavaASTBodyTransformer bodyT =
-                new JavaASTBodyTransformer(fRoot, method, null, fCompilation.getScanner(), new JavaASTHelper());
+        JavaMethodBodyConverter bodyT =
+                new JavaMethodBodyConverter(fRoot, method, null, fCompilation.getScanner(), new JavaASTHelper());
         method.traverse(bodyT, (ClassScope) null);
     }
 
@@ -402,6 +404,11 @@ public class WhenASTBodyPartsAreTransformed {
         }
         src.append("} }");
         return src.toString();
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void assertThat(Object actual, Matcher matcher) {
+        MatcherAssert.assertThat(actual, matcher);
     }
 
 }

@@ -1,28 +1,28 @@
 package org.evolizer.changedistiller.java;
 
-import static org.evolizer.changedistiller.model.classifiers.EntityType.ASSERT_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.ASSIGNMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.BREAK_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.CLASS_INSTANCE_CREATION;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.CONSTRUCTOR_INVOCATION;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.CONTINUE_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.DO_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.EMPTY_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.FOREACH_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.FOR_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.IF_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.LABELED_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.METHOD_INVOCATION;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.POSTFIX_EXPRESSION;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.PREFIX_EXPRESSION;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.RETURN_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.SWITCH_CASE;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.SWITCH_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.SYNCHRONIZED_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.THROW_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.TRY_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.VARIABLE_DECLARATION_STATEMENT;
-import static org.evolizer.changedistiller.model.classifiers.EntityType.WHILE_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.ASSERT_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.ASSIGNMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.BREAK_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CLASS_INSTANCE_CREATION;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CONSTRUCTOR_INVOCATION;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CONTINUE_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.DO_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.EMPTY_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.FOREACH_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.FOR_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.IF_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.LABELED_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.METHOD_INVOCATION;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.POSTFIX_EXPRESSION;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.PREFIX_EXPRESSION;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.RETURN_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.SWITCH_CASE;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.SWITCH_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.SYNCHRONIZED_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.THROW_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.TRY_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.VARIABLE_DECLARATION_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.WHILE_STATEMENT;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +54,7 @@ import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.jdt.internal.compiler.ast.TryStatement;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
+import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 
 /**
  * Implementation of ASTHelper for the Java programming language.
@@ -62,8 +63,8 @@ import org.evolizer.changedistiller.model.classifiers.EntityType;
  */
 public final class JavaASTHelper implements ASTHelper {
 
-    private static Map<Class<? extends ASTNode>, EntityType> sConversionMap =
-            new HashMap<Class<? extends ASTNode>, EntityType>();
+    private static Map<Class<? extends ASTNode>, JavaEntityType> sConversionMap =
+            new HashMap<Class<? extends ASTNode>, JavaEntityType>();
 
     static {
         sConversionMap.put(Assignment.class, ASSIGNMENT);

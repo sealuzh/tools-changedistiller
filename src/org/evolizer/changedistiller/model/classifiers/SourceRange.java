@@ -1,33 +1,37 @@
 package org.evolizer.changedistiller.model.classifiers;
 
 /**
- * Representation of a range in a document with offset and length.
+ * Representation of a range in a document with start and end.
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * 
  */
 public final class SourceRange {
 
-    private int fStart = -1;
-    private int fEnd = -1;
+    private int fStart;
+    private int fEnd;
 
     /**
      * Create a new {@link SourceRange}.
      * 
-     * @param offset
+     * @param start
      *            in the document
-     * @param length
-     *            of the range
+     * @param end
+     *            in the document
      */
-    public SourceRange(int offset, int length) {
-        fStart = offset;
-        fEnd = length;
+    public SourceRange(int start, int end) {
+        fStart = start;
+        fEnd = end;
     }
 
     /**
-     * Creates new range with offset and length set to -1.
+     * Creates new range with start and end set to -1.
      */
-    public SourceRange() {}
+    public SourceRange() {
+        fStart = -1;
+        fEnd = -1;
+    }
 
     public int getStart() {
         return fStart;
