@@ -1,15 +1,16 @@
 package org.evolizer.changedistiller.util;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.parser.Scanner;
 
-public class CompilationUnitWithSource {
+public class Compilation {
 
     private CompilationUnitDeclaration fCompilationUnit;
-    private String fSource;
+    private Scanner fScanner;
 
-    public CompilationUnitWithSource(CompilationUnitDeclaration compilationUnit, String source) {
+    public Compilation(CompilationUnitDeclaration compilationUnit, Scanner scanner) {
         fCompilationUnit = compilationUnit;
-        fSource = source;
+        fScanner = scanner;
     }
 
     public CompilationUnitDeclaration getCompilationUnit() {
@@ -17,7 +18,10 @@ public class CompilationUnitWithSource {
     }
 
     public String getSource() {
-        return fSource;
+        return String.valueOf(fScanner.source);
     }
 
+    public Scanner getScanner() {
+        return fScanner;
+    }
 }

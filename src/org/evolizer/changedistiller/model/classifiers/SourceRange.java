@@ -8,8 +8,8 @@ package org.evolizer.changedistiller.model.classifiers;
  */
 public final class SourceRange {
 
-    private int fOffset = -1;
-    private int fLength = -1;
+    private int fStart = -1;
+    private int fEnd = -1;
 
     /**
      * Create a new {@link SourceRange}.
@@ -20,8 +20,8 @@ public final class SourceRange {
      *            of the range
      */
     public SourceRange(int offset, int length) {
-        fOffset = offset;
-        fLength = length;
+        fStart = offset;
+        fEnd = length;
     }
 
     /**
@@ -29,42 +29,25 @@ public final class SourceRange {
      */
     public SourceRange() {}
 
-    /**
-     * Returns the offset of this {@link SourceRange}.
-     * 
-     * @return offset of this range
-     */
-    public int getOffset() {
-        return fOffset;
+    public int getStart() {
+        return fStart;
     }
 
-    /**
-     * Returns the length of this {@link SourceRange}.
-     * 
-     * @return length of this range
-     */
-    public int getLength() {
-        return fLength;
+    public int getEnd() {
+        return fEnd;
     }
 
-    /**
-     * Sets offset of this {@link SourceRange}.
-     * 
-     * @param offset
-     *            to set
-     */
-    public void setOffset(int offset) {
-        fOffset = offset;
+    public void setStart(int start) {
+        fStart = start;
     }
 
-    /**
-     * Sets length of this {@link SourceRange}.
-     * 
-     * @param length
-     *            to set
-     */
-    public void setLength(int length) {
-        fLength = length;
+    public void setEnd(int end) {
+        fEnd = end;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + fStart + "," + fEnd + ")";
     }
 
 }

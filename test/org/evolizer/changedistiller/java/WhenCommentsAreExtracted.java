@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.evolizer.changedistiller.util.CompilationUnitWithSource;
+import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,11 +17,11 @@ import org.junit.Test;
  */
 public class WhenCommentsAreExtracted {
 
-    private static CompilationUnitWithSource sCompilationUnit;
+    private static Compilation sCompilationUnit;
 
     @BeforeClass
     public static void prepareCompilationUnit() throws Exception {
-        sCompilationUnit = CompilationUtils.prepareCompilationUnit("ClassWithComments.java");
+        sCompilationUnit = CompilationUtils.compileFile("ClassWithComments.java");
     }
 
     @Test

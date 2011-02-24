@@ -5,19 +5,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.evolizer.changedistiller.util.CompilationUnitWithSource;
+import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class WhenConsecutiveCommentsAreJoined {
 
-    private static CompilationUnitWithSource sCompilationUnit;
+    private static Compilation sCompilationUnit;
     private static List<Comment> sComments;
 
     @BeforeClass
     public static void prepareCompilationUnit() throws Exception {
-        sCompilationUnit = CompilationUtils.prepareCompilationUnit("ClassWithConsecutiveComments.java");
+        sCompilationUnit = CompilationUtils.compileFile("ClassWithConsecutiveComments.java");
         List<Comment> comments = CompilationUtils.extractComments(sCompilationUnit);
         CommentCleaner visitor = new CommentCleaner(sCompilationUnit.getSource());
         for (Comment comment : comments) {

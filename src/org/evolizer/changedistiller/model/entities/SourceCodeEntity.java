@@ -23,7 +23,7 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
  * <li>{@link EntityType#CONTINUE_STATEMENT}: <code>[Label]</code></li>
  * <li>{@link EntityType#DO_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#ELSE_STATEMENT}: <code>Expression of if-statement</code></li>
- * <li>{@link EntityType#ENHANCED_FOR_STATEMENT}: <code>Parameter<b>:</b>Expression</code></li>
+ * <li>{@link EntityType#FOREACH_STATEMENT}: <code>Parameter<b>:</b>Expression</code></li>
  * <li>{@link EntityType#EXPRESSION_STATEMENT}: <code>Expression<b>;</b></code></li>
  * <li>{@link EntityType#FOR_STATEMENT}: <code>[Expression]</code></li>
  * <li>{@link EntityType#IF_STATEMENT}: <code>Expression</code></li>
@@ -254,7 +254,7 @@ public class SourceCodeEntity {
      * @return the length
      */
     int getLength() {
-        return fRange.getLength();
+        return fRange.getEnd();
     }
 
     /**
@@ -265,7 +265,7 @@ public class SourceCodeEntity {
      */
     @SuppressWarnings("unused")
     private void setLength(int length) {
-        fRange.setLength(length);
+        fRange.setEnd(length);
     }
 
     /**
@@ -275,7 +275,7 @@ public class SourceCodeEntity {
      *            the new offset
      */
     void setOffset(int offset) {
-        fRange.setOffset(offset);
+        fRange.setStart(offset);
     }
 
     /**
@@ -285,7 +285,7 @@ public class SourceCodeEntity {
      */
     @SuppressWarnings("unused")
     private int getOffset() {
-        return fRange.getOffset();
+        return fRange.getStart();
     }
 
     /**

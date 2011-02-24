@@ -1,6 +1,7 @@
 package org.evolizer.changedistiller.treedifferencing;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -184,5 +185,28 @@ public class Node extends DefaultMutableTreeNode {
      */
     public SourceCodeEntity getEntity() {
         return fEntity;
+    }
+
+    /**
+     * Prints this {@link Node} and its children with <code>value ['{' child [, child...] '}']</code>.
+     * 
+     * @param output
+     *            to append the node string
+     * @return the node string
+     */
+    public StringBuilder print(StringBuilder output) {
+        output.append(getValue());
+        if (!isLeaf()) {
+            output.append(" { ");
+            for (Iterator<?> it = children.iterator(); it.hasNext();) {
+                Node child = (Node) it.next();
+                child.print(output);
+                if (it.hasNext()) {
+                    output.append(",");
+                }
+            }
+            output.append(" }");
+        }
+        return output;
     }
 }

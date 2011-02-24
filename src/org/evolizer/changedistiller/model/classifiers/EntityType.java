@@ -40,7 +40,7 @@ public enum EntityType {
     DO_STATEMENT(true),
     ELSE_STATEMENT(true),
     EMPTY_STATEMENT(true),
-    ENHANCED_FOR_STATEMENT(true),
+    FOREACH_STATEMENT(true),
     ENUM_CONSTANT_DECLARATION(true),
     ENUM_CONSTANTS(false),
     ENUM_DECLARATION(true),
@@ -194,7 +194,7 @@ public enum EntityType {
             case TRY_STATEMENT:
             case VARIABLE_DECLARATION_STATEMENT:
             case WHILE_STATEMENT:
-            case ENHANCED_FOR_STATEMENT:
+            case FOREACH_STATEMENT:
                 return true;
             default:
                 return false;
