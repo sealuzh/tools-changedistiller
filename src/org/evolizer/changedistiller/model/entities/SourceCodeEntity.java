@@ -311,4 +311,32 @@ public class SourceCodeEntity {
         return getType().toString();
     }
 
+    public int getStartPosition() {
+        return fRange.getStart();
+    }
+
+    /**
+     * Sets the start position of this {@link SourceCodeEntity}.
+     * 
+     * @param start
+     *            to set
+     */
+    public void setStartPosition(int start) {
+        fRange.setStart(start);
+    }
+
+    public int getEndPosition() {
+        return fRange.getEnd();
+    }
+
+    /**
+     * Sets the end position of this {@link SourceCodeEntity}.
+     * 
+     * @param end
+     *            to set
+     */
+    public void setEndPosition(int end) {
+        fRange.setEnd(end);
+    }
+
 }
