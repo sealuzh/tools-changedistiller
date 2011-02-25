@@ -8,21 +8,16 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
-import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-public class WhenMethodBodiesAreConverted {
-
-    private String fStatement;
-    private Compilation fCompilation;
-    private Node fRoot;
+public class WhenMethodBodiesAreConverted extends WhenASTsAreConverted {
 
     @Test
     public void assignmentShouldBeTransformed() throws Exception {
-        fStatement = "b = foo.bar();";
+        fSnippet = "b = foo.bar();";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSIGNMENT));
@@ -32,7 +27,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void compoundAssignmentShouldBeTransformed() throws Exception {
-        fStatement = "b += foo.bar();";
+        fSnippet = "b += foo.bar();";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSIGNMENT));
@@ -42,7 +37,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void postfixExpressionShouldBeTransformed() throws Exception {
-        fStatement = "b ++;";
+        fSnippet = "b ++;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.POSTFIX_EXPRESSION));
@@ -52,7 +47,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void prefixExpressionShouldBeTransformed() throws Exception {
-        fStatement = "++ b;";
+        fSnippet = "++ b;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.PREFIX_EXPRESSION));
@@ -62,7 +57,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void allocationExpressionShouldBeTransformed() throws Exception {
-        fStatement = "new Foo(bar);";
+        fSnippet = "new Foo(bar);";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CLASS_INSTANCE_CREATION));
@@ -72,7 +67,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void qualifiedAllocationExpressionShouldBeTransformed() throws Exception {
-        fStatement = "foo.new Bar();";
+        fSnippet = "foo.new Bar();";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CLASS_INSTANCE_CREATION));
@@ -82,7 +77,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void assertStatementWithoutExceptionArgumentShouldBeTransformed() throws Exception {
-        fStatement = "assert list.isEmpty();";
+        fSnippet = "assert list.isEmpty();";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSERT_STATEMENT));
@@ -92,7 +87,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void assertStatementWithExceptionArgumentShouldBeTransformed() throws Exception {
-        fStatement = "assert list.isEmpty(): \"list not empty\";";
+        fSnippet = "assert list.isEmpty(): \"list not empty\";";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.ASSERT_STATEMENT));
@@ -102,7 +97,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void breakStatementWithoutLabelShouldBeTransformed() throws Exception {
-        fStatement = "break;";
+        fSnippet = "break;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.BREAK_STATEMENT));
@@ -112,7 +107,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void breakStatementWithLabelShouldBeTransformed() throws Exception {
-        fStatement = "break foo;";
+        fSnippet = "break foo;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.BREAK_STATEMENT));
@@ -122,7 +117,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void explicitConstructorCallShouldBeTransformed() throws Exception {
-        fStatement = "this(a);";
+        fSnippet = "this(a);";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CONSTRUCTOR_INVOCATION));
@@ -132,7 +127,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void continueStatementWithoutLabelShouldBeTransformed() throws Exception {
-        fStatement = "continue;";
+        fSnippet = "continue;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CONTINUE_STATEMENT));
@@ -142,7 +137,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void continueStatementWithLabelShouldBeTransformed() throws Exception {
-        fStatement = "continue foo;";
+        fSnippet = "continue foo;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.CONTINUE_STATEMENT));
@@ -152,7 +147,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void doStatementShouldBeTransformed() throws Exception {
-        fStatement = "do { System.out.print('.'); } while (!list.isEmpty());";
+        fSnippet = "do { System.out.print('.'); } while (!list.isEmpty());";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.DO_STATEMENT));
@@ -162,7 +157,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void foreachStatemenShouldBeTransformed() throws Exception {
-        fStatement = "for (String st : list) { System.out.print('.'); }";
+        fSnippet = "for (String st : list) { System.out.print('.'); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOREACH_STATEMENT));
@@ -172,7 +167,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void forStatementWithConditionShouldBeTransformed() throws Exception {
-        fStatement = "for (int i = 0; i < list.size(); i++) { System.out.print('.'); }";
+        fSnippet = "for (int i = 0; i < list.size(); i++) { System.out.print('.'); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOR_STATEMENT));
@@ -182,7 +177,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void forStatementWithoutConditionShouldBeTransformed() throws Exception {
-        fStatement = "for (;;) { System.out.print('.'); }";
+        fSnippet = "for (;;) { System.out.print('.'); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOR_STATEMENT));
@@ -192,7 +187,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void ifStatementShouldBeTransformed() throws Exception {
-        fStatement = "if (list.isEmpty()) { System.out.print(\"empty\"); } else { System.out.print(\"not empty\"); }";
+        fSnippet = "if (list.isEmpty()) { System.out.print(\"empty\"); } else { System.out.print(\"not empty\"); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.IF_STATEMENT));
@@ -206,7 +201,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void ifStatementWithoutElseShouldBeTransformed() throws Exception {
-        fStatement = "if (list.isEmpty()) { System.out.print(\"empty\"); }";
+        fSnippet = "if (list.isEmpty()) { System.out.print(\"empty\"); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.IF_STATEMENT));
@@ -217,7 +212,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void labeledStatementShouldBeTransformed() throws Exception {
-        fStatement = "label: a = 24;";
+        fSnippet = "label: a = 24;";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.LABELED_STATEMENT));
@@ -227,7 +222,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void localDeclarationShouldBeTransformed() throws Exception {
-        fStatement = "float a = 24.0f;";
+        fSnippet = "float a = 24.0f;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.VARIABLE_DECLARATION_STATEMENT));
@@ -237,7 +232,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void messageSendShouldBeTransformed() throws Exception {
-        fStatement = "foo.bar(anInteger);";
+        fSnippet = "foo.bar(anInteger);";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.METHOD_INVOCATION));
@@ -247,7 +242,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void emptyReturnStatementShouldBeTransformed() throws Exception {
-        fStatement = "return;";
+        fSnippet = "return;";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.RETURN_STATEMENT));
@@ -257,7 +252,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void returnStatementShouldBeTransformed() throws Exception {
-        fStatement = "return Math.min(a, b);";
+        fSnippet = "return Math.min(a, b);";
         prepareCompilation();
         transform();
         assertThat(getFirstLeaf().getLabel(), is(JavaEntityType.RETURN_STATEMENT));
@@ -267,7 +262,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void switchStatementShouldBeTransformed() throws Exception {
-        fStatement = "switch (foo) { case ONE: a = 1; break; default: a = 2; }";
+        fSnippet = "switch (foo) { case ONE: a = 1; break; default: a = 2; }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.SWITCH_STATEMENT));
@@ -278,7 +273,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void synchronizedStatementShouldBeTransformed() throws Exception {
-        fStatement = "synchronized(foo) { foo.bar(b); }";
+        fSnippet = "synchronized(foo) { foo.bar(b); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.SYNCHRONIZED_STATEMENT));
@@ -288,7 +283,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void throwStatementShouldBeTransformed() throws Exception {
-        fStatement = "throw new RuntimeException(e);";
+        fSnippet = "throw new RuntimeException(e);";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.THROW_STATEMENT));
@@ -298,7 +293,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void tryStatementShouldBeTransformed() throws Exception {
-        fStatement =
+        fSnippet =
                 "try { foo.bar(e); } catch (IOException e) { return 2; } catch (Exception e) { return 3; } finally { cleanup(); }";
         prepareCompilation();
         transform();
@@ -318,7 +313,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void tryStatementWithoutCatchClausesShouldBeTransformed() throws Exception {
-        fStatement = "try { foo.bar(e); } finally { cleanup(); }";
+        fSnippet = "try { foo.bar(e); } finally { cleanup(); }";
         prepareCompilation();
         transform();
         assertThat(((Node) getFirstChild().getLastChild()).getLabel(), is(JavaEntityType.FINALLY));
@@ -328,7 +323,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void tryStatementWithoutFinallyShouldBeTransformed() throws Exception {
-        fStatement = "try { foo.bar(e); } catch (IOException e) { return 2; } catch (Exception e) { return 3; }";
+        fSnippet = "try { foo.bar(e); } catch (IOException e) { return 2; } catch (Exception e) { return 3; }";
         prepareCompilation();
         transform();
         assertThat(
@@ -343,7 +338,7 @@ public class WhenMethodBodiesAreConverted {
 
     @Test
     public void whileStatementWithoutFinallyShouldBeTransformed() throws Exception {
-        fStatement = "while (i < a.length) { System.out.print('.'); }";
+        fSnippet = "while (i < a.length) { System.out.print('.'); }";
         prepareCompilation();
         transform();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.WHILE_STATEMENT));
@@ -355,37 +350,18 @@ public class WhenMethodBodiesAreConverted {
         assertThat(getTreeString(), is(getMethodString()));
     }
 
-    private void prepareCompilation() {
-        fCompilation = CompilationUtils.compileSource(getSourceCodeWithStatements(fStatement));
-    }
-
-    private String getTreeString() {
-        return fRoot.print(new StringBuilder()).toString();
-    }
-
     private void assertSourceRangeCorrectness() {
         assertSourceRangeCorrectness(getFirstLeaf());
     }
 
     private void assertSourceRangeCorrectness(Node node) {
         SourceCodeEntity entity = node.getEntity();
-        String source =
-                fCompilation.getSource().substring(
-                        entity.getSourceRange().getStart(),
-                        entity.getSourceRange().getEnd() + 1);
-        assertThat(source, is(fStatement));
+        String source = fCompilation.getSource().substring(entity.getStartPosition(), entity.getEndPosition() + 1);
+        assertThat(source, is(fSnippet));
     }
 
     private String getMethodString() {
-        return "method { " + fStatement + " }";
-    }
-
-    private Node getFirstLeaf() {
-        return ((Node) fRoot.getFirstLeaf());
-    }
-
-    private Node getFirstChild() {
-        return (Node) fRoot.getFirstChild();
+        return "method { " + fSnippet + " }";
     }
 
     private void transform() {
@@ -396,10 +372,11 @@ public class WhenMethodBodiesAreConverted {
         method.traverse(bodyT, (ClassScope) null);
     }
 
-    private String getSourceCodeWithStatements(String... statements) {
+    @Override
+    protected String getSourceCodeWithSnippets(String... snippets) {
         StringBuilder src = new StringBuilder("public class Foo { ");
         src.append("public void method() { ");
-        for (String statement : statements) {
+        for (String statement : snippets) {
             src.append(statement).append(' ');
         }
         src.append("} }");

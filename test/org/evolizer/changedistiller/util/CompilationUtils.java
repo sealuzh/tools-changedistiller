@@ -9,6 +9,7 @@ import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
@@ -100,6 +101,17 @@ public final class CompilationUtils {
             for (AbstractMethodDeclaration method : type.methods) {
                 if (String.valueOf(method.selector).equals(methodName)) {
                     return method;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static FieldDeclaration findField(CompilationUnitDeclaration cu, String fieldName) {
+        for (TypeDeclaration type : cu.types) {
+            for (FieldDeclaration field : type.fields) {
+                if (String.valueOf(field.name).equals(fieldName)) {
+                    return field;
                 }
             }
         }

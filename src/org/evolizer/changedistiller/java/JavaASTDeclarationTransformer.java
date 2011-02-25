@@ -8,6 +8,7 @@ import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
 import org.eclipse.jdt.internal.compiler.ast.Block;
+import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
 import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Javadoc;
@@ -53,13 +54,14 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
      * 
      * @param root
      *            the root node of the tree to generate
-     * @param source
-     *            the document in which the AST to parse resides
+     * @param scanner
+     *            the scanner with which the AST was created
      * @param astHelper
      *            the helper that helps with conversions for the change history meta model
      */
-    public JavaASTDeclarationTransformer(Node root, String source, ASTHelper astHelper) {
-        fSource = source;
+    public JavaASTDeclarationTransformer(Node root, Scanner scanner, ASTHelper astHelper) {
+        fScanner = scanner;
+        fSource = String.valueOf(scanner.source);
         fNodeStack.clear();
         fNodeStack.push(root);
         fASTHelper = astHelper;
@@ -107,7 +109,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         if (fieldDeclaration.javadoc != null) {
             fieldDeclaration.javadoc.traverse(this, scope);
         }
-        visitModifiers(fieldDeclaration, fieldDeclaration.modifiers);
+        visitFieldDeclarationModifiers(fieldDeclaration);
         fieldDeclaration.type.traverse(this, scope);
         visitExpression(fieldDeclaration.initialization);
         return false;
@@ -129,12 +131,21 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         }
     }
 
+    private void visitFieldDeclarationModifiers(FieldDeclaration fieldDeclaration) {
+        fScanner.resetTo(fieldDeclaration.declarationSourceStart, fieldDeclaration.sourceStart());
+        visitModifiers(fieldDeclaration, fieldDeclaration.modifiers);
+    }
+
+    private void visitMethodDeclarationModifiers(MethodDeclaration methodDeclaration) {
+        fScanner.resetTo(methodDeclaration.declarationSourceStart, methodDeclaration.sourceStart());
+        visitModifiers(methodDeclaration, methodDeclaration.modifiers);
+    }
+
     // logic partly taken from org.eclipse.jdt.core.dom.ASTConverter
     private void visitModifiers(ASTNode node, int modifierMask) {
         push(JavaEntityType.MODIFIERS, "", -1, -1);
         if (modifierMask != 0) {
             Node modifiers = fNodeStack.peek();
-            fScanner.resetTo(node.sourceStart(), node.sourceEnd());
             fScanner.tokenizeWhiteSpace = false;
             try {
                 int token;
@@ -185,7 +196,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
     @Override
     public boolean visit(Javadoc javadoc, BlockScope scope) {
         String string = null;
-        string = fSource.substring(javadoc.sourceStart(), javadoc.sourceEnd());
+        string = fSource.substring(javadoc.sourceStart(), javadoc.sourceEnd() + 1);
         if (!isJavadocEmpty(string)) {
             pushValuedNode(javadoc, string);
         } else {
@@ -215,7 +226,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         }
         result = result.replace('*', ' ').trim();
 
-        return !result.equals("");
+        return result.equals("");
     }
 
     @Override
@@ -224,7 +235,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
             methodDeclaration.javadoc.traverse(this, scope);
         }
         fInMethodDeclaration = true;
-        visitModifiers(methodDeclaration, methodDeclaration.modifiers);
+        visitMethodDeclarationModifiers(methodDeclaration);
         if (methodDeclaration.returnType != null) {
             methodDeclaration.returnType.traverse(this, scope);
         }
@@ -242,6 +253,16 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
     }
 
     @Override
+    public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
+        return super.visit(constructorDeclaration, scope);
+    }
+
+    @Override
+    public void endVisit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
+        super.endVisit(constructorDeclaration, scope);
+    }
+
+    @Override
     public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, ClassScope scope) {
         return visit(parameterizedSingleTypeReference, (BlockScope) null);
     }
@@ -255,6 +276,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
     public boolean visit(ParameterizedSingleTypeReference type, BlockScope scope) {
         pushValuedNode(type, String.valueOf(type.token));
         visitList(JavaEntityType.TYPE_ARGUMENTS, type.typeArguments);
+        fNodeStack.peek().getEntity().setEndPosition(getLastChildOfCurrentNode().getEntity().getEndPosition() + 1);
         return false;
     }
 
@@ -275,14 +297,12 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(ParameterizedQualifiedTypeReference type, BlockScope scope) {
-        // char[][] nameTokens = parameterizedQualifiedTypeReference.tokens;
-        // int numberOfTokens = nameTokens.length;
-        // String lastToken = String.valueOf(nameTokens[numberOfTokens - 1]);
-        // String name = parameterizedQualifiedTypeReference.printExpression(0, new StringBuffer()).toString();
-        // int startIndexOfClass = name.lastIndexOf(lastToken);
-        String name = fSource.substring(type.sourceStart(), type.sourceEnd());
+        String name = fSource.substring(type.sourceStart(), type.sourceEnd() + 1);
         pushValuedNode(type, name);
-        visitList(JavaEntityType.TYPE_ARGUMENTS, type.typeArguments[type.typeArguments.length - 1]);
+        if (type.typeArguments[type.typeArguments.length - 1] != null) {
+            visitList(JavaEntityType.TYPE_ARGUMENTS, type.typeArguments[type.typeArguments.length - 1]);
+            fNodeStack.peek().getEntity().setEndPosition(getLastChildOfCurrentNode().getEntity().getEndPosition() + 1);
+        }
         return false;
     }
 
@@ -309,7 +329,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public void endVisit(QualifiedTypeReference type, BlockScope scope) {
-        super.endVisit(type, scope);
+        pop();
     }
 
     @Override
@@ -448,7 +468,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
             visitList(declarations);
         }
         fNodeStack.peek().getEntity().setStartPosition(start);
-        fNodeStack.peek().getEntity().setEndPosition(start);
+        fNodeStack.peek().getEntity().setEndPosition(end);
         pop();
     }
 
@@ -458,12 +478,16 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         push(parentLabel, "", start, end);
         if ((nodes != null) && (nodes.length > 0)) {
             start = nodes[0].sourceStart();
-            end = nodes[nodes.length - 1].sourceEnd();
             visitList(nodes);
+            end = getLastChildOfCurrentNode().getEntity().getEndPosition();
         }
         fNodeStack.peek().getEntity().setStartPosition(start);
-        fNodeStack.peek().getEntity().setEndPosition(start);
+        fNodeStack.peek().getEntity().setEndPosition(end);
         pop();
+    }
+
+    private Node getLastChildOfCurrentNode() {
+        return (Node) fNodeStack.peek().getLastChild();
     }
 
     private void pushValuedNode(ASTNode node, String value) {
