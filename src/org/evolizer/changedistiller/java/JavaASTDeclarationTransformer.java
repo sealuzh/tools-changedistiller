@@ -5,6 +5,7 @@ import java.util.Stack;
 import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
 import org.eclipse.jdt.internal.compiler.ast.Block;
@@ -19,6 +20,7 @@ import org.eclipse.jdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.jdt.internal.compiler.ast.TypeReference;
 import org.eclipse.jdt.internal.compiler.ast.Wildcard;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
@@ -136,9 +138,14 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         visitModifiers(fieldDeclaration, fieldDeclaration.modifiers);
     }
 
-    private void visitMethodDeclarationModifiers(MethodDeclaration methodDeclaration) {
+    private void visitMethodDeclarationModifiers(AbstractMethodDeclaration methodDeclaration) {
         fScanner.resetTo(methodDeclaration.declarationSourceStart, methodDeclaration.sourceStart());
         visitModifiers(methodDeclaration, methodDeclaration.modifiers);
+    }
+
+    private void visitTypeDeclarationModifiers(TypeDeclaration typeDeclaration) {
+        fScanner.resetTo(typeDeclaration.declarationSourceStart, typeDeclaration.sourceStart());
+        visitModifiers(typeDeclaration, typeDeclaration.modifiers);
     }
 
     // logic partly taken from org.eclipse.jdt.core.dom.ASTConverter
@@ -231,35 +238,48 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
-        if (methodDeclaration.javadoc != null) {
-            methodDeclaration.javadoc.traverse(this, scope);
-        }
-        fInMethodDeclaration = true;
-        visitMethodDeclarationModifiers(methodDeclaration);
-        if (methodDeclaration.returnType != null) {
-            methodDeclaration.returnType.traverse(this, scope);
-        }
-        visitAbstractVariableDeclarations(JavaEntityType.TYPE_ARGUMENTS, methodDeclaration.typeParameters());
-        visitAbstractVariableDeclarations(JavaEntityType.PARAMETERS, methodDeclaration.arguments);
-        visitList(JavaEntityType.THROW, methodDeclaration.thrownExceptions);
+        visitAbstractMethodDeclaration(methodDeclaration, scope);
         // ignore body, since only declaration is interesting
         return false;
     }
 
     @Override
     public void endVisit(MethodDeclaration methodDeclaration, ClassScope scope) {
-        fInMethodDeclaration = false;
         pop();
     }
 
     @Override
     public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
-        return super.visit(constructorDeclaration, scope);
+        visitAbstractMethodDeclaration(constructorDeclaration, scope);
+        // ignore body, since only declaration is interesting
+        return false;
     }
 
     @Override
     public void endVisit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
-        super.endVisit(constructorDeclaration, scope);
+        pop();
+    }
+
+    private void visitAbstractMethodDeclaration(AbstractMethodDeclaration methodDeclaration, ClassScope scope) {
+        if (methodDeclaration.javadoc != null) {
+            methodDeclaration.javadoc.traverse(this, scope);
+        }
+        fInMethodDeclaration = true;
+        visitMethodDeclarationModifiers(methodDeclaration);
+        visitReturnType(methodDeclaration, scope);
+        visitAbstractVariableDeclarations(JavaEntityType.TYPE_ARGUMENTS, methodDeclaration.typeParameters());
+        visitAbstractVariableDeclarations(JavaEntityType.PARAMETERS, methodDeclaration.arguments);
+        fInMethodDeclaration = false;
+        visitList(JavaEntityType.THROW, methodDeclaration.thrownExceptions);
+    }
+
+    private void visitReturnType(AbstractMethodDeclaration abstractMethodDeclaration, ClassScope scope) {
+        if (abstractMethodDeclaration instanceof MethodDeclaration) {
+            MethodDeclaration methodDeclaration = (MethodDeclaration) abstractMethodDeclaration;
+            if (methodDeclaration.returnType != null) {
+                methodDeclaration.returnType.traverse(this, scope);
+            }
+        }
     }
 
     @Override
@@ -274,9 +294,14 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(ParameterizedSingleTypeReference type, BlockScope scope) {
-        pushValuedNode(type, String.valueOf(type.token));
-        visitList(JavaEntityType.TYPE_ARGUMENTS, type.typeArguments);
-        fNodeStack.peek().getEntity().setEndPosition(getLastChildOfCurrentNode().getEntity().getEndPosition() + 1);
+        int start = type.sourceStart();
+        int end = findSourceEndOfASTNodes(type, type.typeArguments);
+        String name = "";
+        if (fInMethodDeclaration) {
+            name += getCurrentParent().getValue() + COLON_SPACE;
+        }
+        pushValuedNode(type, name + fSource.substring(start, end + 1));
+        fNodeStack.peek().getEntity().setEndPosition(end);
         return false;
     }
 
@@ -323,7 +348,11 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(QualifiedTypeReference type, BlockScope scope) {
-        pushValuedNode(type, type.toString());
+        String name = "";
+        if (fInMethodDeclaration) {
+            name += getCurrentParent().getValue() + COLON_SPACE;
+        }
+        pushValuedNode(type, name + type.toString());
         return false;
     }
 
@@ -382,7 +411,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         if (typeDeclaration.javadoc != null) {
             typeDeclaration.javadoc.traverse(this, scope);
         }
-        visitModifiers(typeDeclaration, typeDeclaration.modifiers);
+        visitTypeDeclarationModifiers(typeDeclaration);
         visitAbstractVariableDeclarations(JavaEntityType.TYPE_ARGUMENTS, typeDeclaration.typeParameters);
         if (typeDeclaration.superclass != null) {
             typeDeclaration.superclass.traverse(this, scope);
@@ -408,9 +437,11 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(TypeParameter typeParameter, BlockScope scope) {
-        pushValuedNode(typeParameter, String.valueOf(typeParameter.name));
-        typeParameter.type.traverse(this, scope);
-        visitList(typeParameter.bounds);
+        push(
+                fASTHelper.convertNode(typeParameter),
+                fSource.substring(typeParameter.sourceStart(), typeParameter.declarationSourceEnd + 1),
+                typeParameter.sourceStart(),
+                typeParameter.declarationSourceEnd);
         return false;
     }
 
@@ -484,6 +515,27 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         fNodeStack.peek().getEntity().setStartPosition(start);
         fNodeStack.peek().getEntity().setEndPosition(end);
         pop();
+    }
+
+    private int findSourceEndOfASTNodes(TypeReference type, TypeReference[] typeParameters) {
+        int end = type.sourceEnd();
+        if ((typeParameters != null) && (typeParameters.length > 0)) {
+            TypeReference lastNode = typeParameters[typeParameters.length - 1];
+            if (lastNode instanceof ParameterizedQualifiedTypeReference) {
+                TypeReference[][] typeArguments = ((ParameterizedQualifiedTypeReference) lastNode).typeArguments;
+                end = findSourceEndOfASTNodes(lastNode, typeArguments[typeArguments.length - 1]);
+            } else if (lastNode instanceof ParameterizedSingleTypeReference) {
+                TypeReference[] typeArguments = ((ParameterizedSingleTypeReference) lastNode).typeArguments;
+                end = findSourceEndOfASTNodes(lastNode, typeArguments);
+            } else {
+                end = typeParameters[typeParameters.length - 1].sourceEnd();
+            }
+            if (end == -1) {
+                end = lastNode.sourceEnd();
+            }
+            end++;
+        }
+        return end;
     }
 
     private Node getLastChildOfCurrentNode() {

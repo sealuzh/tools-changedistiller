@@ -118,4 +118,15 @@ public final class CompilationUtils {
         return null;
     }
 
+    public static TypeDeclaration findType(CompilationUnitDeclaration cu, String typeName) {
+        for (TypeDeclaration type : cu.types) {
+            for (TypeDeclaration memberType : type.memberTypes) {
+                if (String.valueOf(memberType.name).equals(typeName)) {
+                    return memberType;
+                }
+            }
+        }
+        return null;
+    }
+
 }

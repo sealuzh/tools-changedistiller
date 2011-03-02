@@ -32,4 +32,8 @@ public abstract class WhenASTsAreConverted {
         return (Node) fRoot.getFirstChild();
     }
 
+    protected Node getLastChild() {
+        return (Node) fRoot.getLastChild();
+    }
+
 }
