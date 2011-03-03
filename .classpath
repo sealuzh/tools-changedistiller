@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/ecj-3.6.1.jar" sourcepath="lib/ecjsrc-3.6.1.zip"/>
 	<classpathentry kind="lib" path="lib/hamcrest-all-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar" sourcepath="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.core.source_3.6.1.v_A68_R36x.jar"/>
+	<classpathentry kind="lib" path="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.core_3.6.2.v_A76_R36x.jar" sourcepath="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.core.source_3.6.2.v_A76_R36x.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -66,8 +66,6 @@ public class JavaEntityTypeUtils implements EntityTypeUtils<JavaEntityType> {
             case LABELED_STATEMENT:
             case METHOD_INVOCATION:
             case RETURN_STATEMENT:
-            case SUPER_CONSTRUCTOR_INVOCATION:
-            case SUPER_METHOD_INVOCATION:
             case SWITCH_CASE:
             case SWITCH_STATEMENT:
             case SYNCHRONIZED_STATEMENT:

@@ -24,7 +24,6 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
  * <li>{@link EntityType#DO_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#ELSE_STATEMENT}: <code>Expression of if-statement</code></li>
  * <li>{@link EntityType#FOREACH_STATEMENT}: <code>Parameter<b>:</b>Expression</code></li>
- * <li>{@link EntityType#EXPRESSION_STATEMENT}: <code>Expression<b>;</b></code></li>
  * <li>{@link EntityType#FOR_STATEMENT}: <code>[Expression]</code></li>
  * <li>{@link EntityType#IF_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#JAVADOC}: <code>Javadoc as is</code></li>
@@ -37,15 +36,12 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
  * <li>{@link EntityType#SIMPLE_TYPE}: inside a MethodDeclaration
  * <code>[ParameterName|MethodSignature]<b>:</b> TypeName</code>, else: <code>TypeName</code>; method signature is used
  * if the type corresponds to the return type of the method</li>
- * <li>{@link EntityType#SINGLE_VARIABLE_DECLARATION}: <code>Identifier</code></li>
- * <li>{@link EntityType#SUPER_CONSTRUCTOR_INVOCATION}: <code>Invocation<b>;</b></code></li>
  * <li>{@link EntityType#SWITCH_CASE}: <code>[Expression|<b>default</b>]</code></li>
  * <li>{@link EntityType#SWITCH_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#SYNCHRONIZED_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#THEN_STATEMENT}: <code>Expression of if-statement</code></li>
  * <li>{@link EntityType#THROW_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#TYPE_PARAMETER}: <code>FullyQualifiedName of TypeVariable</code></li>
- * <li>{@link EntityType#VARIABLE_DECLARATION_FRAGMENT}: <code>FullyQualifiedName of Identifier<b>;</b></code></li>
  * <li>{@link EntityType#VARIABLE_DECLARATION_STATEMENT}: <code>Declaration<b>;</b></code></li>
  * <li>{@link EntityType#WHILE_STATEMENT}: <code>Expression</code></li>
  * <li>{@link EntityType#WILDCARD_TYPE}: <code>[<b>extends</b>|<b>super</b>]</code></li>
