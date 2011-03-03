@@ -10,45 +10,11 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
 /**
  * Source code entity representing one particular AST node.
  * <p>
- * Each source code entity has a {@link EntityType} describing the type of the source code entity.
- * <p>
- * The unique name of a source code entity depends on its {@link EntityType}:
- * <ul>
- * <li>{@link EntityType#ASSERT_STATEMENT}: <code>Expression[<b>:</b>Message]</code></li>
- * <li>{@link EntityType#ATTRIBUTE}: <code>FullyQualifiedName<b>:</b> AttributeType</code></li>
- * <li>{@link EntityType#BREAK_STATEMENT}: <code>[Label]</code></li>
- * <li>{@link EntityType#CATCH_CLAUSE}: <code>ExceptionType</code></li>
- * <li>{@link EntityType#CLASS}: <code>FullyQualifiedName</code></li>
- * <li>{@link EntityType#CONSTRUCTOR_INVOCATION}: <code>Invocation<b>;</b></code></li>
- * <li>{@link EntityType#CONTINUE_STATEMENT}: <code>[Label]</code></li>
- * <li>{@link EntityType#DO_STATEMENT}: <code>Expression</code></li>
- * <li>{@link EntityType#ELSE_STATEMENT}: <code>Expression of if-statement</code></li>
- * <li>{@link EntityType#FOREACH_STATEMENT}: <code>Parameter<b>:</b>Expression</code></li>
- * <li>{@link EntityType#FOR_STATEMENT}: <code>[Expression]</code></li>
- * <li>{@link EntityType#IF_STATEMENT}: <code>Expression</code></li>
- * <li>{@link EntityType#JAVADOC}: <code>Javadoc as is</code></li>
- * <li>{@link EntityType#LABELED_STATEMENT}: <code>Label</code></li>
- * <li>{@link EntityType#METHOD}: <code>FullyQualifiedSignature</code></li>
- * <li>{@link EntityType#PRIMITIVE_TYPE}: inside a MethodDeclaration
- * <code>[ParameterName|MethodSignature]<b>:</b> TypeName</code>, else: <code>TypeName</code>; method signature is used
- * if the type corresponds to the return type of the method</li>
- * <li>{@link EntityType#RETURN_STATEMENT}: <code>[Expression]</code></li>
- * <li>{@link EntityType#SIMPLE_TYPE}: inside a MethodDeclaration
- * <code>[ParameterName|MethodSignature]<b>:</b> TypeName</code>, else: <code>TypeName</code>; method signature is used
- * if the type corresponds to the return type of the method</li>
- * <li>{@link EntityType#SWITCH_CASE}: <code>[Expression|<b>default</b>]</code></li>
- * <li>{@link EntityType#SWITCH_STATEMENT}: <code>Expression</code></li>
- * <li>{@link EntityType#SYNCHRONIZED_STATEMENT}: <code>Expression</code></li>
- * <li>{@link EntityType#THEN_STATEMENT}: <code>Expression of if-statement</code></li>
- * <li>{@link EntityType#THROW_STATEMENT}: <code>Expression</code></li>
- * <li>{@link EntityType#TYPE_PARAMETER}: <code>FullyQualifiedName of TypeVariable</code></li>
- * <li>{@link EntityType#VARIABLE_DECLARATION_STATEMENT}: <code>Declaration<b>;</b></code></li>
- * <li>{@link EntityType#WHILE_STATEMENT}: <code>Expression</code></li>
- * <li>{@link EntityType#WILDCARD_TYPE}: <code>[<b>extends</b>|<b>super</b>]</code></li>
- * </ul>
- * Entity types that are not mentioned here, have an empty string as unique name.
+ * Each source code entity has a {@link EntityType} describing the type of the source code entity. The unique name of a
+ * source code entity depends on its {@link EntityType}.
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  */
 public class SourceCodeEntity {
 
