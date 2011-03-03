@@ -1,7 +1,6 @@
 package org.evolizer.changedistiller.java;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Enumeration;
 
@@ -24,32 +23,30 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void fieldDeclarationShouldBeConverted() throws Exception {
         fSnippet = "private String fField;";
         prepareCompilation();
-        transformField("fField");
+        convertField("fField");
         assertThat(getTreeString(), is("fField {  { private },String }"));
         assertModifiersCorrectness(getFirstChild(), "private");
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("String"));
+        assertThat(type.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithInitializerShouldBeConverted() throws Exception {
         fSnippet = "private String fField = \"aString\";";
         prepareCompilation();
-        transformField("fField");
+        convertField("fField");
         assertThat(getTreeString(), is("fField {  { private },String,\"aString\" }"));
-        assertModifiersCorrectness(getFirstChild(), "private");
-        Node type = (Node) getFirstChild().getNextSibling();
-        assertThat(getSource(type), is("String"));
-        Node initializer = (Node) type.getNextSibling();
+        Node initializer = getLastChild();
         assertThat(getSource(initializer), is("\"aString\""));
+        assertThat(initializer.getLabel(), is(JavaEntityType.STRING_LITERAL));
     }
 
     @Test
-    // just check the modifiers
     public void fieldDeclarationWithMultiModifiersShouldBeConverted() throws Exception {
         fSnippet = "private final String fField;";
         prepareCompilation();
-        transformField("fField");
+        convertField("fField");
         assertThat(getTreeString(), is("fField {  { private,final },String }"));
         assertModifiersCorrectness(getFirstChild(), "private", "final");
     }
@@ -58,97 +55,118 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void fieldDeclarationWithTypeParameterShouldBeConverted() throws Exception {
         fSnippet = "List<String> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<String> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<String>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithQualifiedTypeParameterShouldBeConverted() throws Exception {
         fSnippet = "List<Foo.Bar> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<Foo.Bar> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<Foo.Bar>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
+    }
+
+    private Node getFieldType() {
+        return (Node) getFirstChild().getNextSibling();
+    }
+
+    private Node getReturnType() {
+        return getFieldType();
+    }
+
+    private Node getTypeParameters() {
+        return getFieldType();
     }
 
     @Test
     public void fieldDeclarationWithParameterizedQualifiedTypeParameterShouldBeConverted() throws Exception {
         fSnippet = "List<Foo<T>.Bar> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<Foo<T>.Bar> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<Foo<T>.Bar>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithQualifiedParameterizedTypeParameterShouldBeConverted() throws Exception {
         fSnippet = "List<Foo.Bar<T>> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<Foo.Bar<T>> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<Foo.Bar<T>>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithParameterizedTypeParameterShouldBeConverted() throws Exception {
         fSnippet = "List<Bar<T>> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<Bar<T>> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<Bar<T>>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithMultipleTypeParametersShouldBeConverted() throws Exception {
         fSnippet = "Map<String, Integer> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,Map<String, Integer> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("Map<String, Integer>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithWildcardShouldBeConverted() throws Exception {
         fSnippet = "List<?> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<?> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<?>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithUpperBoundedWildcardShouldBeConverted() throws Exception {
         fSnippet = "List<? super Number> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<? super Number> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<? super Number>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationWithLowerBoundedWildcardShouldBeConverted() throws Exception {
         fSnippet = "List<? extends Number> fList;";
         prepareCompilation();
-        transformField("fList");
+        convertField("fList");
         assertThat(getTreeString(), is("fList { ,List<? extends Number> }"));
-        Node type = (Node) getFirstChild().getNextSibling();
+        Node type = getFieldType();
         assertThat(getSource(type), is("List<? extends Number>"));
+        assertThat(type.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void fieldDeclarationCompleteShouldBeConverted() throws Exception {
         fSnippet = "public final Map<? extends Number, String> fMap;";
         prepareCompilation();
-        transformField("fMap");
+        convertField("fMap");
         assertThat(getTreeString(), is("fMap {  { public,final },Map<? extends Number, String> }"));
     }
 
@@ -156,17 +174,18 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void fieldDeclarationWithJavadocShouldBeConverted() throws Exception {
         fSnippet = "/**\n * A field\n */\nString aString;";
         prepareCompilation();
-        transformField("aString");
+        convertField("aString");
         assertThat(getTreeString(), is("aString { /**\n * A field\n */,,String }"));
         Node javadoc = getFirstChild();
         assertThat(getSource(javadoc), is("/**\n * A field\n */"));
+        assertThat(javadoc.getLabel(), is(JavaEntityType.JAVADOC));
     }
 
     @Test
     public void fieldDeclarationWithEmptyJavadocShouldBeConvertedWithoutJavadoc() throws Exception {
         fSnippet = "/**\n *\n *\n */\nString aString;";
         prepareCompilation();
-        transformField("aString");
+        convertField("aString");
         assertThat(getTreeString(), is("aString { ,String }"));
     }
 
@@ -174,117 +193,136 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void methodDeclarationShouldBeConverted() throws Exception {
         fSnippet = "public void method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: void,,, }"));
-        Node modifiers = getFirstChild();
-        assertThat(getSource(modifiers), is("public"));
+        assertModifiersCorrectness(getFirstChild(), "public");
     }
 
     @Test
     public void methodDeclarationWithReturnTypeShouldBeConverted() throws Exception {
         fSnippet = "public int method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: int,,, }"));
-        Node returnType = (Node) getFirstChild().getNextSibling();
+        Node returnType = getReturnType();
         assertThat(getSource(returnType), is("int"));
+        assertThat(returnType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void methodDeclarationWithQualifiedReturnTypeShouldBeConverted() throws Exception {
         fSnippet = "public org.Foo method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: org.Foo,,, }"));
-        Node returnType = (Node) getFirstChild().getNextSibling();
+        Node returnType = getReturnType();
         assertThat(getSource(returnType), is("org.Foo"));
+        assertThat(returnType.getLabel(), is(JavaEntityType.QUALIFIED_TYPE));
     }
 
     @Test
     public void methodDeclarationWithParameterizedReturnTypeShouldBeConverted() throws Exception {
         fSnippet = "List<String> method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method { ,method: List<String>,,, }"));
+        Node returnType = getReturnType();
+        assertThat(getSource(returnType), is("List<String>"));
+        assertThat(returnType.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void methodDeclarationWithOneParameterShouldBeConverted() throws Exception {
         fSnippet = "public void method(int anInteger) {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: void,, { anInteger { anInteger: int } }, }"));
         Node parameters = (Node) getLastChild().getPreviousSibling();
         assertThat(getSource(parameters), is("int anInteger"));
+        assertThat(parameters.getLabel(), is(JavaEntityType.PARAMETERS));
         Node parameter = (Node) parameters.getFirstChild();
         assertThat(getSource(parameter), is("anInteger"));
+        assertThat(parameter.getLabel(), is(JavaEntityType.PARAMETER));
         Node parameterType = (Node) parameters.getFirstLeaf();
         assertThat(getSource(parameterType), is("int"));
+        assertThat(parameterType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void methodDeclarationWithParametersShouldBeConverted() throws Exception {
         fSnippet = "public void method(int anInteger, List<String> aList) {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(
                 getTreeString(),
                 is("method {  { public },method: void,, { anInteger { anInteger: int },aList { aList: List<String> } }, }"));
         Node parameters = (Node) getLastChild().getPreviousSibling();
         assertThat(getSource(parameters), is("int anInteger, List<String> aList"));
+        assertThat(parameters.getLabel(), is(JavaEntityType.PARAMETERS));
         Node firstParameter = (Node) parameters.getFirstChild();
         assertThat(getSource(firstParameter), is("anInteger"));
+        assertThat(firstParameter.getLabel(), is(JavaEntityType.PARAMETER));
         Node firstParameterType = (Node) parameters.getFirstLeaf();
         assertThat(getSource(firstParameterType), is("int"));
+        assertThat(firstParameterType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
         Node secondParameter = (Node) firstParameter.getNextSibling();
         assertThat(getSource(secondParameter), is("aList"));
+        assertThat(secondParameter.getLabel(), is(JavaEntityType.PARAMETER));
         Node secondParameterType = (Node) secondParameter.getFirstLeaf();
         assertThat(getSource(secondParameterType), is("List<String>"));
+        assertThat(secondParameterType.getLabel(), is(JavaEntityType.PARAMETERIZED_TYPE));
     }
 
     @Test
     public void methodDeclarationWithTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "public <T> void method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: void, { T },, }"));
         Node typeArguments = (Node) getLastChild().getPreviousSibling().getPreviousSibling();
         assertThat(getSource(typeArguments), is("T"));
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         Node typeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(typeArgument), is("T"));
+        assertThat(typeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void methodDeclarationWithMultipleTypeArgumentsShouldBeConverted() throws Exception {
         fSnippet = "public <T,U> void method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: void, { T,U },, }"));
         Node typeArguments = (Node) getLastChild().getPreviousSibling().getPreviousSibling();
         assertThat(getSource(typeArguments), is("T,U"));
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         Node firstTypeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(firstTypeArgument), is("T"));
+        assertThat(firstTypeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
         Node secondTypeArgument = (Node) firstTypeArgument.getNextSibling();
         assertThat(getSource(secondTypeArgument), is("U"));
+        assertThat(secondTypeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void methodDeclarationWithBoundedTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "public <T extends Number> void method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: void, { T extends Number },, }"));
         Node typeArguments = (Node) getLastChild().getPreviousSibling().getPreviousSibling();
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         assertThat(getSource(typeArguments), is("T extends Number"));
         Node typeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(typeArgument), is("T extends Number"));
+        assertThat(typeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void methodDeclarationWithMultipleBoundedTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "public <T extends Number & Serializable> void method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method {  { public },method: void, { T extends Number & Serializable },, }"));
         Node typeArguments = (Node) getLastChild().getPreviousSibling().getPreviousSibling();
         assertThat(getSource(typeArguments), is("T extends Number & Serializable"));
@@ -296,33 +334,38 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void methodDeclarationWithOneThrowShouldBeConverted() throws Exception {
         fSnippet = "void method() throws IOException {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method { ,method: void,,, { IOException } }"));
         Node exceptions = (Node) getLastChild();
         assertThat(getSource(exceptions), is("IOException"));
+        assertThat(exceptions.getLabel(), is(JavaEntityType.THROW));
         Node exception = (Node) exceptions.getFirstLeaf();
         assertThat(getSource(exception), is("IOException"));
+        assertThat(exception.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void methodDeclarationWithMultipleThrowsShouldBeConverted() throws Exception {
         fSnippet = "void method() throws IOException, OutOfBoundException {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method { ,method: void,,, { IOException,OutOfBoundException } }"));
         Node exceptions = (Node) getLastChild();
         assertThat(getSource(exceptions), is("IOException, OutOfBoundException"));
         Node firstException = (Node) exceptions.getFirstLeaf();
+        assertThat(exceptions.getLabel(), is(JavaEntityType.THROW));
         assertThat(getSource(firstException), is("IOException"));
+        assertThat(firstException.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
         Node secondException = (Node) firstException.getNextSibling();
         assertThat(getSource(secondException), is("OutOfBoundException"));
+        assertThat(secondException.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void methodDeclarationCompleteShouldBeConverted() throws Exception {
         fSnippet = "protected final <T> String method(List<T> aList, int anInteger) throws IOException";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(
                 getTreeString(),
                 is("method {  { protected,final },method: String, { T }, { aList { aList: List<T> },anInteger { anInteger: int } }, { IOException } }"));
@@ -332,17 +375,18 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void methodDeclarationWithJavadocShouldBeConverted() throws Exception {
         fSnippet = "/**\n * A method\n */\nvoid method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method { /**\n * A method\n */,,method: void,,, }"));
         Node javadoc = (Node) getFirstChild();
         assertThat(getSource(javadoc), is("/**\n * A method\n */"));
+        assertThat(javadoc.getLabel(), is(JavaEntityType.JAVADOC));
     }
 
     @Test
     public void methodDeclarationWithEmptyJavadocShouldBeConvertedWithoutJavadoc() throws Exception {
         fSnippet = "/**\n *\n *\n */\nvoid method() {}";
         prepareCompilation();
-        transformMethod("method");
+        convertMethod("method");
         assertThat(getTreeString(), is("method { ,method: void,,, }"));
     }
 
@@ -350,7 +394,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void constructorDeclarationShouldBeConverted() throws Exception {
         fSnippet = "public Foo() {}";
         prepareCompilation();
-        transformMethod("Foo");
+        convertMethod("Foo");
         assertThat(getTreeString(), is("Foo {  { public },,, }"));
     }
 
@@ -358,115 +402,128 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void typeDeclarationShouldBeConverted() throws Exception {
         fSnippet = "public class Bar {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar {  { public },, }"));
-        Node modifiers = (Node) getFirstChild();
-        assertThat(getSource(modifiers), is("public"));
-        Node modifier = (Node) modifiers.getFirstLeaf();
-        assertThat(getSource(modifier), is("public"));
+        assertModifiersCorrectness(getFirstChild(), "public");
     }
 
     @Test
     public void typeDeclarationWithTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "class Bar<T> {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { , { T }, }"));
-        Node typeArguments = (Node) getFirstChild().getNextSibling();
+        Node typeArguments = getTypeParameters();
         assertThat(getSource(typeArguments), is("T"));
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         Node typeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(typeArgument), is("T"));
+        assertThat(typeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void typeDeclarationWithMultipleTypeArgumentsShouldBeConverted() throws Exception {
         fSnippet = "class Bar<T,U> {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { , { T,U }, }"));
-        Node typeArguments = (Node) getFirstChild().getNextSibling();
+        Node typeArguments = getTypeParameters();
         assertThat(getSource(typeArguments), is("T,U"));
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         Node firstTypeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(firstTypeArgument), is("T"));
+        assertThat(firstTypeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
         Node secondTypeArgument = (Node) firstTypeArgument.getNextSibling();
         assertThat(getSource(secondTypeArgument), is("U"));
+        assertThat(secondTypeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void typeDeclarationWithBoundedTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "class Bar<T extends Number> {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { , { T extends Number }, }"));
-        Node typeArguments = (Node) getFirstChild().getNextSibling();
+        Node typeArguments = getTypeParameters();
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         assertThat(getSource(typeArguments), is("T extends Number"));
         Node typeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(typeArgument), is("T extends Number"));
+        assertThat(typeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void typeDeclarationWithMultipleBoundedTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "class Bar<T extends Number & Serializable> {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { , { T extends Number & Serializable }, }"));
-        Node typeArguments = (Node) getFirstChild().getNextSibling();
+        Node typeArguments = getTypeParameters();
         assertThat(getSource(typeArguments), is("T extends Number & Serializable"));
+        assertThat(typeArguments.getLabel(), is(JavaEntityType.TYPE_PARAMETERS));
         Node typeArgument = (Node) typeArguments.getFirstLeaf();
         assertThat(getSource(typeArgument), is("T extends Number & Serializable"));
+        assertThat(typeArgument.getLabel(), is(JavaEntityType.TYPE_PARAMETER));
     }
 
     @Test
     public void typeDeclarationWithSuperTypeShouldBeConverted() throws Exception {
         fSnippet = "class Bar extends Number {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { ,,Number, }"));
         Node superType = (Node) getLastChild().getPreviousSibling();
         assertThat(getSource(superType), is("Number"));
+        assertThat(superType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void typeDeclarationWithSuperInterfaceShouldBeConverted() throws Exception {
         fSnippet = "class Bar implements Number {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { ,, { Number } }"));
         Node superInterfaces = (Node) getLastChild();
         assertThat(getSource(superInterfaces), is("Number"));
+        assertThat(superInterfaces.getLabel(), is(JavaEntityType.SUPER_INTERFACE_TYPES));
         Node superInterface = (Node) superInterfaces.getFirstLeaf();
         assertThat(getSource(superInterface), is("Number"));
+        assertThat(superInterface.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void typeDeclarationWithMultipleSuperInterfacesShouldBeConverted() throws Exception {
         fSnippet = "class Bar implements Number, Serializable {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { ,, { Number,Serializable } }"));
         Node superInterfaces = (Node) getLastChild();
         assertThat(getSource(superInterfaces), is("Number, Serializable"));
+        assertThat(superInterfaces.getLabel(), is(JavaEntityType.SUPER_INTERFACE_TYPES));
         Node firstSuperInterface = (Node) superInterfaces.getFirstLeaf();
         assertThat(getSource(firstSuperInterface), is("Number"));
+        assertThat(firstSuperInterface.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
         Node secondSuperInterface = (Node) firstSuperInterface.getNextSibling();
         assertThat(getSource(secondSuperInterface), is("Serializable"));
+        assertThat(secondSuperInterface.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
     }
 
     @Test
     public void typeDeclarationWithJavadocShouldBeConverted() throws Exception {
         fSnippet = "/**\n * A class\n */\nclass Bar {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { /**\n * A class\n */,,, }"));
         Node javadoc = (Node) getFirstChild();
         assertThat(getSource(javadoc), is("/**\n * A class\n */"));
+        assertThat(javadoc.getLabel(), is(JavaEntityType.JAVADOC));
     }
 
     @Test
     public void typeDeclarationWithEmptyJavadocShouldBeConvertedWithoutJavadoc() throws Exception {
         fSnippet = "/**\n *\n *\n */\nclass Bar {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar { ,, }"));
     }
 
@@ -474,7 +531,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     public void typeDeclarationCompleteShouldBeConverted() throws Exception {
         fSnippet = "protected final class Bar<T> extends Number implements Serializable, Throwable {}";
         prepareCompilation();
-        transformClass("Bar");
+        convertClass("Bar");
         assertThat(getTreeString(), is("Bar {  { protected,final }, { T },Number, { Serializable,Throwable } }"));
     }
 
@@ -488,9 +545,12 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         }
         concatedModifiers = concatedModifiers.trim();
         assertThat(getSource(modifiers), is(concatedModifiers));
+        assertThat(modifiers.getLabel(), is(JavaEntityType.MODIFIERS));
         int i = 0;
         for (Enumeration<Node> e = modifiers.children(); e.hasMoreElements(); i++) {
-            assertThat(getSource(e.nextElement()), is(modifierNames[i]));
+            Node modifier = e.nextElement();
+            assertThat(getSource(modifier), is(modifierNames[i]));
+            assertThat(modifier.getLabel(), is(JavaEntityType.MODIFIER));
         }
     }
 
@@ -509,26 +569,26 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         return src.toString();
     }
 
-    private void transformField(String name) {
+    private void convertField(String name) {
         fRoot = new Node(new SourceCodeEntity(name, JavaEntityType.FIELD_DECLARATION, new SourceRange()));
         FieldDeclaration field = CompilationUtils.findField(fCompilation.getCompilationUnit(), name);
-        field.traverse(getDeclarationTransformer(), (MethodScope) null);
+        field.traverse(getDeclarationconverter(), (MethodScope) null);
     }
 
-    private JavaASTDeclarationTransformer getDeclarationTransformer() {
-        return new JavaASTDeclarationTransformer(fRoot, fCompilation.getScanner(), new JavaASTHelper());
+    private JavaDeclarationConverter getDeclarationconverter() {
+        return new JavaDeclarationConverter(fRoot, fCompilation.getScanner(), new JavaASTHelper());
     }
 
-    private void transformMethod(String name) {
+    private void convertMethod(String name) {
         fRoot = new Node(new SourceCodeEntity(name, JavaEntityType.METHOD_DECLARATION, new SourceRange()));
         AbstractMethodDeclaration method = CompilationUtils.findMethod(fCompilation.getCompilationUnit(), name);
-        method.traverse(getDeclarationTransformer(), (ClassScope) null);
+        method.traverse(getDeclarationconverter(), (ClassScope) null);
     }
 
-    private void transformClass(String name) {
+    private void convertClass(String name) {
         fRoot = new Node(new SourceCodeEntity(name, JavaEntityType.METHOD_DECLARATION, new SourceRange()));
         TypeDeclaration type = CompilationUtils.findType(fCompilation.getCompilationUnit(), name);
-        type.traverse(getDeclarationTransformer(), (CompilationUnitScope) null);
+        type.traverse(getDeclarationconverter(), (CompilationUnitScope) null);
     }
 
 }

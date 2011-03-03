@@ -35,13 +35,13 @@ import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 
 /**
- * Visitor to generate an intermediate tree (general, rooted, labeled, valued tree) out of a attribute, class, or method
+ * Visitor to generate an intermediate tree (general, rooted, labeled, valued tree) out of a field, class, or method
  * declaration.
  * 
- * @author fluri
+ * @author Beat Fluri
  * 
  */
-public class JavaASTDeclarationTransformer extends ASTVisitor {
+public class JavaDeclarationConverter extends ASTVisitor {
 
     private static final String COLON_SPACE = ": ";
     private boolean fEmptyJavaDoc;
@@ -61,7 +61,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
      * @param astHelper
      *            the helper that helps with conversions for the change history meta model
      */
-    public JavaASTDeclarationTransformer(Node root, Scanner scanner, ASTHelper astHelper) {
+    public JavaDeclarationConverter(Node root, Scanner scanner, ASTHelper astHelper) {
         fScanner = scanner;
         fSource = String.valueOf(scanner.source);
         fNodeStack.clear();
@@ -203,11 +203,11 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
     @Override
     public boolean visit(Javadoc javadoc, BlockScope scope) {
         String string = null;
-        string = fSource.substring(javadoc.sourceStart(), javadoc.sourceEnd() + 1);
-        if (!isJavadocEmpty(string)) {
-            pushValuedNode(javadoc, string);
-        } else {
+        string = getSource(javadoc);
+        if (isJavadocEmpty(string)) {
             fEmptyJavaDoc = true;
+        } else {
+            pushValuedNode(javadoc, string);
         }
         return false;
     }
@@ -267,7 +267,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         fInMethodDeclaration = true;
         visitMethodDeclarationModifiers(methodDeclaration);
         visitReturnType(methodDeclaration, scope);
-        visitAbstractVariableDeclarations(JavaEntityType.TYPE_ARGUMENTS, methodDeclaration.typeParameters());
+        visitAbstractVariableDeclarations(JavaEntityType.TYPE_PARAMETERS, methodDeclaration.typeParameters());
         visitAbstractVariableDeclarations(JavaEntityType.PARAMETERS, methodDeclaration.arguments);
         fInMethodDeclaration = false;
         visitList(JavaEntityType.THROW, methodDeclaration.thrownExceptions);
@@ -295,14 +295,22 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
     @Override
     public boolean visit(ParameterizedSingleTypeReference type, BlockScope scope) {
         int start = type.sourceStart();
-        int end = findSourceEndOfASTNodes(type, type.typeArguments);
-        String name = "";
-        if (fInMethodDeclaration) {
-            name += getCurrentParent().getValue() + COLON_SPACE;
-        }
-        pushValuedNode(type, name + fSource.substring(start, end + 1));
+        int end = findSourceEndTypeReference(type, type.typeArguments);
+        pushValuedNode(type, prefixWithNameOfParrentIfInMethodDeclaration() + getSource(start, end));
         fNodeStack.peek().getEntity().setEndPosition(end);
         return false;
+    }
+
+    private String getSource(ASTNode node) {
+        return getSource(node.sourceStart(), node.sourceEnd());
+    }
+
+    private String getSource(int start, int end) {
+        return fSource.substring(start, end + 1);
+    }
+
+    private String prefixWithNameOfParrentIfInMethodDeclaration() {
+        return fInMethodDeclaration ? getCurrentParent().getValue() + COLON_SPACE : "";
     }
 
     @Override
@@ -322,13 +330,20 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(ParameterizedQualifiedTypeReference type, BlockScope scope) {
-        String name = fSource.substring(type.sourceStart(), type.sourceEnd() + 1);
-        pushValuedNode(type, name);
-        if (type.typeArguments[type.typeArguments.length - 1] != null) {
-            visitList(JavaEntityType.TYPE_ARGUMENTS, type.typeArguments[type.typeArguments.length - 1]);
+        pushValuedNode(type, getSource(type));
+        adjustEndPositionOfParameterizedType(type);
+        return false;
+    }
+
+    private void adjustEndPositionOfParameterizedType(ParameterizedQualifiedTypeReference type) {
+        if (hasTypeParameter(type)) {
+            visitList(JavaEntityType.TYPE_PARAMETERS, type.typeArguments[type.typeArguments.length - 1]);
             fNodeStack.peek().getEntity().setEndPosition(getLastChildOfCurrentNode().getEntity().getEndPosition() + 1);
         }
-        return false;
+    }
+
+    private boolean hasTypeParameter(ParameterizedQualifiedTypeReference type) {
+        return type.typeArguments[type.typeArguments.length - 1] != null;
     }
 
     @Override
@@ -348,11 +363,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(QualifiedTypeReference type, BlockScope scope) {
-        String name = "";
-        if (fInMethodDeclaration) {
-            name += getCurrentParent().getValue() + COLON_SPACE;
-        }
-        pushValuedNode(type, name + type.toString());
+        pushValuedNode(type, prefixWithNameOfParrentIfInMethodDeclaration() + type.toString());
         return false;
     }
 
@@ -373,11 +384,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
 
     @Override
     public boolean visit(SingleTypeReference type, BlockScope scope) {
-        String vName = "";
-        if (fInMethodDeclaration) {
-            vName += getCurrentParent().getValue() + COLON_SPACE;
-        }
-        pushValuedNode(type, vName + String.valueOf(type.token));
+        pushValuedNode(type, prefixWithNameOfParrentIfInMethodDeclaration() + String.valueOf(type.token));
         return false;
     }
 
@@ -412,7 +419,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
             typeDeclaration.javadoc.traverse(this, scope);
         }
         visitTypeDeclarationModifiers(typeDeclaration);
-        visitAbstractVariableDeclarations(JavaEntityType.TYPE_ARGUMENTS, typeDeclaration.typeParameters);
+        visitAbstractVariableDeclarations(JavaEntityType.TYPE_PARAMETERS, typeDeclaration.typeParameters);
         if (typeDeclaration.superclass != null) {
             typeDeclaration.superclass.traverse(this, scope);
         }
@@ -439,7 +446,7 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
     public boolean visit(TypeParameter typeParameter, BlockScope scope) {
         push(
                 fASTHelper.convertNode(typeParameter),
-                fSource.substring(typeParameter.sourceStart(), typeParameter.declarationSourceEnd + 1),
+                getSource(typeParameter.sourceStart(), typeParameter.declarationSourceEnd),
                 typeParameter.sourceStart(),
                 typeParameter.declarationSourceEnd);
         return false;
@@ -493,47 +500,56 @@ public class JavaASTDeclarationTransformer extends ASTVisitor {
         int start = -1;
         int end = -1;
         push(parentLabel, "", start, end);
-        if ((declarations != null) && (declarations.length > 0)) {
+        if (isNotEmpty(declarations)) {
             start = declarations[0].declarationSourceStart;
             end = declarations[declarations.length - 1].declarationSourceEnd;
             visitList(declarations);
         }
+        adjustSourceRangeOfCurrentNode(start, end);
+        pop();
+    }
+
+    private void adjustSourceRangeOfCurrentNode(int start, int end) {
         fNodeStack.peek().getEntity().setStartPosition(start);
         fNodeStack.peek().getEntity().setEndPosition(end);
-        pop();
     }
 
     private void visitList(JavaEntityType parentLabel, ASTNode[] nodes) {
         int start = -1;
         int end = -1;
         push(parentLabel, "", start, end);
-        if ((nodes != null) && (nodes.length > 0)) {
+        if (isNotEmpty(nodes)) {
             start = nodes[0].sourceStart();
             visitList(nodes);
             end = getLastChildOfCurrentNode().getEntity().getEndPosition();
         }
-        fNodeStack.peek().getEntity().setStartPosition(start);
-        fNodeStack.peek().getEntity().setEndPosition(end);
+        adjustSourceRangeOfCurrentNode(start, end);
         pop();
     }
 
-    private int findSourceEndOfASTNodes(TypeReference type, TypeReference[] typeParameters) {
+    private boolean isNotEmpty(ASTNode[] nodes) {
+        return (nodes != null) && (nodes.length > 0);
+    }
+
+    // recursive method that finds the end position of a type reference with type parameters, e.g.,
+    // Foo<T>.List<Bar<T>>
+    private int findSourceEndTypeReference(TypeReference type, TypeReference[] typeParameters) {
         int end = type.sourceEnd();
-        if ((typeParameters != null) && (typeParameters.length > 0)) {
+        if (isNotEmpty(typeParameters)) {
             TypeReference lastNode = typeParameters[typeParameters.length - 1];
             if (lastNode instanceof ParameterizedQualifiedTypeReference) {
                 TypeReference[][] typeArguments = ((ParameterizedQualifiedTypeReference) lastNode).typeArguments;
-                end = findSourceEndOfASTNodes(lastNode, typeArguments[typeArguments.length - 1]);
+                end = findSourceEndTypeReference(lastNode, typeArguments[typeArguments.length - 1]);
             } else if (lastNode instanceof ParameterizedSingleTypeReference) {
                 TypeReference[] typeArguments = ((ParameterizedSingleTypeReference) lastNode).typeArguments;
-                end = findSourceEndOfASTNodes(lastNode, typeArguments);
+                end = findSourceEndTypeReference(lastNode, typeArguments);
             } else {
                 end = typeParameters[typeParameters.length - 1].sourceEnd();
             }
             if (end == -1) {
                 end = lastNode.sourceEnd();
             }
-            end++;
+            end++; // increment end position to the the last '>'
         }
         return end;
     }

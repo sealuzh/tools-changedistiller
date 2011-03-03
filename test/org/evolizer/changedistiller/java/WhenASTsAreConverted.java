@@ -3,6 +3,8 @@ package org.evolizer.changedistiller.java;
 import org.evolizer.changedistiller.treedifferencing.Node;
 import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 
 public abstract class WhenASTsAreConverted {
 
@@ -34,6 +36,11 @@ public abstract class WhenASTsAreConverted {
 
     protected Node getLastChild() {
         return (Node) fRoot.getLastChild();
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected void assertThat(Object actual, Matcher matcher) {
+        MatcherAssert.assertThat(actual, matcher);
     }
 
 }
