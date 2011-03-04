@@ -10,7 +10,6 @@ import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
-import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
@@ -570,7 +569,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     }
 
     private void convertField(String name) {
-        fRoot = new Node(new SourceCodeEntity(name, JavaEntityType.FIELD_DECLARATION, new SourceRange()));
+        createRootNode(JavaEntityType.FIELD_DECLARATION, name);
         FieldDeclaration field = CompilationUtils.findField(fCompilation.getCompilationUnit(), name);
         field.traverse(getDeclarationconverter(), (MethodScope) null);
     }
@@ -580,13 +579,13 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     }
 
     private void convertMethod(String name) {
-        fRoot = new Node(new SourceCodeEntity(name, JavaEntityType.METHOD_DECLARATION, new SourceRange()));
+        createRootNode(JavaEntityType.METHOD_DECLARATION, name);
         AbstractMethodDeclaration method = CompilationUtils.findMethod(fCompilation.getCompilationUnit(), name);
         method.traverse(getDeclarationconverter(), (ClassScope) null);
     }
 
     private void convertClass(String name) {
-        fRoot = new Node(new SourceCodeEntity(name, JavaEntityType.METHOD_DECLARATION, new SourceRange()));
+        createRootNode(JavaEntityType.METHOD_DECLARATION, name);
         TypeDeclaration type = CompilationUtils.findType(fCompilation.getCompilationUnit(), name);
         type.traverse(getDeclarationconverter(), (CompilationUnitScope) null);
     }

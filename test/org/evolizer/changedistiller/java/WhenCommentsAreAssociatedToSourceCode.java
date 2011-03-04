@@ -33,7 +33,8 @@ public class WhenCommentsAreAssociatedToSourceCode {
             visitor.process(comment);
         }
         sComments = visitor.getComments();
-        sRoot = new Node(new SourceCodeEntity("foo", JavaEntityType.METHOD, new SourceRange()));
+        sRoot = new Node(JavaEntityType.METHOD, "foo");
+        sRoot.setEntity(new SourceCodeEntity("foo", JavaEntityType.METHOD, new SourceRange()));
         AbstractMethodDeclaration method = CompilationUtils.findMethod(sCompilation.getCompilationUnit(), "foo");
         JavaMethodBodyConverter bodyT =
                 new JavaMethodBodyConverter(sRoot, method, sComments, sCompilation.getScanner(), new JavaASTHelper());

@@ -27,4 +27,11 @@ public interface EntityType {
      */
     String name();
 
+    /**
+     * Returns whether or not the entity type describes a comment.
+     * 
+     * @return <code>true</code> if the entity type describes a comment, <code>false</code> otherwise
+     */
+    boolean isComment();
+
 }

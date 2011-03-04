@@ -23,49 +23,27 @@ public class Node extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = 42L;
 
+    private EntityType fLabel;
+    private String fValue;
+
     private boolean fMatched;
     private boolean fOrdered;
+
     private SourceCodeEntity fEntity;
     private List<Node> fAssociatedNodes = new ArrayList<Node>();
 
     /**
      * Creates a new node.
+     * 
+     * @param label
+     *            of the node
+     * @param value
+     *            of the node
      */
-    public Node() {
+    public Node(EntityType label, String value) {
         super();
-    }
-
-    /**
-     * Creates a new node.
-     * 
-     * @param userObject
-     *            the object to attach to the node
-     * @param allowsChildren
-     *            <code>true</code> if this node accepts children, <code>false</code> otherwise
-     */
-    public Node(Object userObject, boolean allowsChildren) {
-        super(userObject, allowsChildren);
-    }
-
-    /**
-     * Creates a new node.
-     * 
-     * @param userObject
-     *            the object to attach to the node
-     */
-    public Node(Object userObject) {
-        super(userObject);
-    }
-
-    /**
-     * Creates a new node.
-     * 
-     * @param entity
-     *            the entity that node represents
-     */
-    public Node(SourceCodeEntity entity) {
-        super();
-        fEntity = entity;
+        fLabel = label;
+        fValue = value;
     }
 
     /**
@@ -114,26 +92,24 @@ public class Node extends DefaultMutableTreeNode {
         return fOrdered;
     }
 
-    /**
-     * Returns the label of this node.
-     * 
-     * @return the label of this node
-     */
     public EntityType getLabel() {
-        return fEntity.getType();
+        return fLabel;
     }
 
-    /**
-     * Returns the value of this node.
-     * 
-     * @return the value of this node
-     */
+    public void setLabel(EntityType label) {
+        fLabel = label;
+    }
+
     public String getValue() {
-        return fEntity.getUniqueName();
+        return fValue;
+    }
+
+    public void setValue(String value) {
+        fValue = value;
     }
 
     /**
-     * Returns the associated nodes of this node. Normarlly used for comment and source association.
+     * Returns the associated nodes of this node.
      * 
      * @return the associated nodes of this node
      */
@@ -157,28 +133,28 @@ public class Node extends DefaultMutableTreeNode {
         return getValue();
     }
 
-    /**
-     * Returns the {@link SourceCodeEntity} that this node represents
-     * 
-     * @return the source code entity this node represents
-     */
     public SourceCodeEntity getEntity() {
         return fEntity;
     }
 
+    public void setEntity(SourceCodeEntity entity) {
+        fEntity = entity;
+    }
+
     /**
-     * Prints this {@link Node} and its children with <code>value ['{' child [, child...] '}']</code>.
+     * Prints this {@link Node} and its children with <code>value ['{' child [, child]* '}']</code>.
      * 
      * @param output
      *            to append the node string
      * @return the node string
      */
+    @SuppressWarnings("unchecked")
     public StringBuilder print(StringBuilder output) {
         output.append(getValue());
         if (!isLeaf()) {
             output.append(" { ");
-            for (Iterator<?> it = children.iterator(); it.hasNext();) {
-                Node child = (Node) it.next();
+            for (Iterator<Node> it = children.iterator(); it.hasNext();) {
+                Node child = it.next();
                 child.print(output);
                 if (it.hasNext()) {
                     output.append(",");

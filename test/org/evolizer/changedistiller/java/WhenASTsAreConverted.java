@@ -1,5 +1,8 @@
 package org.evolizer.changedistiller.java;
 
+import org.evolizer.changedistiller.model.classifiers.EntityType;
+import org.evolizer.changedistiller.model.classifiers.SourceRange;
+import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
@@ -41,6 +44,11 @@ public abstract class WhenASTsAreConverted {
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void assertThat(Object actual, Matcher matcher) {
         MatcherAssert.assertThat(actual, matcher);
+    }
+
+    protected void createRootNode(EntityType label, String value) {
+        fRoot = new Node(label, value);
+        fRoot.setEntity(new SourceCodeEntity(value, label, new SourceRange()));
     }
 
 }

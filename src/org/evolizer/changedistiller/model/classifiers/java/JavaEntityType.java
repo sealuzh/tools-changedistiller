@@ -91,4 +91,16 @@ public enum JavaEntityType implements EntityType {
         return fIsValidChange;
     }
 
+    @Override
+    public boolean isComment() {
+        switch (this) {
+            case BLOCK_COMMENT:
+            case JAVADOC:
+            case LINE_COMMENT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }

@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
@@ -363,7 +362,7 @@ public class WhenMethodBodiesAreConverted extends WhenASTsAreConverted {
     }
 
     private void convert() {
-        fRoot = new Node(new SourceCodeEntity("method", JavaEntityType.METHOD, new SourceRange()));
+        createRootNode(JavaEntityType.METHOD, "method");
         AbstractMethodDeclaration method = CompilationUtils.findMethod(fCompilation.getCompilationUnit(), "method");
         JavaMethodBodyConverter bodyT =
                 new JavaMethodBodyConverter(fRoot, method, null, fCompilation.getScanner(), new JavaASTHelper());

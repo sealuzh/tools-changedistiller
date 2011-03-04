@@ -563,7 +563,8 @@ public class JavaDeclarationConverter extends ASTVisitor {
     }
 
     private void push(EntityType label, String value, int start, int end) {
-        Node n = new Node(new SourceCodeEntity(value.trim(), label, new SourceRange(start, end)));
+        Node n = new Node(label, value.trim());
+        n.setEntity(new SourceCodeEntity(value.trim(), label, new SourceRange(start, end)));
         getCurrentParent().add(n);
         fNodeStack.push(n);
     }
