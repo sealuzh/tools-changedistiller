@@ -1,18 +1,3 @@
-/*
- * Copyright 2009 University of Zurich, Switzerland
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.evolizer.changedistiller.treedifferencing.matching.measure;
 
 import java.util.Enumeration;
@@ -24,23 +9,18 @@ import org.evolizer.changedistiller.treedifferencing.NodePair;
 /**
  * Implementation of the default inner node similarity calculator proposed by Chawathe.
  * 
- * @author fluri
- * 
+ * @author Beat Fluri
  */
-public class ChawatheCalculator implements INodeSimilarityCalculator {
+public class ChawatheCalculator implements NodeSimilarityCalculator {
 
     private Set<? extends NodePair> fLeafMatchSet;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setLeafMatchSet(Set<? extends NodePair> leafMatchSet) {
         fLeafMatchSet = leafMatchSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public double calculateSimilarity(Node left, Node right) {
         int common = 0;
         // common(x, y) = {(w, z) in M | x contains w, and y contains z}
@@ -48,8 +28,7 @@ public class ChawatheCalculator implements INodeSimilarityCalculator {
         for (NodePair p : fLeafMatchSet) {
             Node l = p.getLeft();
             Node r = p.getRight();
-            if (left.isNodeDescendant(l) && l.isLeaf() && !isComment(l) && right.isNodeDescendant(r) && r.isLeaf()
-                    && !isComment(r)) {
+            if (left.isLeafDescendant(l) && !isComment(l) && right.isLeafDescendant(r) && !isComment(r)) {
                 common++;
             }
         }
@@ -60,7 +39,6 @@ public class ChawatheCalculator implements INodeSimilarityCalculator {
     private int maxLeafStatements(Node left, Node right) {
         int leftLeafStatements = left.getLeafCount() - numberOfCommentNodes(left);
         int rightLeafStatements = right.getLeafCount() - numberOfCommentNodes(right);
-
         return Math.max(leftLeafStatements, rightLeafStatements);
     }
 

@@ -15,16 +15,16 @@
  */
 package org.evolizer.changedistiller.treedifferencing.operation;
 
-import org.evolizer.changedistiller.treedifferencing.ITreeEditOperation;
 import org.evolizer.changedistiller.treedifferencing.Node;
+import org.evolizer.changedistiller.treedifferencing.TreeEditOperation;
 
 /**
- * Representation of the delete basic {@link ITreeEditOperation}.
+ * Representation of the delete basic {@link TreeEditOperation}.
  * 
- * @author fluri
+ * @author Beat Fluri
  * 
  */
-public class DeleteOperation implements ITreeEditOperation {
+public class DeleteOperation implements TreeEditOperation {
 
     private Node fNodeToDelete;
     private Node fParent;
@@ -41,9 +41,7 @@ public class DeleteOperation implements ITreeEditOperation {
         fParent = (Node) fNodeToDelete.getParent();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void apply() {
         if (!fApplied) {
             fNodeToDelete.removeFromParent();
@@ -51,37 +49,21 @@ public class DeleteOperation implements ITreeEditOperation {
         }
     }
 
-    /**
-     * Returns the {@link Node} to delete.
-     * 
-     * @return the node to delete
-     */
     public Node getNodeToDelete() {
         return fNodeToDelete;
     }
 
-    /**
-     * Returns the parent {@link Node} of the {@link Node} to delete.
-     * 
-     * @return the parent node of the node to delete
-     */
     public Node getParentNode() {
         return fParent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public int getOperationType() {
-        return ITreeEditOperation.DELETE;
+    public OperationType getOperationType() {
+        return OperationType.DELETE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("--Delete operation--\n");
         sb.append("Node to delete: ");
         sb.append(fNodeToDelete.toString() + " (" + fNodeToDelete.getLabel() + ")");

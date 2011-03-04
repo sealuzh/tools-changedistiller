@@ -1,32 +1,17 @@
-/*
- * Copyright 2009 University of Zurich, Switzerland
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.evolizer.changedistiller.treedifferencing;
 
 import java.util.Set;
 
-import org.evolizer.changedistiller.treedifferencing.matching.measure.INodeSimilarityCalculator;
-import org.evolizer.changedistiller.treedifferencing.matching.measure.IStringSimilarityCalculator;
+import org.evolizer.changedistiller.treedifferencing.matching.measure.NodeSimilarityCalculator;
+import org.evolizer.changedistiller.treedifferencing.matching.measure.StringSimilarityCalculator;
 
 /**
  * Interface for all tree matcher. A tree matcher takes two tree (left and right) and finds a match between the nodes of
  * the trees.
  * 
- * @author fluri
+ * @author Beat Fluri
  */
-public interface ITreeMatcher {
+public interface TreeMatcher {
 
     /**
      * Initializes the tree matcher.
@@ -41,9 +26,9 @@ public interface ITreeMatcher {
      *            the threshold to verify whether two (inner) nodes are similar
      */
     void init(
-            IStringSimilarityCalculator leafStringSimilarityCalculator,
+            StringSimilarityCalculator leafStringSimilarityCalculator,
             double leafStringSimilarityThreshold,
-            INodeSimilarityCalculator nodeSimilarityCalculator,
+            NodeSimilarityCalculator nodeSimilarityCalculator,
             double nodeSimilarityThreshold);
 
     /**
@@ -63,11 +48,11 @@ public interface ITreeMatcher {
      *            the threshold to verify whether two (inner) nodes are similar
      */
     void init(
-            IStringSimilarityCalculator leafStringSimilarityCalculator,
+            StringSimilarityCalculator leafStringSimilarityCalculator,
             double leafStringSimilarityThreshold,
-            IStringSimilarityCalculator nodeStringSimilarityCalculator,
+            StringSimilarityCalculator nodeStringSimilarityCalculator,
             double nodeStringSimilarityThreshold,
-            INodeSimilarityCalculator nodeSimilarityCalculator,
+            NodeSimilarityCalculator nodeSimilarityCalculator,
             double nodeSimilarityThreshold);
 
     /**

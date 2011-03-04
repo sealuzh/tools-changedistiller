@@ -1,30 +1,15 @@
-/*
- * Copyright 2009 University of Zurich, Switzerland
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.evolizer.changedistiller.treedifferencing.operation;
 
-import org.evolizer.changedistiller.treedifferencing.ITreeEditOperation;
 import org.evolizer.changedistiller.treedifferencing.Node;
+import org.evolizer.changedistiller.treedifferencing.TreeEditOperation;
 
 /**
- * Representation of the move basic {@link ITreeEditOperation}.
+ * Representation of the move basic {@link TreeEditOperation}.
  * 
- * @author fluri
+ * @author Beat Fluri
  * 
  */
-public class MoveOperation implements ITreeEditOperation {
+public class MoveOperation implements TreeEditOperation {
 
     private static final String LEFT_PARENTHESIS = " (";
     private static final String RIGHT_PARENTHESIS = ")";
@@ -55,9 +40,7 @@ public class MoveOperation implements ITreeEditOperation {
         fPosition = position;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void apply() {
         if (!fApplied) {
             if (fNewParent.getChildCount() <= fPosition) {
@@ -69,55 +52,30 @@ public class MoveOperation implements ITreeEditOperation {
         }
     }
 
-    /**
-     * Returns the {@link Node} to move.
-     * 
-     * @return the node to move
-     */
     public Node getNodeToMove() {
         return fNodeToMove;
     }
 
-    /**
-     * Returns the parent {@link Node} of the node to move before the node was moved
-     * 
-     * @return the old parent of the node to move
-     */
     public Node getOldParent() {
         return fOldParent;
     }
 
-    /**
-     * Return the parent {@link Node} of the node to move after the node was moved
-     * 
-     * @return the new parent of the node to move
-     */
     public Node getNewParent() {
         return fNewParent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public int getOperationType() {
-        return ITreeEditOperation.MOVE;
+    @Override
+    public OperationType getOperationType() {
+        return OperationType.MOVE;
     }
 
-    /**
-     * Returns the {@link Node} the node to move becomes after it was moved
-     * 
-     * @return the new node
-     */
     public Node getNewNode() {
         return fNewNode;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("--Move operation--\n");
         sb.append("Node value to move: ");
         sb.append(fNodeToMove.toString() + LEFT_PARENTHESIS + fNodeToMove.getLabel() + RIGHT_PARENTHESIS);

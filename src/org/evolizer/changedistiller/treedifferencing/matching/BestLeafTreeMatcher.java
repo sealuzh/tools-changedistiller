@@ -1,18 +1,3 @@
-/*
- * Copyright 2009 University of Zurich, Switzerland
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.evolizer.changedistiller.treedifferencing.matching;
 
 import java.util.ArrayList;
@@ -21,33 +6,33 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
-import org.evolizer.changedistiller.treedifferencing.ITreeMatcher;
 import org.evolizer.changedistiller.treedifferencing.LeafPair;
 import org.evolizer.changedistiller.treedifferencing.Node;
 import org.evolizer.changedistiller.treedifferencing.NodePair;
-import org.evolizer.changedistiller.treedifferencing.matching.measure.INodeSimilarityCalculator;
-import org.evolizer.changedistiller.treedifferencing.matching.measure.IStringSimilarityCalculator;
+import org.evolizer.changedistiller.treedifferencing.TreeMatcher;
+import org.evolizer.changedistiller.treedifferencing.matching.measure.NodeSimilarityCalculator;
+import org.evolizer.changedistiller.treedifferencing.matching.measure.StringSimilarityCalculator;
 import org.evolizer.changedistiller.treedifferencing.matching.measure.TokenBasedCalculator;
 
 /**
  * Implementation of the best matching tree matcher.
  * 
- * @author fluri
+ * @author Beat Fluri
  * 
  */
-public class BestLeafTreeMatcher implements ITreeMatcher {
+public class BestLeafTreeMatcher implements TreeMatcher {
 
-    private IStringSimilarityCalculator fLeafGenericStringSimilarityCalculator;
+    private StringSimilarityCalculator fLeafGenericStringSimilarityCalculator;
     private double fLeafGenericStringSimilarityThreshold;
 
     // Hardcoded! Needs integration into benchmark facilities.
-    private IStringSimilarityCalculator fLeafCommentStringSimilarityCalculator = new TokenBasedCalculator();
+    private StringSimilarityCalculator fLeafCommentStringSimilarityCalculator = new TokenBasedCalculator();
     private final double fLeafCommentStringSimilarityThreshold = 0.4;
 
-    private INodeSimilarityCalculator fNodeSimilarityCalculator;
+    private NodeSimilarityCalculator fNodeSimilarityCalculator;
     private double fNodeSimilarityThreshold;
 
-    private IStringSimilarityCalculator fNodeStringSimilarityCalculator;
+    private StringSimilarityCalculator fNodeStringSimilarityCalculator;
     private double fNodeStringSimilarityThreshold;
     private final double fWeightingThreshold = 0.8;
 
@@ -57,13 +42,11 @@ public class BestLeafTreeMatcher implements ITreeMatcher {
 
     private Set<NodePair> fMatch;
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void init(
-            IStringSimilarityCalculator leafStringSimCalc,
+            StringSimilarityCalculator leafStringSimCalc,
             double leafStringSimThreshold,
-            INodeSimilarityCalculator nodeSimCalc,
+            NodeSimilarityCalculator nodeSimCalc,
             double nodeSimThreshold) {
         fLeafGenericStringSimilarityCalculator = leafStringSimCalc;
         fLeafGenericStringSimilarityThreshold = leafStringSimThreshold;
@@ -73,49 +56,77 @@ public class BestLeafTreeMatcher implements ITreeMatcher {
         fNodeSimilarityThreshold = nodeSimThreshold;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void init(
-            IStringSimilarityCalculator leafStringSimCalc,
+            StringSimilarityCalculator leafStringSimCalc,
             double leafStringSimThreshold,
-            IStringSimilarityCalculator nodeStringSimCalc,
+            StringSimilarityCalculator nodeStringSimCalc,
             double nodeStringSimThreshold,
-            INodeSimilarityCalculator nodeSimCalc,
+            NodeSimilarityCalculator nodeSimCalc,
             double nodeSimThreshold) {
         init(leafStringSimCalc, leafStringSimThreshold, nodeSimCalc, nodeSimThreshold);
         fNodeStringSimilarityCalculator = nodeStringSimCalc;
         fNodeStringSimilarityThreshold = nodeStringSimThreshold;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void enableDynamicThreshold(int depth, double threshold) {
         fDynamicDepth = depth;
         fDynamicThreshold = threshold;
         fDynamicEnabled = true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void disableDynamicThreshold() {
         fDynamicEnabled = false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public void setMatchingSet(Set<NodePair> matchingSet) {
         fMatch = matchingSet;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
+    @Override
     public void match(Node left, Node right) {
+        List<LeafPair> matchedLeafs = matchLeaves(left, right);
+        // sort matching set according to similarity in descending order
+        Collections.sort(matchedLeafs);
+        markMatchedLeaves(matchedLeafs);
+        matchNodes(left, right);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void matchNodes(Node left, Node right) {
+        for (Enumeration<Node> leftNodes = left.postorderEnumeration(); leftNodes.hasMoreElements();) {
+            Node x = leftNodes.nextElement();
+            if (!x.isMatched() && (!x.isLeaf() || x.isRoot())) {
+                for (Enumeration<Node> rightNodes = right.postorderEnumeration(); rightNodes.hasMoreElements()
+                        && !x.isMatched();) {
+                    Node y = rightNodes.nextElement();
+                    if ((!y.isMatched() && (!y.isLeaf() || y.isRoot())) && equal(x, y)) {
+                        fMatch.add(new NodePair(x, y));
+                        x.enableMatched();
+                        y.enableMatched();
+                    }
+                }
+            }
+        }
+    }
+
+    private void markMatchedLeaves(List<LeafPair> matchedLeafs) {
+        for (LeafPair pair : matchedLeafs) {
+            Node x = pair.getLeft();
+            Node y = pair.getRight();
+            if (!(x.isMatched() || y.isMatched())) {
+                fMatch.add(pair);
+                x.enableMatched();
+                y.enableMatched();
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<LeafPair> matchLeaves(Node left, Node right) {
         List<LeafPair> matchedLeafs = new ArrayList<LeafPair>();
         for (Enumeration<Node> leftNodes = left.postorderEnumeration(); leftNodes.hasMoreElements();) {
             Node x = leftNodes.nextElement();
@@ -155,38 +166,7 @@ public class BestLeafTreeMatcher implements ITreeMatcher {
                 }
             }
         }
-
-        // sort matching set according to similarity in descending order
-        Collections.sort(matchedLeafs);
-
-        for (LeafPair pair : matchedLeafs) {
-            Node x = pair.getLeft();
-            Node y = pair.getRight();
-            if (!(x.isMatched() || y.isMatched())) {
-                fMatch.add(pair);
-                x.enableMatched();
-                y.enableMatched();
-            }
-        }
-
-        for (Enumeration<Node> leftNodes = left.postorderEnumeration(); leftNodes.hasMoreElements();) {
-            Node x = leftNodes.nextElement();
-            // bug found: x.isLeaf() && x.isRoot()
-            // if (!(x.isLeaf() || x.isMatched())) {
-            if (!x.isMatched() && (!x.isLeaf() || x.isRoot())) {
-                for (Enumeration<Node> rightNodes = right.postorderEnumeration(); rightNodes.hasMoreElements()
-                        && !x.isMatched();) {
-                    Node y = rightNodes.nextElement();
-                    // bug found: y.isLeaf() && y.isRoot()
-                    // if (!(y.isLeaf() || y.isMatched()) && equal(x, y)) {
-                    if ((!y.isMatched() && (!y.isLeaf() || y.isRoot())) && equal(x, y)) {
-                        fMatch.add(new NodePair(x, y));
-                        x.enableMatched();
-                        y.enableMatched();
-                    }
-                }
-            }
-        }
+        return matchedLeafs;
     }
 
     private boolean equal(Node x, Node y) {

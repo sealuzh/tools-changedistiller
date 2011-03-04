@@ -108,11 +108,6 @@ public class Node extends DefaultMutableTreeNode {
         fValue = value;
     }
 
-    /**
-     * Returns the associated nodes of this node.
-     * 
-     * @return the associated nodes of this node
-     */
     public List<Node> getAssociatedNodes() {
         return fAssociatedNodes;
     }
@@ -201,6 +196,17 @@ public class Node extends DefaultMutableTreeNode {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Returns true if the leaf candidate is a leaf and is a descendant of this node.
+     * 
+     * @param candidate
+     *            to check for leaf descendant
+     * @return <code>true</code> if the candidate is a leaf and a descendant of this node, <code>false</code> otherwise
+     */
+    public boolean isLeafDescendant(Node candidate) {
+        return candidate.isLeaf() && isNodeDescendant(candidate);
     }
 
 }

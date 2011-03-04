@@ -17,11 +17,14 @@ import org.evolizer.changedistiller.treedifferencing.operation.UpdateOperation;
 
 /**
  * Implementation of the core tree differencing algorithm of Chawathe. This algorithm takes two {@link Node} trees
- * generates a matching between the nodes of both trees and calculates an edit script of {@link ITreeEditOperation} that
+ * generates a matching between the nodes of both trees and calculates an edit script of {@link TreeEditOperation} that
  * transform the left into the right tree.
+ * <p>
+ * The implementation style is not clean, i.e., it uses single character method and variable names, because the
+ * implementation should reflect the original algorithm from the paper as much as possible.
  * 
  * @author Beat Fluri
- * @see ITreeEditOperation
+ * @see TreeEditOperation
  * @see Node
  */
 public class TreeDifferencer {
@@ -38,10 +41,10 @@ public class TreeDifferencer {
     private HashMap<Node, Node> fLeftToRightMatchPrime;
     private HashMap<Node, Node> fRightToLeftMatchPrime;
 
-    private List<ITreeEditOperation> fEditScript;
+    private List<TreeEditOperation> fEditScript;
 
     /**
-     * Calculates the edit script of {@link ITreeEditOperation} between the left and the right {@link Node} trees.
+     * Calculates the edit script of {@link TreeEditOperation} between the left and the right {@link Node} trees.
      * 
      * @param left
      *            tree to calculate the edit script for
@@ -51,7 +54,7 @@ public class TreeDifferencer {
     public void calculateEditScript(Node left, Node right) {
         fMatch = new HashSet<NodePair>();
 
-        ITreeMatcher dnm = MatchingFactory.getMatcher(fMatch);
+        TreeMatcher dnm = MatchingFactory.getMatcher(fMatch);
         dnm.match(left, right);
         fLeftToRightMatch = new HashMap<Node, Node>();
         fRightToLeftMatch = new HashMap<Node, Node>();
@@ -62,12 +65,7 @@ public class TreeDifferencer {
         editScript(left, right);
     }
 
-    /**
-     * Returns the edit script calculated between the two {@link Node} trees.
-     * 
-     * @return the edit script calculated between the two trees
-     */
-    public List<ITreeEditOperation> getEditScript() {
+    public List<TreeEditOperation> getEditScript() {
         return fEditScript;
     }
 
@@ -75,7 +73,7 @@ public class TreeDifferencer {
     private void editScript(Node left, Node right) {
         // 1.
         // E <- {}
-        fEditScript = new LinkedList<ITreeEditOperation>();
+        fEditScript = new LinkedList<TreeEditOperation>();
 
         // M' <- M
         fMatchPrime = new HashSet(fMatch);
@@ -108,7 +106,7 @@ public class TreeDifferencer {
                 w = (Node) x.clone();
                 w.enableMatched();
                 x.enableMatched();
-                ITreeEditOperation insert = new InsertOperation(w, z, k);
+                TreeEditOperation insert = new InsertOperation(w, z, k);
                 fEditScript.add(insert);
 
                 // iii. Add (w, x) to M' and apply INS((w, a, v(x)), z, k) to T1
@@ -132,10 +130,9 @@ public class TreeDifferencer {
                 } else {
                     equals = v(w).equals(v(x));
                 }
-                // if (!v(w).equals(v(x))) {
                 if (!equals) {
                     // A. Append UPD(w, v(x)) to E
-                    ITreeEditOperation update = new UpdateOperation(w, x, v(x));
+                    TreeEditOperation update = new UpdateOperation(w, x, v(x));
                     fEditScript.add(update);
                     // B. Apply UPD(w, v(x)) to T1
                     update.apply();
@@ -147,7 +144,7 @@ public class TreeDifferencer {
                     // B. k <- FindPos(x)
                     int k = findPosition(x);
                     // C. Append MOV(w, z, k) to E
-                    ITreeEditOperation move = new MoveOperation(w, x, z, k);
+                    TreeEditOperation move = new MoveOperation(w, x, z, k);
                     fEditScript.add(move);
                     // D. Apply MOV(w, z, k) to T1
                     move.apply();
@@ -160,14 +157,14 @@ public class TreeDifferencer {
         }
 
         // 3. Do a post-order traversal of T1 (this is the delete phase)
-        LinkedList<ITreeEditOperation> dels = new LinkedList<ITreeEditOperation>();
+        LinkedList<TreeEditOperation> dels = new LinkedList<TreeEditOperation>();
         for (Enumeration postOrder = left.postorderEnumeration(); postOrder.hasMoreElements();) {
             // (a) Let w be the current node in the post-order traversal of T1
             Node w = (Node) postOrder.nextElement();
             // (b) If w has no partner in M'
             if (fLeftToRightMatchPrime.get(w) == null) {
                 // Append DEL(w) to E
-                ITreeEditOperation delete = new DeleteOperation(w);
+                TreeEditOperation delete = new DeleteOperation(w);
                 fEditScript.add(delete);
                 dels.add(delete);
             }
@@ -213,7 +210,7 @@ public class TreeDifferencer {
                         int k = findPosition(b);
                         // (b)
                         // Append MOV(a, w, k) to E
-                        ITreeEditOperation move = new MoveOperation(a, b, w, k);
+                        TreeEditOperation move = new MoveOperation(a, b, w, k);
                         fEditScript.add(move);
                         // Apply MOV(a, w, k) to T1
                         move.apply();

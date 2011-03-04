@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
+import org.evolizer.changedistiller.treedifferencing.TreeEditOperation.OperationType;
 import org.evolizer.changedistiller.treedifferencing.operation.DeleteOperation;
 import org.evolizer.changedistiller.treedifferencing.operation.InsertOperation;
 import org.evolizer.changedistiller.treedifferencing.operation.MoveOperation;
@@ -18,7 +19,7 @@ import org.junit.Test;
 public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
 
     private TreeDifferencer fDifferencer;
-    private List<ITreeEditOperation> fEditScript;
+    private List<TreeEditOperation> fEditScript;
 
     @Before
     @Override
@@ -41,8 +42,8 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         Node methodInvocation = addToRight(METHOD_INVOCATION, "foo.bar();");
         createEditScript();
         assertThat(fEditScript.size(), is(1));
-        ITreeEditOperation operation = fEditScript.get(0);
-        assertThat(operation.getOperationType(), is(ITreeEditOperation.INSERT));
+        TreeEditOperation operation = fEditScript.get(0);
+        assertThat(operation.getOperationType(), is(OperationType.INSERT));
         InsertOperation insert = (InsertOperation) operation;
         assertThat(insert.getParentNode(), is(fRootLeft));
         assertThat(insert.getNodeToInsert(), is(methodInvocation));
@@ -53,8 +54,8 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         Node methodInvocation = addToLeft(METHOD_INVOCATION, "foo.bar();");
         createEditScript();
         assertThat(fEditScript.size(), is(1));
-        ITreeEditOperation operation = fEditScript.get(0);
-        assertThat(operation.getOperationType(), is(ITreeEditOperation.DELETE));
+        TreeEditOperation operation = fEditScript.get(0);
+        assertThat(operation.getOperationType(), is(OperationType.DELETE));
         DeleteOperation delete = (DeleteOperation) operation;
         assertThat(delete.getParentNode(), is(fRootLeft));
         assertThat(delete.getNodeToDelete(), is(methodInvocation));
@@ -70,8 +71,8 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         addToNode(ifStatementRight, ASSIGNMENT, "b = a;");
         createEditScript();
         assertThat(fEditScript.size(), is(1));
-        ITreeEditOperation operation = fEditScript.get(0);
-        assertThat(operation.getOperationType(), is(ITreeEditOperation.MOVE));
+        TreeEditOperation operation = fEditScript.get(0);
+        assertThat(operation.getOperationType(), is(OperationType.MOVE));
         MoveOperation move = (MoveOperation) operation;
         assertThat(move.getOldParent(), is(fRootLeft));
         assertThat(move.getNewParent(), is(ifStatementRight));
@@ -85,8 +86,8 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         Node methodInvocationRight = addToRight(METHOD_INVOCATION, "foo.beer();");
         createEditScript();
         assertThat(fEditScript.size(), is(1));
-        ITreeEditOperation operation = fEditScript.get(0);
-        assertThat(operation.getOperationType(), is(ITreeEditOperation.UPDATE));
+        TreeEditOperation operation = fEditScript.get(0);
+        assertThat(operation.getOperationType(), is(OperationType.UPDATE));
         UpdateOperation update = (UpdateOperation) operation;
         assertThat(update.getNodeToUpdate(), is(methodInvocationLeft));
         assertThat(update.getNewNode(), is(methodInvocationRight));

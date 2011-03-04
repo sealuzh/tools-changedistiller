@@ -1,18 +1,3 @@
-/*
- * Copyright 2009 University of Zurich, Switzerland
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.evolizer.changedistiller.treedifferencing.matching.measure;
 
 import java.util.Hashtable;
@@ -20,10 +5,10 @@ import java.util.Hashtable;
 /**
  * Implementation of a token based string similarity calculator.
  * 
- * @author fluri
+ * @author Beat Fluri
  * 
  */
-public class TokenBasedCalculator implements IStringSimilarityCalculator {
+public class TokenBasedCalculator implements StringSimilarityCalculator {
 
     private String fSeparator;
 
@@ -39,73 +24,40 @@ public class TokenBasedCalculator implements IStringSimilarityCalculator {
 
     /**
      * Creates a new token base similarity calculator with whitespace as separator.
-     * 
      */
     public TokenBasedCalculator() {
         this("\\s+");
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    private String removeRegexOccurrences(String string, String regex) {
+        String[] leftTmp = string.split(regex);
+        String cleanedString = "";
+        for (String s : leftTmp) {
+            cleanedString += s;
+        }
+        return cleanedString;
+    }
+
+    @Override
     public double calculateSimilarity(String left, String right) {
         String leftString = left;
         String rightString = right;
-        if (leftString.subSequence(0, 2).equals("//")) {
-            String splitRegex = "//\\s*";
-            String[] leftTmp = leftString.split(splitRegex);
-            String[] rightTmp = rightString.split(splitRegex);
-            leftString = "";
-            rightString = "";
-            for (String s : leftTmp) {
-                leftString += s;
-            }
-            for (String s : rightTmp) {
-                rightString += s;
-            }
-        } else if (leftString.subSequence(0, 2).equals("/*")) {
-            String splitRegex = "/\\*+\\s*";
-            String[] leftTmp = leftString.split(splitRegex);
-            String[] rightTmp = rightString.split(splitRegex);
-            leftString = "";
-            rightString = "";
-            for (String s : leftTmp) {
-                leftString += s;
-            }
-            for (String s : rightTmp) {
-                rightString += s;
-            }
-
-            splitRegex = "\\s*\\*/";
-            try {
-                leftString = leftString.split(splitRegex)[0];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                leftString = leftString.replace('/', ' ');
-            }
-            try {
-                rightString = rightString.split(splitRegex)[0];
-            } catch (ArrayIndexOutOfBoundsException e) {
-                rightString = rightString.replace('/', ' ');
-            }
-
-            leftString = leftString.replace('*', ' ').trim();
-            rightString = rightString.replace('*', ' ').trim();
+        if (leftString.startsWith("//") || rightString.startsWith("//")) {
+            leftString = removeRegexOccurrences(leftString, "//\\s*");
+            rightString = removeRegexOccurrences(rightString, "//\\s*");
+        } else if (leftString.startsWith("/*") || rightString.startsWith("/*")) {
+            leftString = removeBlockCommentDelimiters(leftString);
+            rightString = removeBlockCommentDelimiters(rightString);
         }
         String[] leftTokens = leftString.split(fSeparator);
         String[] rightTokens = rightString.split(fSeparator);
+        Hashtable<String, Integer> tokens = createTokenHashtable(leftTokens);
+        double match = removeTokensOccuringInRightString(rightTokens, tokens);
+        double maximumTokens = Math.max(leftTokens.length, rightTokens.length);
+        return match / maximumTokens;
+    }
 
-        Hashtable<String, Integer> tokens = new Hashtable<String, Integer>();
-
-        // fill the Hashtable with the tokens from left
-        for (String token : leftTokens) {
-            if (tokens.containsKey(token)) {
-                Integer nrTokensForString = tokens.remove(token);
-                tokens.put(token, nrTokensForString + 1);
-            } else {
-                tokens.put(token, 1);
-            }
-        }
-
+    private double removeTokensOccuringInRightString(String[] rightTokens, Hashtable<String, Integer> tokens) {
         double match = 0.0;
         // delete the tokens in right from the Hashtable
         for (int i = 0; i < rightTokens.length; i++) {
@@ -121,9 +73,37 @@ public class TokenBasedCalculator implements IStringSimilarityCalculator {
                 rightTokens[i] = "";
             }
         }
+        return match;
+    }
 
-        double maximumTokens = Math.max(leftTokens.length, rightTokens.length);
-        return match / maximumTokens;
+    private Hashtable<String, Integer> createTokenHashtable(String[] leftTokens) {
+        Hashtable<String, Integer> tokens = new Hashtable<String, Integer>();
+
+        // fill the Hashtable with the tokens from left
+        for (String token : leftTokens) {
+            if (tokens.containsKey(token)) {
+                Integer nrTokensForString = tokens.remove(token);
+                tokens.put(token, nrTokensForString + 1);
+            } else {
+                tokens.put(token, 1);
+            }
+        }
+        return tokens;
+    }
+
+    private String removeBlockCommentDelimiters(String leftString) {
+        String result = removeRegexOccurrences(leftString, "/\\*+\\s*");
+        return removeBlockCommentEnd(result);
+    }
+
+    private String removeBlockCommentEnd(String leftString) {
+        String result = leftString;
+        try {
+            result = leftString.split("\\s*\\*/")[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            result = leftString.replace('/', ' ');
+        }
+        return result.replace('*', ' ').trim();
     }
 
 }
