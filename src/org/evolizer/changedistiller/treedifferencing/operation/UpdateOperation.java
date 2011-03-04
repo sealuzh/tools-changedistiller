@@ -46,7 +46,7 @@ public class UpdateOperation implements ITreeEditOperation {
         fNodeToUpdate = nodeToUpdate;
         fNewNode = newNode;
         fOldValue = fNodeToUpdate.getValue();
-        fNodeToUpdate.getEntity().setUniqueName(value);
+        // fNodeToUpdate.getEntity().setUniqueName(value);
         fValue = value;
     }
 

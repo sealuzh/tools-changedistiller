@@ -164,4 +164,43 @@ public class Node extends DefaultMutableTreeNode {
         }
         return output;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((fLabel == null) ? 0 : fLabel.hashCode());
+        result = prime * result + ((fValue == null) ? 0 : fValue.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Node other = (Node) obj;
+        if (fLabel == null) {
+            if (other.fLabel != null) {
+                return false;
+            }
+        } else if (!fLabel.equals(other.fLabel)) {
+            return false;
+        }
+        if (fValue == null) {
+            if (other.fValue != null) {
+                return false;
+            }
+        } else if (!fValue.equals(other.fValue)) {
+            return false;
+        }
+        return true;
+    }
+
 }
