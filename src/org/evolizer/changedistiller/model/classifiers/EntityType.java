@@ -41,4 +41,18 @@ public interface EntityType {
      */
     boolean isStructureEntityType();
 
+    /**
+     * Returns whether or not this entity type is a type.
+     * 
+     * @return <code>true</code> if this entity type is a type, <code>false</code> otherwise
+     */
+    boolean isType();
+
+    /**
+     * Returns whether or not this entity type is at statement level.
+     * 
+     * @return <code>true</code> if this entity type is at statement level, <code>false</code> otherwise
+     */
+    boolean isStatement();
+
 }

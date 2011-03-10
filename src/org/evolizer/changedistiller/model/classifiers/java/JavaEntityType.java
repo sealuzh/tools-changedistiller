@@ -115,4 +115,50 @@ public enum JavaEntityType implements EntityType {
         }
     }
 
+    @Override
+    public boolean isType() {
+        switch (this) {
+            case ARRAY_TYPE:
+            case PARAMETERIZED_TYPE:
+            case PRIMITIVE_TYPE:
+            case QUALIFIED_TYPE:
+            case SIMPLE_TYPE:
+            case WILDCARD_TYPE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public boolean isStatement() {
+        switch (this) {
+            case ASSERT_STATEMENT:
+            case ASSIGNMENT:
+            case BREAK_STATEMENT:
+            case CATCH_CLAUSE:
+            case CLASS_INSTANCE_CREATION:
+            case CONSTRUCTOR_INVOCATION:
+            case CONTINUE_STATEMENT:
+            case DO_STATEMENT:
+            case FINALLY:
+            case FOR_STATEMENT:
+            case IF_STATEMENT:
+            case LABELED_STATEMENT:
+            case METHOD_INVOCATION:
+            case RETURN_STATEMENT:
+            case SWITCH_CASE:
+            case SWITCH_STATEMENT:
+            case SYNCHRONIZED_STATEMENT:
+            case THROW_STATEMENT:
+            case TRY_STATEMENT:
+            case VARIABLE_DECLARATION_STATEMENT:
+            case WHILE_STATEMENT:
+            case FOREACH_STATEMENT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }
