@@ -103,4 +103,16 @@ public enum JavaEntityType implements EntityType {
         }
     }
 
+    @Override
+    public boolean isStructureEntityType() {
+        switch (this) {
+            case CLASS:
+            case FIELD:
+            case METHOD:
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }

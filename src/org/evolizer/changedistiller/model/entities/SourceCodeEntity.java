@@ -3,6 +3,8 @@ package org.evolizer.changedistiller.model.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.evolizer.changedistiller.model.classifiers.ChangeModifier;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
@@ -299,6 +301,29 @@ public class SourceCodeEntity {
      */
     public void setEndPosition(int end) {
         fRange.setEnd(end);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getUniqueName()).append(getType()).append(getModifiers())
+                .append(getSourceRange()).append(new ArrayList<SourceCodeEntity>(getAssociatedEntities())).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SourceCodeEntity other = (SourceCodeEntity) obj;
+        return new EqualsBuilder().append(getUniqueName(), other.getUniqueName()).append(getType(), other.getType())
+                .append(getModifiers(), other.getModifiers()).append(getSourceRange(), other.getSourceRange())
+                .isEquals();
     }
 
 }

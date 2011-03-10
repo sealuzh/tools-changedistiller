@@ -64,6 +64,14 @@ public final class CompilationUtils {
         return options;
     }
 
+    /**
+     * Returns the generated {@link Compilation} from the file identified by the given filename. This method assumes
+     * that the filename is relative to <code>{@value #TEST_DATA_BASE_DIR}</code>.
+     * 
+     * @param filename
+     *            of the file to compile (relative to {@value #TEST_DATA_BASE_DIR}).
+     * @return the compilation of the file
+     */
     public static Compilation compileFile(String filename) {
         CompilerOptions options = getDefaultCompilerOptions();
         Parser parser = createCommentRecorderParser(options);

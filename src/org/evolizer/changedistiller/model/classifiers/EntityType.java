@@ -12,10 +12,10 @@ import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 public interface EntityType {
 
     /**
-     * Returns whether changes occurred on this source code entity type are extracted by ChangeDistiller or not (e.g.
+     * Returns whether or not ChangeDistiller should extract changes occurred on this source code entity type (e.g.,
      * changes in the <code>finally</code> clause are ignored).
      * 
-     * @return <code>true</code> if changes on this entity type are considered and extracted, <code>false</code>
+     * @return <code>true</code> if ChangeDistiller should extract changes on this entity type, <code>false</code>
      *         otherwise.
      */
     boolean isValidChange();
@@ -33,5 +33,12 @@ public interface EntityType {
      * @return <code>true</code> if the entity type describes a comment, <code>false</code> otherwise
      */
     boolean isComment();
+
+    /**
+     * Returns whether or not the entity type describes a structure entity, e.g., a class, field, or method.
+     * 
+     * @return <code>true</code> if the entity type describes a structure entity, <code>false</code> otherwise
+     */
+    boolean isStructureEntityType();
 
 }
