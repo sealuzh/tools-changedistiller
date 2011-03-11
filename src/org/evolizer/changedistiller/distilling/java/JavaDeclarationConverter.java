@@ -35,6 +35,8 @@ import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 
+import com.google.inject.Inject;
+
 /**
  * Visitor to generate an intermediate tree (general, rooted, labeled, valued tree) out of a field, class, or method
  * declaration.
@@ -46,28 +48,31 @@ public class JavaDeclarationConverter extends ASTVisitor {
 
     private static final String COLON_SPACE = ": ";
     private boolean fEmptyJavaDoc;
-    private Stack<Node> fNodeStack = new Stack<Node>();
+    private Stack<Node> fNodeStack;
     private boolean fInMethodDeclaration;
     private String fSource;
     private ASTHelper fASTHelper;
     private Scanner fScanner;
 
+    @Inject
+    JavaDeclarationConverter(ASTHelper astHelper) {
+        fASTHelper = astHelper;
+        fNodeStack = new Stack<Node>();
+    }
+
     /**
-     * Creates a new declaration transformer.
+     * Initializes the declaration converter.
      * 
      * @param root
-     *            the root node of the tree to generate
+     *            of the resulting declaration tree
      * @param scanner
-     *            the scanner with which the AST was created
-     * @param astHelper
-     *            the helper that helps with conversions for the change history meta model
+     *            of the source file that is traversed
      */
-    public JavaDeclarationConverter(Node root, Scanner scanner, ASTHelper astHelper) {
+    public void initialize(Node root, Scanner scanner) {
         fScanner = scanner;
         fSource = String.valueOf(scanner.source);
         fNodeStack.clear();
         fNodeStack.push(root);
-        fASTHelper = astHelper;
     }
 
     @Override

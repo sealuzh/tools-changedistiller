@@ -48,6 +48,8 @@ import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
 
+import com.google.inject.Inject;
+
 /**
  * Visitor to generate an intermediate tree (general, rooted, labeled, valued tree) out of a method body.
  * 
@@ -58,19 +60,27 @@ public class JavaMethodBodyConverter extends ASTVisitor {
 
     private static final String COLON = ":";
     private List<Comment> fComments;
-    private Stack<Node> fNodeStack = new Stack<Node>();
+    private Stack<Node> fNodeStack;
     private String fSource;
     private Scanner fScanner;
 
     private ASTNode fLastVisitedNode;
     private Node fLastAddedNode;
 
-    private Stack<ASTNode[]> fLastAssociationCandidate = new Stack<ASTNode[]>();
-    private Stack<Node[]> fLastCommentNodeTuples = new Stack<Node[]>();
+    private Stack<ASTNode[]> fLastAssociationCandidate;
+    private Stack<Node[]> fLastCommentNodeTuples;
     private ASTHelper fASTHelper;
 
+    @Inject
+    JavaMethodBodyConverter(ASTHelper astHelper) {
+        fNodeStack = new Stack<Node>();
+        fLastAssociationCandidate = new Stack<ASTNode[]>();
+        fLastCommentNodeTuples = new Stack<Node[]>();
+        fASTHelper = astHelper;
+    }
+
     /**
-     * Creates a new method body converter.
+     * Initializes the method body converter.
      * 
      * @param root
      *            the root node of the tree to generate
@@ -80,23 +90,17 @@ public class JavaMethodBodyConverter extends ASTVisitor {
      *            to associate
      * @param scanner
      *            the scanner with which the AST was created
-     * @param astHelper
-     *            the helper that helps with conversions for the change history meta model.
      */
-    public JavaMethodBodyConverter(
-            Node root,
-            ASTNode methodRoot,
-            List<Comment> comments,
-            Scanner scanner,
-            ASTHelper astHelper) {
+    public void initialize(Node root, ASTNode methodRoot, List<Comment> comments, Scanner scanner) {
         fNodeStack.clear();
+        fLastAssociationCandidate.clear();
+        fLastCommentNodeTuples.clear();
         fLastVisitedNode = methodRoot;
         fLastAddedNode = root;
         fNodeStack.push(root);
         fComments = comments;
         fScanner = scanner;
         fSource = String.valueOf(scanner.getSource());
-        fASTHelper = astHelper;
     }
 
     /**

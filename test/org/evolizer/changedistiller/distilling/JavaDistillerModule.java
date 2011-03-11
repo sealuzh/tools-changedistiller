@@ -7,7 +7,7 @@ import org.evolizer.changedistiller.distilling.java.JavaSourceCodeChangeClassifi
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryProvider;
 
-public class DistillerModule extends AbstractModule {
+public class JavaDistillerModule extends AbstractModule {
 
     @Override
     protected void configure() {

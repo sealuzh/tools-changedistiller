@@ -8,10 +8,6 @@ import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.evolizer.changedistiller.distilling.java.Comment;
-import org.evolizer.changedistiller.distilling.java.CommentCleaner;
-import org.evolizer.changedistiller.distilling.java.JavaASTHelper;
-import org.evolizer.changedistiller.distilling.java.JavaMethodBodyConverter;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
@@ -22,7 +18,7 @@ import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class WhenCommentsAreAssociatedToSourceCode {
+public class WhenCommentsAreAssociatedToSourceCode extends JavaDistillerTestCase {
 
     private static Compilation sCompilation;
     private static List<Comment> sComments;
@@ -40,8 +36,8 @@ public class WhenCommentsAreAssociatedToSourceCode {
         sRoot = new Node(JavaEntityType.METHOD, "foo");
         sRoot.setEntity(new SourceCodeEntity("foo", JavaEntityType.METHOD, new SourceRange()));
         AbstractMethodDeclaration method = CompilationUtils.findMethod(sCompilation.getCompilationUnit(), "foo");
-        JavaMethodBodyConverter bodyT =
-                new JavaMethodBodyConverter(sRoot, method, sComments, sCompilation.getScanner(), new JavaASTHelper());
+        JavaMethodBodyConverter bodyT = sInjector.getInstance(JavaMethodBodyConverter.class);
+        bodyT.initialize(sRoot, method, sComments, sCompilation.getScanner());
         method.traverse(bodyT, (ClassScope) null);
     }
 

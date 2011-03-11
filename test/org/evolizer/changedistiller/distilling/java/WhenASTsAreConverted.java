@@ -8,15 +8,21 @@ import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
+import org.junit.BeforeClass;
 
-public abstract class WhenASTsAreConverted {
+public abstract class WhenASTsAreConverted extends JavaDistillerTestCase {
+
+    protected static JavaDeclarationConverter sDeclarationConverter;
+    protected static JavaMethodBodyConverter sMethodBodyConverter;
 
     protected String fSnippet;
     protected Compilation fCompilation;
     protected Node fRoot;
 
-    public WhenASTsAreConverted() {
-        super();
+    @BeforeClass
+    public static void initialize() throws Exception {
+        sDeclarationConverter = sInjector.getInstance(JavaDeclarationConverter.class);
+        sMethodBodyConverter = sInjector.getInstance(JavaMethodBodyConverter.class);
     }
 
     protected void prepareCompilation() {

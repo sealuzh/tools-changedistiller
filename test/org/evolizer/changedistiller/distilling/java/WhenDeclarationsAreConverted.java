@@ -10,8 +10,6 @@ import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
-import org.evolizer.changedistiller.distilling.java.JavaASTHelper;
-import org.evolizer.changedistiller.distilling.java.JavaDeclarationConverter;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
@@ -577,7 +575,8 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     }
 
     private JavaDeclarationConverter getDeclarationconverter() {
-        return new JavaDeclarationConverter(fRoot, fCompilation.getScanner(), new JavaASTHelper());
+        sDeclarationConverter.initialize(fRoot, fCompilation.getScanner());
+        return sDeclarationConverter;
     }
 
     private void convertMethod(String name) {

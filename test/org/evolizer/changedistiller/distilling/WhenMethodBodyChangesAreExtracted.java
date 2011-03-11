@@ -8,7 +8,6 @@ import org.evolizer.changedistiller.model.entities.StructureEntityVersion;
 import org.evolizer.changedistiller.treedifferencing.Node;
 import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
-import org.evolizer.changedistiller.util.TreeTransformerUtils;
 import org.junit.Test;
 
 // simple test cases. exhaustive test cases with classification check in separate tests suite
@@ -19,8 +18,8 @@ public class WhenMethodBodyChangesAreExtracted extends WhenChangesAreExtracted {
     @Test
     public void unchangedMethodBodyShouldNotHaveAnyChanges() throws Exception {
         Compilation compilation = CompilationUtils.compileFile(TEST_DATA + "TestLeft.java");
-        Node rootLeft = TreeTransformerUtils.convertMethodBody("foo", compilation);
-        Node rootRight = TreeTransformerUtils.convertMethodBody("foo", compilation);
+        Node rootLeft = convertMethodBody("foo", compilation);
+        Node rootRight = convertMethodBody("foo", compilation);
         StructureEntityVersion structureEntity = new StructureEntityVersion(JavaEntityType.METHOD, "foo", 0);
         Distiller distiller = getDistiller(structureEntity);
         distiller.extractClassifiedSourceCodeChanges(rootLeft, rootRight);
@@ -31,8 +30,8 @@ public class WhenMethodBodyChangesAreExtracted extends WhenChangesAreExtracted {
     public void changedMethodBodyShouldHaveChanges() throws Exception {
         Compilation compilationLeft = CompilationUtils.compileFile(TEST_DATA + "TestLeft.java");
         Compilation compilationRight = CompilationUtils.compileFile(TEST_DATA + "TestRight.java");
-        Node rootLeft = TreeTransformerUtils.convertMethodBody("foo", compilationLeft);
-        Node rootRight = TreeTransformerUtils.convertMethodBody("foo", compilationRight);
+        Node rootLeft = convertMethodBody("foo", compilationLeft);
+        Node rootRight = convertMethodBody("foo", compilationRight);
         StructureEntityVersion structureEntity = new StructureEntityVersion(JavaEntityType.METHOD, "foo", 0);
         Distiller distiller = getDistiller(structureEntity);
         distiller.extractClassifiedSourceCodeChanges(rootLeft, rootRight);
