@@ -1,6 +1,5 @@
 package org.evolizer.changedistiller.distilling;
 
-import org.evolizer.changedistiller.java.ASTHelper;
 import org.evolizer.changedistiller.model.entities.Delete;
 import org.evolizer.changedistiller.model.entities.Insert;
 import org.evolizer.changedistiller.model.entities.Move;
@@ -22,18 +21,6 @@ import org.evolizer.changedistiller.treedifferencing.operation.UpdateOperation;
  */
 public class SourceCodeChangeFactory {
 
-    private ASTHelper fASTHelper;
-
-    /**
-     * Creates a new source code change factory.
-     * 
-     * @param astHelper
-     *            to work with
-     */
-    public SourceCodeChangeFactory(ASTHelper astHelper) {
-        fASTHelper = astHelper;
-    }
-
     /**
      * Creates an {@link Insert} change from the {@link InsertOperation}.
      * 
@@ -44,7 +31,7 @@ public class SourceCodeChangeFactory {
      * @return the insert source code changes from the insert operation
      */
     public Insert createInsertOperation(StructureEntityVersion structureEntity, InsertOperation insert) {
-        if (fASTHelper.isASTNodeUsableForSourceCodeChange(insert.getNodeToInsert())) {
+        if (isUsableForChangeExtraction(insert.getNodeToInsert())) {
             SourceCodeEntity parent = insert.getParentNode().getEntity();
             return new Insert(structureEntity, insert.getNodeToInsert().getEntity(), parent);
         }
@@ -61,7 +48,7 @@ public class SourceCodeChangeFactory {
      * @return the delete source code changes from the delete operation
      */
     public Delete createDeleteOperation(StructureEntityVersion structureEntity, DeleteOperation delete) {
-        if (fASTHelper.isASTNodeUsableForSourceCodeChange(delete.getNodeToDelete())) {
+        if (isUsableForChangeExtraction(delete.getNodeToDelete())) {
             SourceCodeEntity parent = delete.getParentNode().getEntity();
             return new Delete(structureEntity, delete.getNodeToDelete().getEntity(), parent);
         }
@@ -78,7 +65,7 @@ public class SourceCodeChangeFactory {
      * @return the move source code changes from the move operation
      */
     public Move createMoveOperation(StructureEntityVersion structureEntity, MoveOperation move) {
-        if (fASTHelper.isASTNodeUsableForSourceCodeChange(move.getNodeToMove())) {
+        if (isUsableForChangeExtraction(move.getNodeToMove())) {
             return new Move(structureEntity, move.getNodeToMove().getEntity(), move.getNewNode().getEntity(), move
                     .getOldParent().getEntity(), move.getNewParent().getEntity());
         }
@@ -95,7 +82,7 @@ public class SourceCodeChangeFactory {
      * @return the insert source code changes from the update operation
      */
     public Update createUpdateOperation(StructureEntityVersion structureEntity, UpdateOperation update) {
-        if (fASTHelper.isASTNodeUsableForSourceCodeChange(update.getNodeToUpdate())) {
+        if (isUsableForChangeExtraction(update.getNodeToUpdate())) {
             SourceCodeEntity entity =
                     new SourceCodeEntity(update.getOldValue(), update.getNodeToUpdate().getEntity().getType(), update
                             .getNodeToUpdate().getEntity().getModifiers(), update.getNodeToUpdate().getEntity()
@@ -104,6 +91,10 @@ public class SourceCodeChangeFactory {
                     .getNodeToUpdate().getParent()).getEntity());
         }
         return null;
+    }
+
+    private boolean isUsableForChangeExtraction(Node node) {
+        return node.getLabel().isUsableForChangeExtraction();
     }
 
 }

@@ -18,7 +18,7 @@ public interface EntityType {
      * @return <code>true</code> if ChangeDistiller should extract changes on this entity type, <code>false</code>
      *         otherwise.
      */
-    boolean isValidChange();
+    boolean isUsableForChangeExtraction();
 
     /**
      * Returns the name of the entity type.

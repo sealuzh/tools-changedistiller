@@ -87,7 +87,7 @@ public enum JavaEntityType implements EntityType {
         fIsValidChange = isValidChange;
     }
 
-    public boolean isValidChange() {
+    public boolean isUsableForChangeExtraction() {
         return fIsValidChange;
     }
 

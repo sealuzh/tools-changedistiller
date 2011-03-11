@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 

@@ -1,9 +1,11 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import static org.hamcrest.CoreMatchers.is;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.evolizer.changedistiller.distilling.java.JavaASTHelper;
+import org.evolizer.changedistiller.distilling.java.JavaMethodBodyConverter;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;

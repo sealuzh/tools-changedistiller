@@ -19,8 +19,8 @@ import org.eclipse.jdt.internal.compiler.parser.Parser;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.jdt.internal.core.util.CommentRecorderParser;
-import org.evolizer.changedistiller.java.Comment;
-import org.evolizer.changedistiller.java.CommentCollector;
+import org.evolizer.changedistiller.distilling.java.Comment;
+import org.evolizer.changedistiller.distilling.java.CommentCollector;
 
 public final class CompilationUtils {
 

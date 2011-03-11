@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;

@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import java.util.Stack;
 
@@ -28,6 +28,7 @@ import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;
 import org.eclipse.jdt.internal.compiler.parser.TerminalTokens;
+import org.evolizer.changedistiller.distilling.ASTHelper;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;

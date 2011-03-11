@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.ARRAY_ACCESS;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.ARRAY_CREATION;
@@ -117,9 +117,9 @@ import org.eclipse.jdt.internal.compiler.ast.TryStatement;
 import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
+import org.evolizer.changedistiller.distilling.ASTHelper;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
-import org.evolizer.changedistiller.treedifferencing.Node;
 
 /**
  * Implementation of ASTHelper for the Java programming language.
@@ -207,11 +207,4 @@ public final class JavaASTHelper implements ASTHelper {
         return sConversionMap.get(node.getClass());
     }
 
-    @Override
-    public boolean isASTNodeUsableForSourceCodeChange(Object node) {
-        if (node instanceof Node) {
-            return ((Node) node).getLabel().isValidChange();
-        }
-        throw new RuntimeException("Unkown node type: " + node.getClass());
-    }
 }

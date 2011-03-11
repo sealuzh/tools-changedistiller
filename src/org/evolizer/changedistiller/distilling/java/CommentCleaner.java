@@ -1,11 +1,11 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.evolizer.changedistiller.java.Comment.CommentType;
+import org.evolizer.changedistiller.distilling.java.Comment.CommentType;
 
 /**
  * Removes dead code comments and joins successive line comments.

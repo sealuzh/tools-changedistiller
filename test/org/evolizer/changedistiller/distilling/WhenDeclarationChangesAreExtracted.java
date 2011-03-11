@@ -11,16 +11,16 @@ import org.evolizer.changedistiller.util.CompilationUtils;
 import org.evolizer.changedistiller.util.TreeTransformerUtils;
 import org.junit.Test;
 
-// simple test cases. exhaustive test cases with classification check in separate tests suite
-public class WhenMethodBodyChangesAreExtracted extends WhenChangesAreExtracted {
+//simple test cases. exhaustive test cases with classification check in separate tests suite
+public class WhenDeclarationChangesAreExtracted extends WhenChangesAreExtracted {
 
     private final static String TEST_DATA = "src_change/";
 
     @Test
-    public void unchangedMethodBodyShouldNotHaveAnyChanges() throws Exception {
+    public void unchangedMethodDeclarationShouldNotHaveAnyChanges() throws Exception {
         Compilation compilation = CompilationUtils.compileFile(TEST_DATA + "TestLeft.java");
-        Node rootLeft = TreeTransformerUtils.convertMethodBody("foo", compilation);
-        Node rootRight = TreeTransformerUtils.convertMethodBody("foo", compilation);
+        Node rootLeft = TreeTransformerUtils.convertMethodDeclaration("foo", compilation);
+        Node rootRight = TreeTransformerUtils.convertMethodDeclaration("foo", compilation);
         StructureEntityVersion structureEntity = new StructureEntityVersion(JavaEntityType.METHOD, "foo", 0);
         Distiller distiller = getDistiller(structureEntity);
         distiller.extractClassifiedSourceCodeChanges(rootLeft, rootRight);
@@ -28,15 +28,15 @@ public class WhenMethodBodyChangesAreExtracted extends WhenChangesAreExtracted {
     }
 
     @Test
-    public void changedMethodBodyShouldHaveChanges() throws Exception {
+    public void changedMethodShouldHaveChanges() throws Exception {
         Compilation compilationLeft = CompilationUtils.compileFile(TEST_DATA + "TestLeft.java");
         Compilation compilationRight = CompilationUtils.compileFile(TEST_DATA + "TestRight.java");
-        Node rootLeft = TreeTransformerUtils.convertMethodBody("foo", compilationLeft);
-        Node rootRight = TreeTransformerUtils.convertMethodBody("foo", compilationRight);
+        Node rootLeft = TreeTransformerUtils.convertMethodDeclaration("foo", compilationLeft);
+        Node rootRight = TreeTransformerUtils.convertMethodDeclaration("foo", compilationRight);
         StructureEntityVersion structureEntity = new StructureEntityVersion(JavaEntityType.METHOD, "foo", 0);
         Distiller distiller = getDistiller(structureEntity);
         distiller.extractClassifiedSourceCodeChanges(rootLeft, rootRight);
-        assertThat(structureEntity.getSourceCodeChanges().size(), is(5));
+        assertThat(structureEntity.getSourceCodeChanges().size(), is(2));
     }
 
 }

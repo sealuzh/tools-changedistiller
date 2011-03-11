@@ -1,10 +1,10 @@
-package org.evolizer.changedistiller.java;
+package org.evolizer.changedistiller.distilling.java;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.evolizer.changedistiller.java.Comment.CommentType;
+import org.evolizer.changedistiller.distilling.java.Comment.CommentType;
 
 /**
  * Collects comments for a {@link CompilationUnitDeclaration}.

@@ -28,12 +28,10 @@ public final class SourceCodeChangeConverter {
      * 
      * @param structureEntity
      *            in which the {@link SourceCodeChange}s happened
-     * @param factory
-     *            create the source code changes
      */
-    public SourceCodeChangeConverter(StructureEntityVersion structureEntity, SourceCodeChangeFactory factory) {
+    public SourceCodeChangeConverter(StructureEntityVersion structureEntity) {
         fStructureEntity = structureEntity;
-        fSourceCodeChangeFactory = factory;
+        fSourceCodeChangeFactory = new SourceCodeChangeFactory();
         fSourceCodeChanges = new LinkedList<SourceCodeChange>();
     }
 
