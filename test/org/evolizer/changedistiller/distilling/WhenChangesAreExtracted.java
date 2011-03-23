@@ -1,7 +1,10 @@
 package org.evolizer.changedistiller.distilling;
 
+import java.util.List;
+
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.evolizer.changedistiller.distilling.java.Comment;
 import org.evolizer.changedistiller.distilling.java.JavaDeclarationConverter;
 import org.evolizer.changedistiller.distilling.java.JavaDistillerTestCase;
 import org.evolizer.changedistiller.distilling.java.JavaMethodBodyConverter;
@@ -40,7 +43,8 @@ public abstract class WhenChangesAreExtracted extends JavaDistillerTestCase {
         root.setEntity(new SourceCodeEntity(methodName, JavaEntityType.METHOD, new SourceRange(
                 method.declarationSourceStart,
                 method.declarationSourceEnd)));
-        sMethodBodyConverter.initialize(root, method, null, compilation.getScanner());
+        List<Comment> comments = CompilationUtils.extractComments(compilation);
+        sMethodBodyConverter.initialize(root, method, comments, compilation.getScanner());
         method.traverse(sMethodBodyConverter, (ClassScope) null);
         return root;
     }
