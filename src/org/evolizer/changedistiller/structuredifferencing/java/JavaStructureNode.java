@@ -14,6 +14,7 @@ public class JavaStructureNode {
 
     private Type fType;
     private String fName;
+    private String fQualifier;
     private ASTNode fASTNode;
     private List<JavaStructureNode> fChildren;
 
@@ -22,13 +23,16 @@ public class JavaStructureNode {
      * 
      * @param type
      *            of the node
+     * @param qualifier
+     *            of the node
      * @param name
      *            of the node
      * @param astNode
      *            representing the structure node
      */
-    public JavaStructureNode(Type type, String name, ASTNode astNode) {
+    public JavaStructureNode(Type type, String qualifier, String name, ASTNode astNode) {
         fType = type;
+        fQualifier = qualifier;
         fName = name;
         fASTNode = astNode;
         fChildren = new LinkedList<JavaStructureNode>();
@@ -75,6 +79,19 @@ public class JavaStructureNode {
 
     public String getName() {
         return fName;
+    }
+
+    /**
+     * Returns the fully qualified name of this node if the node has a qualifier. Otherwise, {@link #getName()} is
+     * returned.
+     * 
+     * @return the fully qualified name of this node, if the node has a qualifier; name otherwise.
+     */
+    public String getFullyQualifiedName() {
+        if (fQualifier != null) {
+            return fQualifier + "." + fName;
+        }
+        return getName();
     }
 
 }

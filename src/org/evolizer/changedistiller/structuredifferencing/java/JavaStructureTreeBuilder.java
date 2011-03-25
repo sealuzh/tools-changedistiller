@@ -5,6 +5,7 @@ import java.util.Stack;
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
@@ -23,6 +24,7 @@ import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode
 public class JavaStructureTreeBuilder extends ASTVisitor {
 
     private Stack<JavaStructureNode> fNodeStack;
+    private Stack<char[]> fQualifiers;
 
     /**
      * Creates a new Java structure tree builder.
@@ -33,6 +35,17 @@ public class JavaStructureTreeBuilder extends ASTVisitor {
     public JavaStructureTreeBuilder(JavaStructureNode root) {
         fNodeStack = new Stack<JavaStructureNode>();
         fNodeStack.push(root);
+        fQualifiers = new Stack<char[]>();
+    }
+
+    @Override
+    public boolean visit(CompilationUnitDeclaration compilationUnitDeclaration, CompilationUnitScope scope) {
+        if (compilationUnitDeclaration.currentPackage != null) {
+            for (char[] qualifier : compilationUnitDeclaration.currentPackage.tokens) {
+                fQualifiers.push(qualifier);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -113,12 +126,14 @@ public class JavaStructureTreeBuilder extends ASTVisitor {
                 assert (false);
         }
         push(type, String.valueOf(typeDeclaration.name), typeDeclaration);
+        fQualifiers.push(typeDeclaration.name);
         return true;
     }
 
     @Override
     public void endVisit(TypeDeclaration typeDeclaration, CompilationUnitScope scope) {
         pop();
+        fQualifiers.pop();
     }
 
     private String getMethodSignature(AbstractMethodDeclaration methodDeclaration) {
@@ -138,9 +153,23 @@ public class JavaStructureTreeBuilder extends ASTVisitor {
     }
 
     private void push(Type type, String name, ASTNode astNode) {
-        JavaStructureNode node = new JavaStructureNode(type, name, astNode);
+        JavaStructureNode node = new JavaStructureNode(type, getQualifier(), name, astNode);
         fNodeStack.peek().addChild(node);
         fNodeStack.push(node);
+    }
+
+    private String getQualifier() {
+        if (!fQualifiers.isEmpty()) {
+            StringBuilder qualifier = new StringBuilder();
+            for (int i = 0; i < fQualifiers.size(); i++) {
+                qualifier.append(fQualifiers.get(i));
+                if (i < fQualifiers.size() - 1) {
+                    qualifier.append('.');
+                }
+            }
+            return qualifier.toString();
+        }
+        return null;
     }
 
     private void pop() {

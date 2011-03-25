@@ -21,7 +21,7 @@ public class WhenJavaStructureTreesAreBuilt {
         createStructureTree();
         JavaStructureNode classNode = fRoot.getChildren().get(0);
         assertThat(classNode.getType(), is(Type.CLASS));
-        assertThat(classNode.getName(), is("Clazz"));
+        assertNameCorrectness(classNode, "Clazz");
     }
 
     @Test
@@ -30,7 +30,7 @@ public class WhenJavaStructureTreesAreBuilt {
         createStructureTree();
         JavaStructureNode classNode = fRoot.getChildren().get(0);
         assertThat(classNode.getType(), is(Type.INTERFACE));
-        assertThat(classNode.getName(), is("Type"));
+        assertNameCorrectness(classNode, "Type");
     }
 
     @Test
@@ -39,7 +39,7 @@ public class WhenJavaStructureTreesAreBuilt {
         createStructureTree();
         JavaStructureNode classNode = fRoot.getChildren().get(0);
         assertThat(classNode.getType(), is(Type.ANNOTATION));
-        assertThat(classNode.getName(), is("Annotation"));
+        assertNameCorrectness(classNode, "Annotation");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class WhenJavaStructureTreesAreBuilt {
         createStructureTree();
         JavaStructureNode classNode = fRoot.getChildren().get(0);
         assertThat(classNode.getType(), is(Type.ENUM));
-        assertThat(classNode.getName(), is("Enumeration"));
+        assertNameCorrectness(classNode, "Enumeration");
     }
 
     @Test
@@ -58,6 +58,7 @@ public class WhenJavaStructureTreesAreBuilt {
         JavaStructureNode fieldNode = fRoot.getChildren().get(0).getChildren().get(0);
         assertThat(fieldNode.getType(), is(Type.FIELD));
         assertThat(fieldNode.getName(), is("fInteger : int"));
+        assertThat(fieldNode.getFullyQualifiedName(), is("Clazz.fInteger : int"));
     }
 
     @Test
@@ -67,6 +68,7 @@ public class WhenJavaStructureTreesAreBuilt {
         JavaStructureNode constructorNode = fRoot.getChildren().get(0).getChildren().get(0);
         assertThat(constructorNode.getType(), is(Type.CONSTRUCTOR));
         assertThat(constructorNode.getName(), is("Clazz()"));
+        assertThat(constructorNode.getFullyQualifiedName(), is("Clazz.Clazz()"));
     }
 
     @Test
@@ -76,6 +78,7 @@ public class WhenJavaStructureTreesAreBuilt {
         JavaStructureNode constructorNode = fRoot.getChildren().get(0).getChildren().get(0);
         assertThat(constructorNode.getType(), is(Type.CONSTRUCTOR));
         assertThat(constructorNode.getName(), is("Clazz(int)"));
+        assertThat(constructorNode.getFullyQualifiedName(), is("Clazz.Clazz(int)"));
     }
 
     @Test
@@ -85,6 +88,7 @@ public class WhenJavaStructureTreesAreBuilt {
         JavaStructureNode methodNode = fRoot.getChildren().get(0).getChildren().get(1);
         assertThat(methodNode.getType(), is(Type.METHOD));
         assertThat(methodNode.getName(), is("method()"));
+        assertThat(methodNode.getFullyQualifiedName(), is("Clazz.method()"));
     }
 
     @Test
@@ -94,6 +98,7 @@ public class WhenJavaStructureTreesAreBuilt {
         JavaStructureNode methodNode = fRoot.getChildren().get(0).getChildren().get(1);
         assertThat(methodNode.getType(), is(Type.METHOD));
         assertThat(methodNode.getName(), is("method()"));
+        assertThat(methodNode.getFullyQualifiedName(), is("Clazz.method()"));
     }
 
     @Test
@@ -103,12 +108,53 @@ public class WhenJavaStructureTreesAreBuilt {
         JavaStructureNode methodNode = fRoot.getChildren().get(0).getChildren().get(1);
         assertThat(methodNode.getType(), is(Type.METHOD));
         assertThat(methodNode.getName(), is("method(String,int)"));
+        assertThat(methodNode.getFullyQualifiedName(), is("Clazz.method(String,int)"));
+    }
+
+    @Test
+    public void structureTreeWithQualifiedClassShouldBeCreated() throws Exception {
+        fSnippet = "package org.foo;\nclass Clazz {}";
+        createStructureTree();
+        JavaStructureNode classNode = fRoot.getChildren().get(0);
+        assertThat(classNode.getType(), is(Type.CLASS));
+        assertThat(classNode.getName(), is("Clazz"));
+        assertThat(classNode.getFullyQualifiedName(), is("org.foo.Clazz"));
+    }
+
+    @Test
+    public void structureTreeWithQualifiedFieldShouldBeCreated() throws Exception {
+        fSnippet = getQualifiedCompilationUnit("private int fInteger = 12;");
+        createStructureTree();
+        JavaStructureNode fieldNode = fRoot.getChildren().get(0).getChildren().get(0);
+        assertThat(fieldNode.getType(), is(Type.FIELD));
+        assertThat(fieldNode.getName(), is("fInteger : int"));
+        assertThat(fieldNode.getFullyQualifiedName(), is("org.foo.Clazz.fInteger : int"));
+    }
+
+    @Test
+    public void structureTreeWithQualifiedConstructorShouldBeCreated() throws Exception {
+        fSnippet = getQualifiedCompilationUnit("Clazz() {}");
+        createStructureTree();
+        JavaStructureNode constructorNode = fRoot.getChildren().get(0).getChildren().get(0);
+        assertThat(constructorNode.getType(), is(Type.CONSTRUCTOR));
+        assertThat(constructorNode.getName(), is("Clazz()"));
+        assertThat(constructorNode.getFullyQualifiedName(), is("org.foo.Clazz.Clazz()"));
+    }
+
+    @Test
+    public void structureTreeWithQualifiedMethodShouldBeCreated() throws Exception {
+        fSnippet = getQualifiedCompilationUnit("void method(String name, int length) {}");
+        createStructureTree();
+        JavaStructureNode methodNode = fRoot.getChildren().get(0).getChildren().get(1);
+        assertThat(methodNode.getType(), is(Type.METHOD));
+        assertThat(methodNode.getName(), is("method(String,int)"));
+        assertThat(methodNode.getFullyQualifiedName(), is("org.foo.Clazz.method(String,int)"));
     }
 
     private void createStructureTree() {
         Compilation compilation = CompilationUtils.compileSource(fSnippet);
         CompilationUnitDeclaration cu = compilation.getCompilationUnit();
-        fRoot = new JavaStructureNode(Type.CU, null, cu);
+        fRoot = new JavaStructureNode(Type.CU, null, null, cu);
         cu.traverse(new JavaStructureTreeBuilder(fRoot), (CompilationUnitScope) null);
     }
 
@@ -116,4 +162,12 @@ public class WhenJavaStructureTreesAreBuilt {
         return "class Clazz { " + snippet + " }";
     }
 
+    private String getQualifiedCompilationUnit(String snippet) {
+        return "package org.foo;\nclass Clazz { " + snippet + " }";
+    }
+
+    private void assertNameCorrectness(JavaStructureNode node, String name) {
+        assertThat(node.getName(), is(name));
+        assertThat(node.getFullyQualifiedName(), is(name));
+    }
 }
