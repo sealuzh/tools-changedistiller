@@ -35,7 +35,7 @@ public class WhenMethodBodyChangesAreExtracted extends WhenChangesAreExtracted {
         StructureEntityVersion structureEntity = new StructureEntityVersion(JavaEntityType.METHOD, "foo", 0);
         Distiller distiller = getDistiller(structureEntity);
         distiller.extractClassifiedSourceCodeChanges(rootLeft, rootRight);
-        assertThat(structureEntity.getSourceCodeChanges().size(), is(5));
+        assertThat(structureEntity.getSourceCodeChanges().size(), is(11));
     }
 
 }

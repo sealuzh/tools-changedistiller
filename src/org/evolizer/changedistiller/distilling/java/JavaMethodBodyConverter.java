@@ -309,12 +309,12 @@ public class JavaMethodBodyConverter extends ASTVisitor {
         if (node instanceof MethodDeclaration) {
             MethodDeclaration method = (MethodDeclaration) node;
             if (method.javadoc != null) {
-                start += method.modifiersSourceStart - method.javadoc.sourceStart();
+                start += method.javadoc.sourceEnd();
             }
         } else if (node instanceof TypeDeclaration) {
             TypeDeclaration type = (TypeDeclaration) node;
             if (type.javadoc != null) {
-                start += type.modifiersSourceStart - type.javadoc.sourceStart();
+                start += type.javadoc.sourceEnd();
             }
         }
         return result.substring(start);
