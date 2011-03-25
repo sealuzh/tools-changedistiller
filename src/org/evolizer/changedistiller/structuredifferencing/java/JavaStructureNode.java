@@ -4,13 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.evolizer.changedistiller.structuredifferencing.StructureNode;
 
 /**
  * Node for Java structure differencing.
  * 
  * @author Beat Fluri
  */
-public class JavaStructureNode {
+public class JavaStructureNode implements StructureNode {
 
     private Type fType;
     private String fName;
@@ -48,6 +49,7 @@ public class JavaStructureNode {
         fChildren.add(node);
     }
 
+    @Override
     public List<JavaStructureNode> getChildren() {
         return fChildren;
     }
@@ -92,6 +94,25 @@ public class JavaStructureNode {
             return fQualifier + "." + fName;
         }
         return getName();
+    }
+
+    @Override
+    public String getContent() {
+        return fASTNode.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ((obj != null) && (getClass() == obj.getClass())) {
+            JavaStructureNode other = (JavaStructureNode) obj;
+            return (fType == other.getType()) && fName.equals(other.getName());
+        }
+        return super.equals(obj);
     }
 
 }
