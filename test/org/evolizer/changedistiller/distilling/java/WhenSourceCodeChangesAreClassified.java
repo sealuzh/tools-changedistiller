@@ -7,6 +7,7 @@ import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
+import org.evolizer.changedistiller.compilation.java.JavaCompilation;
 import org.evolizer.changedistiller.distilling.Distiller;
 import org.evolizer.changedistiller.distilling.WhenChangesAreExtracted;
 import org.evolizer.changedistiller.model.classifiers.ChangeType;
@@ -15,7 +16,6 @@ import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.model.entities.StructureEntityVersion;
 import org.evolizer.changedistiller.treedifferencing.Node;
-import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -741,7 +741,7 @@ public class WhenSourceCodeChangesAreClassified extends WhenChangesAreExtracted 
     }
 
     private Node convertFieldDeclaration(String fieldName, String sourceCode) {
-        Compilation compilation = CompilationUtils.compileSource(sourceCode);
+        JavaCompilation compilation = CompilationUtils.compileSource(sourceCode);
         FieldDeclaration field = CompilationUtils.findField(compilation.getCompilationUnit(), fieldName);
         Node root = new Node(JavaEntityType.FIELD, fieldName);
         root.setEntity(new SourceCodeEntity(fieldName, JavaEntityType.FIELD, new SourceRange(
@@ -753,7 +753,7 @@ public class WhenSourceCodeChangesAreClassified extends WhenChangesAreExtracted 
     }
 
     private Node convertClassDeclaration(String className, String sourceCode) {
-        Compilation compilation = CompilationUtils.compileSource(sourceCode);
+        JavaCompilation compilation = CompilationUtils.compileSource(sourceCode);
         TypeDeclaration type = CompilationUtils.findType(compilation.getCompilationUnit(), className);
         Node root = new Node(JavaEntityType.CLASS, className);
         root.setEntity(new SourceCodeEntity(className, JavaEntityType.CLASS, new SourceRange(

@@ -115,4 +115,23 @@ public class JavaStructureNode implements StructureNode {
         return super.equals(obj);
     }
 
+    public ASTNode getASTNode() {
+        return fASTNode;
+    }
+
+    @Override
+    public boolean isClassOrInterface() {
+        return (fType == Type.CLASS) || (fType == Type.INTERFACE);
+    }
+
+    @Override
+    public boolean isMethodOrConstructor() {
+        return (fType == Type.METHOD) || (fType == Type.CONSTRUCTOR);
+    }
+
+    @Override
+    public boolean isField() {
+        return fType == Type.FIELD;
+    }
+
 }

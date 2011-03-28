@@ -40,7 +40,7 @@ import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;
 import org.eclipse.jdt.internal.compiler.parser.TerminalTokens;
-import org.evolizer.changedistiller.distilling.ASTHelper;
+import org.evolizer.changedistiller.distilling.ASTNodeTypeConverter;
 import org.evolizer.changedistiller.distilling.java.Comment.CommentType;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
@@ -69,10 +69,10 @@ public class JavaMethodBodyConverter extends ASTVisitor {
 
     private Stack<ASTNode[]> fLastAssociationCandidate;
     private Stack<Node[]> fLastCommentNodeTuples;
-    private ASTHelper fASTHelper;
+    private ASTNodeTypeConverter fASTHelper;
 
     @Inject
-    JavaMethodBodyConverter(ASTHelper astHelper) {
+    JavaMethodBodyConverter(ASTNodeTypeConverter astHelper) {
         fNodeStack = new Stack<Node>();
         fLastAssociationCandidate = new Stack<ASTNode[]>();
         fLastCommentNodeTuples = new Stack<Node[]>();

@@ -3,14 +3,14 @@ package org.evolizer.changedistiller.distilling;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 
 /**
- * AST helper should extend this class to facilitate receiving AST information.
+ * AST node type converters should extend this class to facilitate conversion of AST node types.
  * 
  * @author Beat Fluri
  */
-public interface ASTHelper {
+public interface ASTNodeTypeConverter {
 
     /**
-     * Converts given node into an {@link EntityType}.
+     * Converts and returns the given node into an {@link EntityType}.
      * 
      * @param node
      *            to convert

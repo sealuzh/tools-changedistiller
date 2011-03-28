@@ -38,7 +38,7 @@ public class StructureDifferencer {
      * @param right
      *            to with left
      */
-    public void findDifferences(StructureNode left, StructureNode right) {
+    public void extractDifferences(StructureNode left, StructureNode right) {
         if ((left == null) && (right == null)) {
             return;
         }

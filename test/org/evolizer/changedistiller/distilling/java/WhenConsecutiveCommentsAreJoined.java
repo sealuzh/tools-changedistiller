@@ -5,16 +5,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
+import org.evolizer.changedistiller.compilation.java.JavaCompilation;
 import org.evolizer.changedistiller.distilling.java.Comment;
 import org.evolizer.changedistiller.distilling.java.CommentCleaner;
-import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class WhenConsecutiveCommentsAreJoined {
 
-    private static Compilation sCompilationUnit;
+    private static JavaCompilation sCompilationUnit;
     private static List<Comment> sComments;
 
     @BeforeClass

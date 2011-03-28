@@ -11,12 +11,14 @@ import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.BREAK_STATEMENT;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CAST_EXPRESSION;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CHARACTER_LITERAL;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CLASS;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CLASS_INSTANCE_CREATION;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CONDITIONAL_EXPRESSION;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CONSTRUCTOR_INVOCATION;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.CONTINUE_STATEMENT;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.DO_STATEMENT;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.EMPTY_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.FIELD;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.FIELD_ACCESS;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.FOREACH_STATEMENT;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.FOR_STATEMENT;
@@ -25,6 +27,7 @@ import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.INSTANCEOF_EXPRESSION;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.JAVADOC;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.LABELED_STATEMENT;
+import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.METHOD;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.METHOD_INVOCATION;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.NULL_LITERAL;
 import static org.evolizer.changedistiller.model.classifiers.java.JavaEntityType.NUMBER_LITERAL;
@@ -79,6 +82,7 @@ import org.eclipse.jdt.internal.compiler.ast.EqualExpression;
 import org.eclipse.jdt.internal.compiler.ast.ExplicitConstructorCall;
 import org.eclipse.jdt.internal.compiler.ast.ExtendedStringLiteral;
 import org.eclipse.jdt.internal.compiler.ast.FalseLiteral;
+import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.FieldReference;
 import org.eclipse.jdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.jdt.internal.compiler.ast.ForStatement;
@@ -91,6 +95,7 @@ import org.eclipse.jdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.jdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.jdt.internal.compiler.ast.MessageSend;
+import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.jdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
@@ -114,19 +119,20 @@ import org.eclipse.jdt.internal.compiler.ast.ThisReference;
 import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.jdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.jdt.internal.compiler.ast.TryStatement;
+import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.jdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
-import org.evolizer.changedistiller.distilling.ASTHelper;
+import org.evolizer.changedistiller.distilling.ASTNodeTypeConverter;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 
 /**
- * Implementation of ASTHelper for the Java programming language.
+ * Implementation of {@link ASTNodeTypeConverter} for the Java programming language.
  * 
  * @author Beat Fluri
  */
-public final class JavaASTHelper implements ASTHelper {
+public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
 
     private static Map<Class<? extends ASTNode>, JavaEntityType> sConversionMap =
             new HashMap<Class<? extends ASTNode>, JavaEntityType>();
@@ -197,6 +203,9 @@ public final class JavaASTHelper implements ASTHelper {
         sConversionMap.put(ThisReference.class, SIMPLE_NAME);
         sConversionMap.put(UnaryExpression.class, PREFIX_EXPRESSION);
         sConversionMap.put(InstanceOfExpression.class, INSTANCEOF_EXPRESSION);
+        sConversionMap.put(FieldDeclaration.class, FIELD);
+        sConversionMap.put(MethodDeclaration.class, METHOD);
+        sConversionMap.put(TypeDeclaration.class, CLASS);
     }
 
     @Override

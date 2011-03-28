@@ -8,19 +8,19 @@ import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.evolizer.changedistiller.compilation.java.JavaCompilation;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
-import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class WhenCommentsAreAssociatedToSourceCode extends JavaDistillerTestCase {
 
-    private static Compilation sCompilation;
+    private static JavaCompilation sCompilation;
     private static List<Comment> sComments;
     private static Node sRoot;
 

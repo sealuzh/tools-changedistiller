@@ -8,11 +8,11 @@ import java.util.Collections;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
+import org.evolizer.changedistiller.compilation.java.JavaCompilation;
 import org.evolizer.changedistiller.structuredifferencing.StructureDifferencer.DiffType;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode.Type;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureTreeBuilder;
-import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.Test;
 
@@ -142,7 +142,7 @@ public class WhenStructureDifferencesAreExtracted {
     }
 
     private JavaStructureNode createStructureTree(String source) {
-        Compilation compilation = CompilationUtils.compileSource(source);
+        JavaCompilation compilation = CompilationUtils.compileSource(source);
         CompilationUnitDeclaration cu = compilation.getCompilationUnit();
         JavaStructureNode root = new JavaStructureNode(Type.CU, null, null, cu);
         cu.traverse(new JavaStructureTreeBuilder(root), (CompilationUnitScope) null);
@@ -151,7 +151,7 @@ public class WhenStructureDifferencesAreExtracted {
 
     private void createDifferences() {
         StructureDifferencer differencer = new StructureDifferencer();
-        differencer.findDifferences(fLeft, fRight);
+        differencer.extractDifferences(fLeft, fRight);
         fDiffs = differencer.getDifferences();
     }
 

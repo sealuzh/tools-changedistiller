@@ -77,4 +77,67 @@ public class StructureDiffNode {
         return fDiffType;
     }
 
+    public boolean isChanged() {
+        return !(fDiffType == DiffType.NO_CHANGE);
+    }
+
+    /**
+     * Returns whether or not the node has children.
+     * 
+     * @return <code>true</code> if the node has children, <code>false</code> othewise.
+     */
+    public boolean hasChildren() {
+        return !fChildren.isEmpty();
+    }
+
+    /**
+     * Returns whether or not the diff node is related to a class or interface.
+     * 
+     * @return <code>true</code> if the diff node is related to a class or interface, <code>false</code> otherwise
+     */
+    public boolean isClassOrInterfaceDiffNode() {
+        if (fLeft != null) {
+            return fLeft.isClassOrInterface();
+        } else if (fRight != null) {
+            return fRight.isClassOrInterface();
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether or not the diff node is related to a method or constructor.
+     * 
+     * @return <code>true</code> if the diff node is related to a method or constructor, <code>false</code> otherwise
+     */
+    public boolean isMethodOrConstructorDiffNode() {
+        if (fLeft != null) {
+            return fLeft.isMethodOrConstructor();
+        } else if (fRight != null) {
+            return fRight.isMethodOrConstructor();
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether or not the diff node is related to a field.
+     * 
+     * @return <code>true</code> if the diff node is related to a field, <code>false</code> otherwise
+     */
+    public boolean isFieldDiffNode() {
+        if (fLeft != null) {
+            return fLeft.isField();
+        } else if (fRight != null) {
+            return fRight.isField();
+        }
+        return false;
+    }
+
+    public boolean isAddition() {
+        return fDiffType == DiffType.ADDITION;
+    }
+
+    public boolean isDeletion() {
+        return fDiffType == DiffType.DELETION;
+    }
+
 }

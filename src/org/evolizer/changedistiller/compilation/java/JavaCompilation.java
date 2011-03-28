@@ -1,14 +1,27 @@
-package org.evolizer.changedistiller.util;
+package org.evolizer.changedistiller.compilation.java;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;
 
-public class Compilation {
+/**
+ * Container for {@link CompilationUnitDeclaration} and the corresponding {@link Scanner}.
+ * 
+ * @author Beat Fluri
+ */
+public class JavaCompilation {
 
     private CompilationUnitDeclaration fCompilationUnit;
     private Scanner fScanner;
 
-    public Compilation(CompilationUnitDeclaration compilationUnit, Scanner scanner) {
+    /**
+     * Create a new Java compilation
+     * 
+     * @param compilationUnit
+     *            of the compilation
+     * @param scanner
+     *            that produced the compilation
+     */
+    public JavaCompilation(CompilationUnitDeclaration compilationUnit, Scanner scanner) {
         fCompilationUnit = compilationUnit;
         fScanner = scanner;
     }

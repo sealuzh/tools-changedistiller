@@ -1,10 +1,10 @@
 package org.evolizer.changedistiller.distilling.java;
 
+import org.evolizer.changedistiller.compilation.java.JavaCompilation;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.treedifferencing.Node;
-import org.evolizer.changedistiller.util.Compilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
@@ -16,7 +16,7 @@ public abstract class WhenASTsAreConverted extends JavaDistillerTestCase {
     protected static JavaMethodBodyConverter sMethodBodyConverter;
 
     protected String fSnippet;
-    protected Compilation fCompilation;
+    protected JavaCompilation fCompilation;
     protected Node fRoot;
 
     @BeforeClass

@@ -28,7 +28,7 @@ import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;
 import org.eclipse.jdt.internal.compiler.parser.TerminalTokens;
-import org.evolizer.changedistiller.distilling.ASTHelper;
+import org.evolizer.changedistiller.distilling.ASTNodeTypeConverter;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
@@ -51,11 +51,11 @@ public class JavaDeclarationConverter extends ASTVisitor {
     private Stack<Node> fNodeStack;
     private boolean fInMethodDeclaration;
     private String fSource;
-    private ASTHelper fASTHelper;
+    private ASTNodeTypeConverter fASTHelper;
     private Scanner fScanner;
 
     @Inject
-    JavaDeclarationConverter(ASTHelper astHelper) {
+    JavaDeclarationConverter(ASTNodeTypeConverter astHelper) {
         fASTHelper = astHelper;
         fNodeStack = new Stack<Node>();
     }

@@ -19,6 +19,7 @@ import org.eclipse.jdt.internal.compiler.parser.Parser;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.jdt.internal.core.util.CommentRecorderParser;
+import org.evolizer.changedistiller.compilation.java.JavaCompilation;
 import org.evolizer.changedistiller.distilling.java.Comment;
 import org.evolizer.changedistiller.distilling.java.CommentCollector;
 
@@ -28,12 +29,12 @@ public final class CompilationUtils {
 
     private CompilationUtils() {}
 
-    public static Compilation compileSource(String source) {
+    public static JavaCompilation compileSource(String source) {
         CompilerOptions options = getDefaultCompilerOptions();
         Parser parser = createCommentRecorderParser(options);
         ICompilationUnit cu = createCompilationunit(source, "");
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
-        return new Compilation(parser.parse(cu, compilationResult), parser.scanner);
+        return new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
     }
 
     private static CompilationResult createDefaultCompilationResult(ICompilationUnit cu, CompilerOptions options) {
@@ -65,19 +66,19 @@ public final class CompilationUtils {
     }
 
     /**
-     * Returns the generated {@link Compilation} from the file identified by the given filename. This method assumes
+     * Returns the generated {@link JavaCompilation} from the file identified by the given filename. This method assumes
      * that the filename is relative to <code>{@value #TEST_DATA_BASE_DIR}</code>.
      * 
      * @param filename
      *            of the file to compile (relative to {@value #TEST_DATA_BASE_DIR}).
      * @return the compilation of the file
      */
-    public static Compilation compileFile(String filename) {
+    public static JavaCompilation compileFile(String filename) {
         CompilerOptions options = getDefaultCompilerOptions();
         Parser parser = createCommentRecorderParser(options);
         ICompilationUnit cu = createCompilationunit(getContentOfFile(TEST_DATA_BASE_DIR + filename), filename);
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
-        return new Compilation(parser.parse(cu, compilationResult), parser.scanner);
+        return new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
     }
 
     private static String getContentOfFile(String filename) {
@@ -97,7 +98,7 @@ public final class CompilationUtils {
         return sb.toString();
     }
 
-    public static List<Comment> extractComments(Compilation sCompilationUnit) {
+    public static List<Comment> extractComments(JavaCompilation sCompilationUnit) {
         CommentCollector collector =
                 new CommentCollector(sCompilationUnit.getCompilationUnit(), sCompilationUnit.getSource());
         collector.collect();
@@ -135,6 +136,10 @@ public final class CompilationUtils {
             }
         }
         return null;
+    }
+
+    public static File getFile(String filename) {
+        return new File(TEST_DATA_BASE_DIR + filename);
     }
 
 }

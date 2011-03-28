@@ -27,8 +27,36 @@ public interface StructureNode {
     /**
      * Returns the name of this structure node.
      * 
-     * @return the the name of the node
+     * @return the name of the node
      */
     String getName();
+
+    /**
+     * Retruns the fully qualified name of this structure node.
+     * 
+     * @return the fully qualified name of the node
+     */
+    String getFullyQualifiedName();
+
+    /**
+     * Returns whether or not the node is a class or interface.
+     * 
+     * @return <code>true</code> if the node is a class or interface, <code>false</code> otherwise
+     */
+    boolean isClassOrInterface();
+
+    /**
+     * Returns whether of not the node is a method or constructor.
+     * 
+     * @return <code>true</code> if the node is a method or constructor, <code>false</code> otherwise
+     */
+    boolean isMethodOrConstructor();
+
+    /**
+     * Returns whether of not the node is a field.
+     * 
+     * @return <code>true</code> if the node is a field, <code>false</code> otherwise
+     */
+    boolean isField();
 
 }
