@@ -72,8 +72,10 @@ import org.eclipse.jdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.jdt.internal.compiler.ast.CastExpression;
 import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
+import org.eclipse.jdt.internal.compiler.ast.Clinit;
 import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
+import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ContinueStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoStatement;
 import org.eclipse.jdt.internal.compiler.ast.DoubleLiteral;
@@ -205,6 +207,8 @@ public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
         sConversionMap.put(InstanceOfExpression.class, INSTANCEOF_EXPRESSION);
         sConversionMap.put(FieldDeclaration.class, FIELD);
         sConversionMap.put(MethodDeclaration.class, METHOD);
+        sConversionMap.put(Clinit.class, METHOD);
+        sConversionMap.put(ConstructorDeclaration.class, METHOD);
         sConversionMap.put(TypeDeclaration.class, CLASS);
     }
 

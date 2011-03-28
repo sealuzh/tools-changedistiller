@@ -19,6 +19,9 @@ import org.evolizer.changedistiller.distilling.java.JavaDeclarationConverter;
 import org.evolizer.changedistiller.distilling.java.JavaMethodBodyConverter;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
+import org.evolizer.changedistiller.model.entities.AttributeHistory;
+import org.evolizer.changedistiller.model.entities.ClassHistory;
+import org.evolizer.changedistiller.model.entities.MethodHistory;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.model.entities.StructureEntityVersion;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode;
@@ -146,6 +149,50 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     @Override
     public StructureEntityVersion createStructureEntityVersion(JavaStructureNode node) {
         return new StructureEntityVersion(convertType(node), node.getFullyQualifiedName(), 0);
+    }
+
+    @Override
+    public StructureEntityVersion createMethodInClassHistory(ClassHistory classHistory, JavaStructureNode node) {
+        MethodHistory mh;
+        StructureEntityVersion method = createStructureEntityVersion(node);
+        if (classHistory.getMethodHistories().containsKey(method.getUniqueName())) {
+            mh = classHistory.getMethodHistories().get(method.getUniqueName());
+            mh.addVersion(method);
+        } else {
+            mh = new MethodHistory(method);
+            classHistory.getMethodHistories().put(method.getUniqueName(), mh);
+        }
+        return method;
+    }
+
+    @Override
+    public StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, JavaStructureNode node) {
+        AttributeHistory ah = null;
+        StructureEntityVersion attribute = createStructureEntityVersion(node);
+        if (classHistory.getAttributeHistories().containsKey(attribute.getUniqueName())) {
+            ah = classHistory.getAttributeHistories().get(attribute.getUniqueName());
+            ah.addVersion(attribute);
+        } else {
+            ah = new AttributeHistory(attribute);
+            classHistory.getAttributeHistories().put(attribute.getUniqueName(), ah);
+        }
+        return attribute;
+
+    }
+
+    @Override
+    public StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, JavaStructureNode node) {
+        ClassHistory ch = null;
+        StructureEntityVersion clazz = createStructureEntityVersion(node);
+        if (classHistory.getInnerClassHistories().containsKey(clazz.getUniqueName())) {
+            ch = classHistory.getInnerClassHistories().get(clazz.getUniqueName());
+            ch.addVersion(clazz);
+        } else {
+            ch = new ClassHistory(clazz);
+            classHistory.getInnerClassHistories().put(clazz.getUniqueName(), ch);
+        }
+        return clazz;
+
     }
 
 }

@@ -1,6 +1,9 @@
 package org.evolizer.changedistiller.compilation;
 
 import org.evolizer.changedistiller.model.classifiers.EntityType;
+import org.evolizer.changedistiller.model.entities.AttributeHistory;
+import org.evolizer.changedistiller.model.entities.ClassHistory;
+import org.evolizer.changedistiller.model.entities.MethodHistory;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 import org.evolizer.changedistiller.model.entities.StructureEntityVersion;
 import org.evolizer.changedistiller.structuredifferencing.StructureNode;
@@ -55,7 +58,7 @@ public interface ASTHelper<T extends StructureNode> {
      * Creates and returns the {@link SourceCodeEntity} for the {@link StructureNode}.
      * 
      * @param node
-     *            the node to create the source code entity for
+     *            to create the source code entity for
      * @return the source code entity for the node
      */
     SourceCodeEntity createSourceCodeEntity(T node);
@@ -64,9 +67,45 @@ public interface ASTHelper<T extends StructureNode> {
      * Creates and returns the {@link StructureEntityVersion} for the {@link StructureNode}.
      * 
      * @param node
-     *            the node to create the structure entity version for
+     *            to create the structure entity version for
      * @return the structure entity version for the node
      */
     StructureEntityVersion createStructureEntityVersion(T node);
+
+    /**
+     * Creates and returns the {@link StructureEntityVersion} as method of the {@link ClassHistory}. The method is
+     * attached to the corresponding {@link MethodHistory}, if exists. Otherwise a new one is created.
+     * 
+     * @param classHistory
+     *            to create the structure entity version for
+     * @param node
+     *            to create the structure entity version
+     * @return the method structure entity version in the class history for the node
+     */
+    StructureEntityVersion createMethodInClassHistory(ClassHistory classHistory, T node);
+
+    /**
+     * Creates and returns the {@link StructureEntityVersion} as field of the {@link ClassHistory}. The field is
+     * attached to the corresponding {@link AttributeHistory}, if exists. Otherwise a new one is created.
+     * 
+     * @param classHistory
+     *            to create the structure entity version for
+     * @param node
+     *            to create the structure entity version
+     * @return the field structure entity version in the class history for the node
+     */
+    StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, T node);
+
+    /**
+     * Creates and returns the {@link StructureEntityVersion} as class of the {@link ClassHistory}. An inner class
+     * version is added to this resulting Inner{@link ClassHistory}.
+     * 
+     * @param classHistory
+     *            to create the structure entity version for
+     * @param node
+     *            to create the structure entity version
+     * @return the class structure entity version in the class history for the node
+     */
+    StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, T node);
 
 }

@@ -161,4 +161,19 @@ public enum JavaEntityType implements EntityType {
         }
     }
 
+    @Override
+    public boolean isField() {
+        return this == FIELD;
+    }
+
+    @Override
+    public boolean isClass() {
+        return this == CLASS;
+    }
+
+    @Override
+    public boolean isMethod() {
+        return this == METHOD;
+    }
+
 }

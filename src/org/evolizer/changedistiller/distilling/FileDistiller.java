@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.evolizer.changedistiller.compilation.ASTHelper;
 import org.evolizer.changedistiller.compilation.ASTHelperFactory;
+import org.evolizer.changedistiller.model.entities.ClassHistory;
 import org.evolizer.changedistiller.model.entities.Delete;
 import org.evolizer.changedistiller.model.entities.Insert;
 import org.evolizer.changedistiller.model.entities.SourceCodeChange;
@@ -32,6 +33,8 @@ public class FileDistiller {
     private ASTHelper<StructureNode> fLeftASTHelper;
     private ASTHelper<StructureNode> fRightASTHelper;
     private List<StructureEntityVersion> fStructureEntityVersions;
+    private ClassHistory fClassHistory;
+    private boolean fIsRootClass;
 
     @Inject
     FileDistiller(DistillerFactory distillerFactory, ASTHelperFactory factory) {
@@ -66,6 +69,10 @@ public class FileDistiller {
     private void processRootChildren(StructureDiffNode diffNode) {
         for (StructureDiffNode child : diffNode.getChildren()) {
             if (child.isClassOrInterfaceDiffNode() && mayHaveChanges(child.getLeft(), child.getRight())) {
+                if (fClassHistory == null) {
+                    fClassHistory = new ClassHistory(fRightASTHelper.createStructureEntityVersion(child.getRight()));
+                }
+                fIsRootClass = true;
                 processClassDiffNode(child);
             }
         }
@@ -73,10 +80,19 @@ public class FileDistiller {
 
     private void processClassDiffNode(StructureDiffNode diffNode) {
         SourceCodeEntity structureEntity = fLeftASTHelper.createSourceCodeEntity(diffNode.getLeft());
-        StructureEntityVersion clazz = fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft());
+        StructureEntityVersion clazz;
+        ClassHistory tmp = fClassHistory;
+        if (fIsRootClass) {
+            fIsRootClass = false;
+            clazz = fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft());
+        } else {
+            clazz = fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft());
+            fClassHistory = tmp.createInnerClassHistory(clazz);
+        }
         processDeclarationChanges(diffNode, clazz);
         processChildren(diffNode, clazz, structureEntity);
         fStructureEntityVersions.add(clazz);
+        fClassHistory = tmp;
     }
 
     private void processDiffNode(
@@ -103,24 +119,47 @@ public class FileDistiller {
         }
     }
 
-    private void processChanges(StructureDiffNode node, StructureEntityVersion rootEntity, SourceCodeEntity parentEntity) {
-        if (node.isAddition()) {
+    private void processChanges(
+            StructureDiffNode diffNode,
+            StructureEntityVersion rootEntity,
+            SourceCodeEntity parentEntity) {
+        if (diffNode.isAddition()) {
             Insert insert =
-                    new Insert(rootEntity, fRightASTHelper.createSourceCodeEntity(node.getRight()), parentEntity);
+                    new Insert(rootEntity, fRightASTHelper.createSourceCodeEntity(diffNode.getRight()), parentEntity);
             rootEntity.addSourceCodeChange(insert);
             // refactoring
-        } else if (node.isDeletion()) {
-            Delete delete = new Delete(rootEntity, fLeftASTHelper.createSourceCodeEntity(node.getLeft()), parentEntity);
+        } else if (diffNode.isDeletion()) {
+            Delete delete =
+                    new Delete(rootEntity, fLeftASTHelper.createSourceCodeEntity(diffNode.getLeft()), parentEntity);
             rootEntity.addSourceCodeChange(delete);
             // refactoring
-        } else if (node.isChanged()) {
-            StructureEntityVersion entity = fRightASTHelper.createStructureEntityVersion(node.getRight());
-            processBodyChanges(node, entity);
-            processDeclarationChanges(node, entity);
+        } else if (diffNode.isChanged()) {
+            StructureEntityVersion entity = fRightASTHelper.createStructureEntityVersion(diffNode.getRight());
+            if (diffNode.isMethodOrConstructorDiffNode()) {
+                entity = createMethodStructureEntity(diffNode);
+            } else if (diffNode.isFieldDiffNode()) {
+                entity = createFieldStructureEntity(diffNode);
+            } else if (diffNode.isClassOrInterfaceDiffNode()) {
+                entity = createInnerClassStructureEntity(diffNode);
+            }
+            processBodyChanges(diffNode, entity);
+            processDeclarationChanges(diffNode, entity);
             if (!entity.getSourceCodeChanges().isEmpty()) {
                 fStructureEntityVersions.add(entity);
             }
         }
+    }
+
+    private StructureEntityVersion createInnerClassStructureEntity(StructureDiffNode diffNode) {
+        return fRightASTHelper.createInnerClassInClassHistory(fClassHistory, diffNode.getRight());
+    }
+
+    private StructureEntityVersion createFieldStructureEntity(StructureDiffNode diffNode) {
+        return fRightASTHelper.createFieldInClassHistory(fClassHistory, diffNode.getRight());
+    }
+
+    private StructureEntityVersion createMethodStructureEntity(StructureDiffNode diffNode) {
+        return fRightASTHelper.createMethodInClassHistory(fClassHistory, diffNode.getRight());
     }
 
     private void processDeclarationChanges(StructureDiffNode diffNode, StructureEntityVersion rootEntity) {
@@ -154,6 +193,10 @@ public class FileDistiller {
 
     public List<StructureEntityVersion> getStructureEntityVersions() {
         return fStructureEntityVersions;
+    }
+
+    public ClassHistory getClassHistory() {
+        return fClassHistory;
     }
 
 }

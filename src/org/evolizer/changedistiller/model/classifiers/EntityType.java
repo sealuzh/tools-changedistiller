@@ -55,4 +55,25 @@ public interface EntityType {
      */
     boolean isStatement();
 
+    /**
+     * Returns whether or not this entity type is a field.
+     * 
+     * @return <code>true</code> if the entity is a field, <code>false</code> otherwise
+     */
+    boolean isField();
+
+    /**
+     * Returns whether or not this entity type is a class.
+     * 
+     * @return <code>true</code> if the entity is a class, <code>false</code> otherwise
+     */
+    boolean isClass();
+
+    /**
+     * Returns whether or not this entity type is a method.
+     * 
+     * @return <code>true</code> if the entity is a method, <code>false</code> otherwise
+     */
+    boolean isMethod();
+
 }
