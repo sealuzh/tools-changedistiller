@@ -15,17 +15,17 @@
  */
 package org.evolizer.changedistiller.distilling.refactoring;
 
-import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.evolizer.changedistiller.distilling.Distiller;
 import org.evolizer.changedistiller.model.entities.SourceCodeChange;
 import org.evolizer.changedistiller.structuredifferencing.StructureDiffNode;
 
 /**
- * A refactoring candidate is a container class that stores a {@link SourceCodeChange} with a {@link DiffNode}.
+ * A refactoring candidate is a container class that stores a {@link SourceCodeChange} with a {@link StructureDiffNode}.
  * 
  * <p>
- * {@link Distiller} decides according to the {@link DiffNode} whether the corresponding {@link SourceCodeChange} may be
- * refactoring candidate. That is, when the change is either a attribute/class/method insert or delete.
+ * {@link Distiller} decides according to the {@link StructureDiffNode} whether the corresponding
+ * {@link SourceCodeChange} may be refactoring candidate. That is, when the change is either a attribute/class/method
+ * insert or delete.
  * 
  * <p>
  * Concrete refactoring helper use these candidate to find related insert and delete operations of attributes, classes,
