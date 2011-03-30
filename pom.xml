@@ -47,6 +47,25 @@
 				</configuration>
 			</plugin>
 
+			<!-- Configure checkstyle to run during verify lifecycle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin </artifactId>
+				<version>2.6</version>
+				<configuration>
+					<linkXRef>false</linkXRef>
+					<configLocation>resources/devconf/checkstyle_5.xml</configLocation>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Configure cobertura to run during verify lifecycle -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -107,6 +126,13 @@
 	</build>
 	<reporting>
 		<plugins>
+			<!-- Configure checkstyle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+
 			<!-- Configure cobertura -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
