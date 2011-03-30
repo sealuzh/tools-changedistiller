@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.compilation.java;
+package org.evolizer.changedistiller.ast.java;
 
 import java.io.File;
 import java.util.List;
@@ -10,13 +10,7 @@ import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
-import org.evolizer.changedistiller.compilation.ASTHelper;
-import org.evolizer.changedistiller.distilling.java.Comment;
-import org.evolizer.changedistiller.distilling.java.CommentCleaner;
-import org.evolizer.changedistiller.distilling.java.CommentCollector;
-import org.evolizer.changedistiller.distilling.java.JavaASTNodeTypeConverter;
-import org.evolizer.changedistiller.distilling.java.JavaDeclarationConverter;
-import org.evolizer.changedistiller.distilling.java.JavaMethodBodyConverter;
+import org.evolizer.changedistiller.ast.ASTHelper;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.entities.AttributeHistory;

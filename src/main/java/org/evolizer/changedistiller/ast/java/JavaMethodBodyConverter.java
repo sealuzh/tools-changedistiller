@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.distilling.java;
+package org.evolizer.changedistiller.ast.java;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -40,8 +40,8 @@ import org.eclipse.jdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.jdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;
 import org.eclipse.jdt.internal.compiler.parser.TerminalTokens;
-import org.evolizer.changedistiller.distilling.ASTNodeTypeConverter;
-import org.evolizer.changedistiller.distilling.java.Comment.CommentType;
+import org.evolizer.changedistiller.ast.ASTNodeTypeConverter;
+import org.evolizer.changedistiller.ast.java.Comment.CommentType;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;

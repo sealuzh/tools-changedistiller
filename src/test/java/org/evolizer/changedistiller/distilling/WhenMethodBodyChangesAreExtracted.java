@@ -3,7 +3,7 @@ package org.evolizer.changedistiller.distilling;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.StructureEntityVersion;
 import org.evolizer.changedistiller.treedifferencing.Node;

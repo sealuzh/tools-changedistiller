@@ -8,7 +8,7 @@ import java.util.Collections;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
 import org.evolizer.changedistiller.structuredifferencing.StructureDifferencer.DiffType;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode.Type;

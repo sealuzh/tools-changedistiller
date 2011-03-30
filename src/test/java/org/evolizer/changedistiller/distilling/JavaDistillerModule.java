@@ -1,9 +1,10 @@
 package org.evolizer.changedistiller.distilling;
 
-import org.evolizer.changedistiller.compilation.ASTHelperFactory;
-import org.evolizer.changedistiller.compilation.java.JavaASTHelper;
-import org.evolizer.changedistiller.distilling.java.JavaASTNodeTypeConverter;
-import org.evolizer.changedistiller.distilling.java.JavaSourceCodeChangeClassifier;
+import org.evolizer.changedistiller.ast.ASTHelperFactory;
+import org.evolizer.changedistiller.ast.ASTNodeTypeConverter;
+import org.evolizer.changedistiller.ast.java.JavaASTHelper;
+import org.evolizer.changedistiller.ast.java.JavaASTNodeTypeConverter;
+import org.evolizer.changedistiller.ast.java.JavaSourceCodeChangeClassifier;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryProvider;

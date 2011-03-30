@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.compilation.java;
+package org.evolizer.changedistiller.ast.java;
 
 import java.io.File;
 
@@ -12,7 +12,7 @@ import org.eclipse.jdt.internal.compiler.parser.Parser;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.jdt.internal.core.util.CommentRecorderParser;
-import org.evolizer.changedistiller.compilation.FileUtils;
+import org.evolizer.changedistiller.ast.FileUtils;
 
 /**
  * Utility class for Java compilation.

@@ -1,13 +1,13 @@
-package org.evolizer.changedistiller.distilling.java;
+package org.evolizer.changedistiller.ast.java;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
-import org.evolizer.changedistiller.distilling.java.Comment;
-import org.evolizer.changedistiller.distilling.java.CommentCleaner;
+import org.evolizer.changedistiller.ast.java.Comment;
+import org.evolizer.changedistiller.ast.java.CommentCleaner;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;

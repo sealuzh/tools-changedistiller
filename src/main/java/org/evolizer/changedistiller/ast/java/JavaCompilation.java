@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.compilation.java;
+package org.evolizer.changedistiller.ast.java;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.parser.Scanner;

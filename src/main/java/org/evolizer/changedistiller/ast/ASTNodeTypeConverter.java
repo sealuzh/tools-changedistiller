@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.distilling;
+package org.evolizer.changedistiller.ast;
 
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 

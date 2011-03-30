@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.distilling.java;
+package org.evolizer.changedistiller.ast.java;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -8,7 +8,10 @@ import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.Comment;
+import org.evolizer.changedistiller.ast.java.CommentCleaner;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaMethodBodyConverter;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;

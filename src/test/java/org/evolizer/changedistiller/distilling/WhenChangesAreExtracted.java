@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
-import org.evolizer.changedistiller.distilling.java.Comment;
-import org.evolizer.changedistiller.distilling.java.JavaDeclarationConverter;
-import org.evolizer.changedistiller.distilling.java.JavaDistillerTestCase;
-import org.evolizer.changedistiller.distilling.java.JavaMethodBodyConverter;
+import org.evolizer.changedistiller.ast.java.Comment;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaDeclarationConverter;
+import org.evolizer.changedistiller.ast.java.JavaDistillerTestCase;
+import org.evolizer.changedistiller.ast.java.JavaMethodBodyConverter;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.classifiers.java.JavaEntityType;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;

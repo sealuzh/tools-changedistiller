@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.compilation;
+package org.evolizer.changedistiller.ast;
 
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.entities.AttributeHistory;

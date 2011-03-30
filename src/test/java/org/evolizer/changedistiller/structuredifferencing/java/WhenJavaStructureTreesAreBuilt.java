@@ -5,7 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
 import org.evolizer.changedistiller.structuredifferencing.java.JavaStructureNode.Type;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.Test;

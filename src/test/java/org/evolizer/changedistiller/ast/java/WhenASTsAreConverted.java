@@ -1,6 +1,8 @@
-package org.evolizer.changedistiller.distilling.java;
+package org.evolizer.changedistiller.ast.java;
 
-import org.evolizer.changedistiller.compilation.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaCompilation;
+import org.evolizer.changedistiller.ast.java.JavaDeclarationConverter;
+import org.evolizer.changedistiller.ast.java.JavaMethodBodyConverter;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;

@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 
-import org.evolizer.changedistiller.distilling.java.JavaDistillerTestCase;
+import org.evolizer.changedistiller.ast.java.JavaDistillerTestCase;
 import org.evolizer.changedistiller.model.entities.ClassHistory;
 import org.evolizer.changedistiller.util.CompilationUtils;
 import org.junit.Test;

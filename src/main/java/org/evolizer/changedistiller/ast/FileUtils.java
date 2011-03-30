@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.compilation;
+package org.evolizer.changedistiller.ast;
 
 import java.io.File;
 import java.io.FileReader;

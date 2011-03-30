@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.evolizer.changedistiller.compilation.ASTHelper;
+import org.evolizer.changedistiller.ast.ASTHelper;
 import org.evolizer.changedistiller.distilling.Distiller;
 import org.evolizer.changedistiller.distilling.DistillerFactory;
 import org.evolizer.changedistiller.distilling.SourceCodeChangeClassifier;

@@ -1,4 +1,4 @@
-package org.evolizer.changedistiller.distilling.java;
+package org.evolizer.changedistiller.ast.java;
 
 import static org.hamcrest.CoreMatchers.is;
 

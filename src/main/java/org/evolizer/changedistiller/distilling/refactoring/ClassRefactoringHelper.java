@@ -1,6 +1,6 @@
 package org.evolizer.changedistiller.distilling.refactoring;
 
-import org.evolizer.changedistiller.compilation.ASTHelper;
+import org.evolizer.changedistiller.ast.ASTHelper;
 import org.evolizer.changedistiller.model.entities.ClassHistory;
 import org.evolizer.changedistiller.model.entities.StructureEntityVersion;
 import org.evolizer.changedistiller.structuredifferencing.StructureNode;
