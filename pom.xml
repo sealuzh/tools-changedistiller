@@ -32,8 +32,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${compiler.source}</source>
+					<target>${compiler.source}</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -46,8 +46,107 @@
 					</includes>
 				</configuration>
 			</plugin>
+
+			<!-- Configure cobertura to run during verify lifecycle -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<instrumentation>
+						<excludes>
+							<exclude>**/When*.class</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>cobertura</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Configure findbugs to run during verify lifecycle -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>findbugs</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Configure pmd to run during verify lifecycle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<linkXRef>false</linkXRef>
+					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+					<targetJdk>${compiler.source}</targetJdk>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>pmd</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<!-- Configure cobertura -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<formats>
+						<format>xml</format>
+						<format>html</format>
+					</formats>
+				</configuration>
+			</plugin>
+
+			<!-- Configure findbugs -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<findbugsXmlOutput>true</findbugsXmlOutput>
+					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+			</plugin>
+
+			<!-- Configure pmd -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${maven-pmd-plugin.version}</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>pmd</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 	<dependencies>
 		<dependency>
 			<groupId>ecj</groupId>
@@ -93,5 +192,6 @@
 	<properties>
 		<project.year>2011</project.year>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<compiler.source>1.6</compiler.source>
 	</properties>
 </project>
