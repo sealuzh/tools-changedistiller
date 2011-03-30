@@ -6,13 +6,10 @@
 	<classpathentry kind="lib" path="lib/ecj-3.6.1.jar" sourcepath="lib/ecjsrc-3.6.1.zip"/>
 	<classpathentry kind="lib" path="lib/hamcrest-all-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar" sourcepath="lib/commons-lang-2.6-sources.jar"/>
-	<classpathentry kind="lib" path="lib/guice-2.0.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/changedistiller/lib/guice-2.0-javadoc.zip!/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/guice-assistedinject-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
-	<classpathentry kind="lib" path="lib/guice-assistedinject-2.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.core_3.6.2.v_A76_R36x.jar" sourcepath="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.core.source_3.6.2.v_A76_R36x.jar"/>
 	<classpathentry kind="lib" path="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.ui_3.6.2.r362_v20110203.jar" sourcepath="/Applications/eclipse_3.6/plugins/org.eclipse.jdt.ui.source_3.6.2.r362_v20110203.jar"/>
