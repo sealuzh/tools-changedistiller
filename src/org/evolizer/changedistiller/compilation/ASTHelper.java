@@ -108,4 +108,16 @@ public interface ASTHelper<T extends StructureNode> {
      */
     StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, T node);
 
+    /**
+     * Creates and returns the declaration {@link Node} tree for the {@link StructureNode}. In addition it replaces the
+     * qualified name with the given one.
+     * 
+     * @param node
+     *            to create the declaration tree
+     * @param qualifiedName
+     *            to use for the tree generation
+     * @return the declaration tree for the structure node
+     */
+    Node createDeclarationTree(T node, String qualifiedName);
+
 }

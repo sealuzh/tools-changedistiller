@@ -20,6 +20,6 @@ public interface SourceCodeChangeClassifier {
      *            to classify
      * @return the list of classified source code changes
      */
-    List<SourceCodeChange> classifySourceCodeChanges(List<SourceCodeChange> sourceCodeChanges);
+    List<SourceCodeChange> classifySourceCodeChanges(List<? extends SourceCodeChange> sourceCodeChanges);
 
 }

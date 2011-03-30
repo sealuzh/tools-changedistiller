@@ -59,4 +59,13 @@ public interface StructureNode {
      */
     boolean isField();
 
+    /**
+     * Returns whether or not the node is of same type as the other .
+     * 
+     * @param other
+     *            to check the type with
+     * @return <code>true</code> if the node is of same type as the other, <code>false</code> otherwise
+     */
+    boolean isOfSameTypeAs(StructureNode other);
+
 }

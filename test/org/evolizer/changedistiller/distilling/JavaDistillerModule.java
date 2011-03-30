@@ -18,4 +18,5 @@ public class JavaDistillerModule extends AbstractModule {
         bind(ASTHelperFactory.class)
                 .toProvider(FactoryProvider.newFactory(ASTHelperFactory.class, JavaASTHelper.class));
     }
+
 }

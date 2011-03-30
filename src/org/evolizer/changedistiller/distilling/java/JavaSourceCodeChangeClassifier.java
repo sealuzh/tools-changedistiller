@@ -39,7 +39,7 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
     private List<Insert> fInsertsToDelete;
 
     @Override
-    public List<SourceCodeChange> classifySourceCodeChanges(List<SourceCodeChange> sourceCodeChanges) {
+    public List<SourceCodeChange> classifySourceCodeChanges(List<? extends SourceCodeChange> sourceCodeChanges) {
         splitOperations(sourceCodeChanges);
         fClassifiedChanges = new LinkedList<SourceCodeChange>();
         fInsertsToDelete = new LinkedList<Insert>();
@@ -957,11 +957,11 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
     }
 
     private SourceCodeChange extractRenaming(Update update) {
-        if (update.getNewEntity().getType() == JavaEntityType.METHOD_DECLARATION) {
+        if (update.getNewEntity().getType() == JavaEntityType.METHOD) {
             update.setChangeType(ChangeType.METHOD_RENAMING);
-        } else if (update.getNewEntity().getType() == JavaEntityType.FIELD_DECLARATION) {
+        } else if (update.getNewEntity().getType() == JavaEntityType.FIELD) {
             update.setChangeType(ChangeType.ATTRIBUTE_RENAMING);
-        } else if (update.getNewEntity().getType() == JavaEntityType.TYPE_DECLARATION) {
+        } else if (update.getNewEntity().getType() == JavaEntityType.CLASS) {
             update.setChangeType(ChangeType.CLASS_RENAMING);
         } else {
             return null;
@@ -1101,7 +1101,7 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
 
     }
 
-    private void splitOperations(List<SourceCodeChange> operations) {
+    private void splitOperations(List<? extends SourceCodeChange> operations) {
         fInserts = new LinkedList<Insert>();
         fDeletes = new LinkedList<Delete>();
         fMoves = new LinkedList<Move>();

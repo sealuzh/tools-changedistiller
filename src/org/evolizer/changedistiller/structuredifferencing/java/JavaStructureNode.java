@@ -134,4 +134,12 @@ public class JavaStructureNode implements StructureNode {
         return fType == Type.FIELD;
     }
 
+    @Override
+    public boolean isOfSameTypeAs(StructureNode other) {
+        if (other.getClass() == getClass()) {
+            return fType == ((JavaStructureNode) other).fType;
+        }
+        return false;
+    }
+
 }

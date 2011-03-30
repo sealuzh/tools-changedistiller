@@ -80,6 +80,10 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     public Node createDeclarationTree(JavaStructureNode node) {
         ASTNode astNode = node.getASTNode();
         Node root = createRootNode(node, astNode);
+        return createDeclarationTree(astNode, root);
+    }
+
+    private Node createDeclarationTree(ASTNode astNode, Node root) {
         fDeclarationConverter.initialize(root, fCompilation.getScanner());
         if (astNode instanceof TypeDeclaration) {
             ((TypeDeclaration) astNode).traverse(fDeclarationConverter, (ClassScope) null);
@@ -89,6 +93,14 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
             ((FieldDeclaration) astNode).traverse(fDeclarationConverter, null);
         }
         return root;
+    }
+
+    @Override
+    public Node createDeclarationTree(JavaStructureNode node, String qualifiedName) {
+        ASTNode astNode = node.getASTNode();
+        Node root = createRootNode(node, astNode);
+        root.setValue(qualifiedName);
+        return createDeclarationTree(astNode, root);
     }
 
     private Node createRootNode(JavaStructureNode node, ASTNode astNode) {
