@@ -6,6 +6,7 @@ package org.evolizer.changedistiller.treedifferencing.matching.measure;
  * @author Beat Fluri
  * @see NGramsCalculator
  * @see TokenBasedCalculator
+ * @see LevenshteinSimilarityCalculator
  */
 public interface StringSimilarityCalculator {
 
