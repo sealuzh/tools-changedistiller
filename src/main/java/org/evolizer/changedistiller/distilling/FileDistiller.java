@@ -49,6 +49,7 @@ public class FileDistiller {
      * @param right
      *            file to extract changes
      */
+    @SuppressWarnings("unchecked")
     public void extractClassifiedSourceCodeChanges(File left, File right) {
         fLeftASTHelper = fASTHelperFactory.create(left);
         fRightASTHelper = fASTHelperFactory.create(right);

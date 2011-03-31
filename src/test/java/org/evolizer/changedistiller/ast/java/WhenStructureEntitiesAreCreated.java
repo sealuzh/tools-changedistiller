@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+@SuppressWarnings("unchecked")
 public class WhenStructureEntitiesAreCreated {
 
     private static final String TEST_DATA = "src_change/";
