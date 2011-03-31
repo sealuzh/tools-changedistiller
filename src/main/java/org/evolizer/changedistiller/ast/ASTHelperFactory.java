@@ -2,8 +2,6 @@ package org.evolizer.changedistiller.ast;
 
 import java.io.File;
 
-import org.evolizer.changedistiller.structuredifferencing.StructureNode;
-
 /**
  * Factory interface to create {@link ASTHelper} from a {@link File}.
  * 
@@ -18,6 +16,7 @@ public interface ASTHelperFactory {
      *            the AST helper acts on
      * @return the AST helper acting on the file
      */
-    ASTHelper<StructureNode> create(File file);
+    @SuppressWarnings("rawtypes")
+    ASTHelper create(File file);
 
 }
