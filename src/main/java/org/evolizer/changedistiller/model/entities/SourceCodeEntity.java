@@ -33,7 +33,7 @@ public class SourceCodeEntity {
     /**
      * Modifiers of source code entity.
      */
-    private Integer fModifiers = 0;
+    private int fModifiers;
 
     private List<SourceCodeEntity> fAssociatedEntities = new ArrayList<SourceCodeEntity>();
     private SourceRange fRange = new SourceRange();
@@ -64,7 +64,7 @@ public class SourceCodeEntity {
      * @param range
      *            the range
      */
-    public SourceCodeEntity(String uniqueName, EntityType type, Integer modifiers, SourceRange range) {
+    public SourceCodeEntity(String uniqueName, EntityType type, int modifiers, SourceRange range) {
         setUniqueName(uniqueName);
         setType(type);
         setModifiers(modifiers);

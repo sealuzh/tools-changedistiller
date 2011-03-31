@@ -8,9 +8,11 @@ import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.jdt.internal.compiler.lookup.CompilationUnitScope;
 import org.evolizer.changedistiller.ast.ASTHelper;
+import org.evolizer.changedistiller.model.classifiers.ChangeModifier;
 import org.evolizer.changedistiller.model.classifiers.EntityType;
 import org.evolizer.changedistiller.model.classifiers.SourceRange;
 import org.evolizer.changedistiller.model.entities.AttributeHistory;
@@ -133,6 +135,7 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         return new SourceCodeEntity(
                 node.getFullyQualifiedName(),
                 convertType(node),
+                extractModifier(node.getASTNode()),
                 createSourceRange(node.getASTNode()));
     }
 
@@ -154,7 +157,58 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
 
     @Override
     public StructureEntityVersion createStructureEntityVersion(JavaStructureNode node) {
-        return new StructureEntityVersion(convertType(node), node.getFullyQualifiedName(), 0);
+        return new StructureEntityVersion(
+                convertType(node),
+                node.getFullyQualifiedName(),
+                extractModifier(node.getASTNode()));
+    }
+
+    private int extractModifier(ASTNode node) {
+        int ecjModifer = -1;
+        if (node instanceof AbstractMethodDeclaration) {
+            ecjModifer = ((AbstractMethodDeclaration) node).modifiers;
+        } else if (node instanceof FieldDeclaration) {
+            ecjModifer = ((FieldDeclaration) node).modifiers;
+        } else if (node instanceof TypeDeclaration) {
+            ecjModifer = ((TypeDeclaration) node).modifiers;
+        }
+        if (ecjModifer > -1) {
+            return convertECJModifier(ecjModifer);
+        }
+        return 0;
+    }
+
+    private int convertECJModifier(int ecjModifer) {
+        int modifier = 0x0;
+        if (isFinal(ecjModifer)) {
+            modifier |= ChangeModifier.FINAL;
+        }
+        if (isPublic(ecjModifer)) {
+            modifier |= ChangeModifier.PUBLIC;
+        }
+        if (isProtected(ecjModifer)) {
+            modifier |= ChangeModifier.PROTECTED;
+        }
+        if (isPrivate(ecjModifer)) {
+            modifier |= ChangeModifier.PRIVATE;
+        }
+        return modifier;
+    }
+
+    private boolean isPrivate(int ecjModifier) {
+        return (ecjModifier & ClassFileConstants.AccPrivate) != 0;
+    }
+
+    private boolean isProtected(int ecjModifier) {
+        return (ecjModifier & ClassFileConstants.AccProtected) != 0;
+    }
+
+    private boolean isPublic(int ecjModifier) {
+        return (ecjModifier & ClassFileConstants.AccPublic) != 0;
+    }
+
+    private boolean isFinal(int ecjModifier) {
+        return (ecjModifier & ClassFileConstants.AccFinal) != 0;
     }
 
     @Override
