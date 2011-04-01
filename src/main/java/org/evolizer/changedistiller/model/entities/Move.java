@@ -23,7 +23,8 @@ import org.evolizer.changedistiller.model.classifiers.SignificanceLevel;
  * after the move. <code>newEntity</code> is taken from the right AST, i.e., new version.</li>
  * </ul>
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see SourceCodeChange
  */
 public class Move extends SourceCodeChange {
@@ -36,8 +37,9 @@ public class Move extends SourceCodeChange {
     private SourceCodeEntity fNewEntity;
 
     /**
-     * Constructor to initialize a move operation. The moved entity is moved from the old to the new parent entity
-     * inside the structure entity.
+     * Creates a new move operation.
+     * <p>
+     * The moved entity is moved from the old to the new parent entity inside the structure entity.
      * 
      * @param changeType
      *            the change type
@@ -64,7 +66,7 @@ public class Move extends SourceCodeChange {
     }
 
     /**
-     * Instantiates a new move.
+     * Creates a new move operation.
      * 
      * @param rootNode
      *            the root node
@@ -88,21 +90,10 @@ public class Move extends SourceCodeChange {
         setNewParentEntity(newParentEntity);
     }
 
-    /**
-     * Returns the new parent entity.
-     * 
-     * @return source code entity to which the moved entity is moved.
-     */
     public SourceCodeEntity getNewParentEntity() {
         return fNewParentEntity;
     }
 
-    /**
-     * Set entity to which the moved entity is moved.
-     * 
-     * @param newParentEntity
-     *            the new parent entity
-     */
     public void setNewParentEntity(SourceCodeEntity newParentEntity) {
         fNewParentEntity = newParentEntity;
     }
@@ -129,21 +120,10 @@ public class Move extends SourceCodeChange {
                 .append(getNewParentEntity(), other.getNewParentEntity()).isEquals();
     }
 
-    /**
-     * Sets the new entity.
-     * 
-     * @param newEntity
-     *            the new new entity
-     */
     public void setNewEntity(SourceCodeEntity newEntity) {
         fNewEntity = newEntity;
     }
 
-    /**
-     * Returns the new entity.
-     * 
-     * @return the new entity
-     */
     public SourceCodeEntity getNewEntity() {
         return fNewEntity;
     }

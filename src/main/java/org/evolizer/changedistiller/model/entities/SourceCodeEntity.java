@@ -1,6 +1,7 @@
 package org.evolizer.changedistiller.model.entities;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -20,23 +21,11 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
  */
 public class SourceCodeEntity {
 
-    /**
-     * Source code entity's unique name.
-     */
     private String fUniqueName;
-
-    /**
-     * Type code of source code entity.
-     */
     private EntityType fType;
-
-    /**
-     * Modifiers of source code entity.
-     */
     private int fModifiers;
-
-    private List<SourceCodeEntity> fAssociatedEntities = new ArrayList<SourceCodeEntity>();
-    private SourceRange fRange = new SourceRange();
+    private List<SourceCodeEntity> fAssociatedEntities;
+    private SourceRange fRange;
 
     /**
      * Constructor to initialize a source code entity with a unique name and a type.
@@ -69,61 +58,29 @@ public class SourceCodeEntity {
         setType(type);
         setModifiers(modifiers);
         setSourceRange(range);
+        setAssociatedEntities(new LinkedList<SourceCodeEntity>());
     }
 
-    /**
-     * Returns the unique name.
-     * 
-     * @return unique name of source code entity.
-     */
     public String getUniqueName() {
         return fUniqueName;
     }
 
-    /**
-     * Set unique name of source code entity.
-     * 
-     * @param uniqueName
-     *            the unique name
-     */
     public void setUniqueName(String uniqueName) {
         fUniqueName = uniqueName;
     }
 
-    /**
-     * Returns the type.
-     * 
-     * @return source code entity's type code.
-     */
     public EntityType getType() {
         return fType;
     }
 
-    /**
-     * Sets source code entity's type code.
-     * 
-     * @param type
-     *            the type
-     */
     public void setType(EntityType type) {
         fType = type;
     }
 
-    /**
-     * Returns the modifiers.
-     * 
-     * @return source code entity's modifiers
-     */
     public int getModifiers() {
         return fModifiers;
     }
 
-    /**
-     * Set source code entity's modifiers.
-     * 
-     * @param modifiers
-     *            the modifiers
-     */
     public void setModifiers(int modifiers) {
         fModifiers = modifiers;
     }
@@ -137,38 +94,18 @@ public class SourceCodeEntity {
         return ChangeModifier.isFinal(fModifiers);
     }
 
-    /**
-     * Checks if it's private.
-     * 
-     * @return true, if this entity is private
-     */
     public boolean isPrivate() {
         return ChangeModifier.isPrivate(fModifiers);
     }
 
-    /**
-     * Checks if it's protected.
-     * 
-     * @return true, if this entity is protected
-     */
     public boolean isProtected() {
         return ChangeModifier.isProtected(fModifiers);
     }
 
-    /**
-     * Checks if it's public.
-     * 
-     * @return true, if this entity is public
-     */
     public boolean isPublic() {
         return ChangeModifier.isPublic(fModifiers);
     }
 
-    /**
-     * Returns the associated entities.
-     * 
-     * @return the associated entities
-     */
     public List<SourceCodeEntity> getAssociatedEntities() {
         return fAssociatedEntities;
     }
@@ -183,73 +120,16 @@ public class SourceCodeEntity {
         fAssociatedEntities.add(entity);
     }
 
-    /**
-     * Sets the associated entities.
-     * 
-     * @param associatedEntities
-     *            the new associated entities
-     */
     public void setAssociatedEntities(List<SourceCodeEntity> associatedEntities) {
         fAssociatedEntities = associatedEntities;
     }
 
-    /**
-     * Sets the source range.
-     * 
-     * @param range
-     *            the new source range
-     */
     public void setSourceRange(SourceRange range) {
         fRange = range;
     }
 
-    /**
-     * Returns the source range.
-     * 
-     * @return the source range
-     */
     public SourceRange getSourceRange() {
         return fRange;
-    }
-
-    /**
-     * Used for persisting the length by Hibernate.
-     * 
-     * @return the length
-     */
-    int getLength() {
-        return fRange.getEnd();
-    }
-
-    /**
-     * Sets the length.
-     * 
-     * @param length
-     *            the new length
-     */
-    @SuppressWarnings("unused")
-    private void setLength(int length) {
-        fRange.setEnd(length);
-    }
-
-    /**
-     * Used for persisting the offset by Hibernate.
-     * 
-     * @param offset
-     *            the new offset
-     */
-    void setOffset(int offset) {
-        fRange.setStart(offset);
-    }
-
-    /**
-     * Returns the offset.
-     * 
-     * @return the offset
-     */
-    @SuppressWarnings("unused")
-    private int getOffset() {
-        return fRange.getStart();
     }
 
     /**
@@ -266,11 +146,6 @@ public class SourceCodeEntity {
         return getType().toString() + ": " + getUniqueName();
     }
 
-    /**
-     * Returns label of the {@link EntityType} this source code entity represents.
-     * 
-     * @return label for this entity.
-     */
     public String getLabel() {
         return getType().toString();
     }

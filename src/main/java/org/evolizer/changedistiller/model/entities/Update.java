@@ -21,25 +21,20 @@ import org.evolizer.changedistiller.model.classifiers.SignificanceLevel;
  * <code>parentEntity</code> was inserted (see {@link SourceCodeChange}), it is taken from the right AST.</li>
  * </ul>
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see SourceCodeChange
  */
 public class Update extends SourceCodeChange {
 
-    /**
-     * Source code entity that the updated entity becomes when applying the change.
-     */
     private SourceCodeEntity fNewEntity;
 
-    /**
-     * Default constructor. Only used by Hiberante.
-     */
-    @SuppressWarnings("unused")
-    private Update() {}
+    Update() {}
 
     /**
-     * Constructor to initialize an update operation. The updated entity is updated to new entity as a child of parent
-     * entity in structure entity.
+     * Creates a new update operation.
+     * <p>
+     * The updated entity is updated to new entity as a child of parent entity in structure entity.
      * 
      * @param changeType
      *            the change type
@@ -63,7 +58,7 @@ public class Update extends SourceCodeChange {
     }
 
     /**
-     * Instantiates a new update.
+     * Creates a new update operation.
      * 
      * @param rootEntity
      *            the root entity
@@ -83,21 +78,10 @@ public class Update extends SourceCodeChange {
         setNewEntity(newEntity);
     }
 
-    /**
-     * Returns the new entity.
-     * 
-     * @return source code entity that updated entity becomes after update.
-     */
     public SourceCodeEntity getNewEntity() {
         return fNewEntity;
     }
 
-    /**
-     * Set source code entity that updated entity becomes after update.
-     * 
-     * @param newEntity
-     *            the new entity
-     */
     public void setNewEntity(SourceCodeEntity newEntity) {
         fNewEntity = newEntity;
     }

@@ -19,7 +19,8 @@ import java.util.Map;
  * qualified class name
  * </pre>
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see AbstractHistory
  * @see AttributeHistory
  * @see MethodHistory
@@ -44,7 +45,7 @@ public class ClassHistory extends AbstractHistory {
     private Map<String, ClassHistory> fInnerClassHistories;
 
     /**
-     * Default constructor. Initializes all histories and version collections.
+     * Createa a new class history.
      * 
      * @param clazz
      *            the clazz to add to this history
@@ -54,9 +55,6 @@ public class ClassHistory extends AbstractHistory {
         initHistories();
     }
 
-    /**
-     * Default constructor, used by Hibernate.
-     */
     ClassHistory() {
         initHistories();
     }

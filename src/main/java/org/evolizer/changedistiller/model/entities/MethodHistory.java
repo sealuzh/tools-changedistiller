@@ -17,16 +17,14 @@ package org.evolizer.changedistiller.model.entities;
  * MethodHistory:&lt;methodSignature&gt;
  * </pre>
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see AbstractHistory
  * @see ClassHistory
  * @see AttributeHistory
  */
 public class MethodHistory extends AbstractHistory {
 
-    /**
-     * Default constructor, used by Hibernate.
-     */
     MethodHistory() {}
 
     /**

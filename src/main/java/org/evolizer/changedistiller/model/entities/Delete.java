@@ -18,14 +18,16 @@ import org.evolizer.changedistiller.model.classifiers.SignificanceLevel;
  * child before the delete. <code>parentEntity</code> is taken from the left AST, i.e., old version.</li>
  * </ul>
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see SourceCodeChange
  */
 public class Delete extends SourceCodeChange {
 
     /**
-     * Constructor to initialize a delete operation. The deleted entity is deleted as child of parent entity inside the
-     * structure entity.
+     * Creates a new delete operation.
+     * <p>
+     * The deleted entity is deleted as child of parent entity inside the structure entity.
      * 
      * @param changeType
      *            the change type
@@ -46,7 +48,7 @@ public class Delete extends SourceCodeChange {
     }
 
     /**
-     * Instantiates a new delete.
+     * Creates a new delete operation.
      * 
      * @param deletedEntity
      *            the deleted entity

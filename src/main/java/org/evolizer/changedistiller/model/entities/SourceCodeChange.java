@@ -24,7 +24,8 @@ import org.evolizer.changedistiller.model.classifiers.SignificanceLevel;
  * </ul>
  * Other entities involved in a source code change are described in the corresponding concrete implementation.
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see Delete
  * @see Insert
  * @see Move
@@ -39,9 +40,6 @@ public class SourceCodeChange {
      */
     private StructureEntityVersion fRootEntity;
 
-    /**
-     * Changed entity.
-     */
     private SourceCodeEntity fChangedEntity;
 
     /**
@@ -49,13 +47,10 @@ public class SourceCodeChange {
      */
     private SourceCodeEntity fParentEntity;
 
-    /**
-     * Default constructor. Used by Hibernate.
-     */
     SourceCodeChange() {}
 
     /**
-     * Instantiates a new source code change.
+     * Creates a new source code change.
      * 
      * @param changedEntity
      *            the changed entity
@@ -76,7 +71,7 @@ public class SourceCodeChange {
     }
 
     /**
-     * Instantiates a new source code change.
+     * Creates a new source code change.
      * 
      * @param changedEntity
      *            the changed entity
@@ -91,59 +86,26 @@ public class SourceCodeChange {
         setRootEntity(rootEntity);
     }
 
-    /**
-     * Sets the changed entity.
-     * 
-     * @param changedEntity
-     *            the changed entity
-     */
     public void setChangedEntity(SourceCodeEntity changedEntity) {
         fChangedEntity = changedEntity;
     }
 
-    /**
-     * Returns the changed entity.
-     * 
-     * @return the changed entity
-     */
     public SourceCodeEntity getChangedEntity() {
         return fChangedEntity;
     }
 
-    /**
-     * Sets the root entity.
-     * 
-     * @param rootEntity
-     *            the rootEntity to set
-     */
     public void setRootEntity(StructureEntityVersion rootEntity) {
         fRootEntity = rootEntity;
     }
 
-    /**
-     * Returns the root entity.
-     * 
-     * @return the rootEntity
-     */
     public StructureEntityVersion getRootEntity() {
         return fRootEntity;
     }
 
-    /**
-     * Returns the change type.
-     * 
-     * @return change type of this change
-     */
     public ChangeType getChangeType() {
         return fChangeType;
     }
 
-    /**
-     * Sets the change type.
-     * 
-     * @param changeType
-     *            the change type to set
-     */
     public void setChangeType(ChangeType changeType) {
         fChangeType = changeType;
     }
@@ -204,11 +166,6 @@ public class SourceCodeChange {
         return getChangeType().getSignificance();
     }
 
-    /**
-     * Returns label of the {@link ChangeType} this change represents.
-     * 
-     * @return label for this change.
-     */
     public String getLabel() {
         return getChangeType().toString();
     }
@@ -217,27 +174,15 @@ public class SourceCodeChange {
      * Hook for subclasses to lift significance level for certain {@link ChangeType}s.
      * 
      * @return the significance level
-     * @see #getSignificanceLevel()
      */
     protected SignificanceLevel liftSignificanceLevel() {
         return null;
     }
 
-    /**
-     * Returns the parent entity.
-     * 
-     * @return source code entity under which this change was applied.
-     */
     public SourceCodeEntity getParentEntity() {
         return fParentEntity;
     }
 
-    /**
-     * Sets entity from which the deleted entity is deleted.
-     * 
-     * @param parentEntity
-     *            the parent entity
-     */
     public void setParentEntity(SourceCodeEntity parentEntity) {
         fParentEntity = parentEntity;
     }

@@ -19,14 +19,16 @@ import org.evolizer.changedistiller.model.classifiers.SignificanceLevel;
  * <code>parentEntity</code> was inserted (see {@link SourceCodeChange}), it is taken from the right AST.</li>
  * </ul>
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see SourceCodeChange
  */
 public class Insert extends SourceCodeChange {
 
     /**
-     * Constructor to initialize an insert operation. The inserted entity is inserted as a child of parent entity inside
-     * the structure entity.
+     * Creates a new insert operation.
+     * <p>
+     * The inserted entity is inserted as a child of parent entity inside the structure entity.
      * 
      * @param changeType
      *            the change type
@@ -47,7 +49,7 @@ public class Insert extends SourceCodeChange {
     }
 
     /**
-     * Instantiates a new insert.
+     * Creates a new insert operation.
      * 
      * @param insertedEntity
      *            the inserted entity
@@ -65,9 +67,6 @@ public class Insert extends SourceCodeChange {
         return new HashCodeBuilder(19, 31).appendSuper(super.hashCode()).append(getParentEntity()).toHashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -84,9 +83,6 @@ public class Insert extends SourceCodeChange {
                 .isEquals();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected SignificanceLevel liftSignificanceLevel() {
         switch (getChangeType()) {

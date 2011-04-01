@@ -11,7 +11,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Abstract class for aggregating versions ({@link StructureEntityVersion}) of a source code entity (i.e. a class, a
  * method or an attribute).
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see ClassHistory
  * @see AttributeHistory
  * @see MethodHistory
@@ -20,15 +21,12 @@ public abstract class AbstractHistory {
 
     private List<StructureEntityVersion> fVersions;
 
-    /**
-     * Default constructor, used by Hibernate.
-     */
-    protected AbstractHistory() {
+    AbstractHistory() {
         setVersions(new LinkedList<StructureEntityVersion>());
     }
 
     /**
-     * Constructs history for given version.
+     * Creates a new history for a given version.
      * 
      * @param version
      *            to be added to this history
@@ -77,8 +75,6 @@ public abstract class AbstractHistory {
 
     /**
      * Returns label for this history.
-     * <p>
-     * See subclasses for concrete form.
      * 
      * @return label for this history.
      */

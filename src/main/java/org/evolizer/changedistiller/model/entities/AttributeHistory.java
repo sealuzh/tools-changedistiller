@@ -17,7 +17,8 @@ package org.evolizer.changedistiller.model.entities;
  * 
  * , e.g. <code>org.foo.Bar.imba : String</code>.
  * 
- * @author fluri, zubi
+ * @author Beat Fluri
+ * @author zubi
  * @see AbstractHistory
  * @see ClassHistory
  */

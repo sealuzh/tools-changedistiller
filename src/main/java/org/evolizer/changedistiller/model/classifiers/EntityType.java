@@ -3,8 +3,7 @@ package org.evolizer.changedistiller.model.classifiers;
 import org.evolizer.changedistiller.model.entities.SourceCodeEntity;
 
 /**
- * All types for source code entities that are used by ChangeDistiller to build up the AST (abstract syntax tree). Most
- * are taken from {@link org.eclipse.jdt.core.dom.ASTNode}.
+ * All types for source code entities that are used by ChangeDistiller to build up the AST (abstract syntax tree).
  * 
  * @author zubi
  * @see SourceCodeEntity
