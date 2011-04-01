@@ -42,11 +42,9 @@ public final class RefactoringExtractor {
 
             for (RefactoringCandidate leftCandidate : deletedEntities) {
                 StructureNode left = leftCandidate.getDiffNode().getLeft();
-                if (left.isOfSameTypeAs(right)) {
-                    if (refactoringHelper.isRefactoring(left, right)) {
-                        double similarity = refactoringHelper.similarity(left, right);
-                        refactoringCandidates.add(new RefactoringPair(leftCandidate, rightCandidate, similarity));
-                    }
+                if (left.isOfSameTypeAs(right) && refactoringHelper.isRefactoring(left, right)) {
+                    double similarity = refactoringHelper.similarity(left, right);
+                    refactoringCandidates.add(new RefactoringPair(leftCandidate, rightCandidate, similarity));
                 }
             }
         }

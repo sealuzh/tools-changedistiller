@@ -90,7 +90,7 @@ public class JavaDeclarationConverter extends ASTVisitor {
         boolean isNotParam = getCurrentParent().getLabel() != JavaEntityType.PARAMETERS;
         pushValuedNode(node, String.valueOf(node.name));
         if (isNotParam) {
-            visitModifiers(node, node.modifiers);
+            visitModifiers(node.modifiers);
         }
         node.type.traverse(this, scope);
         return false;
@@ -141,21 +141,21 @@ public class JavaDeclarationConverter extends ASTVisitor {
 
     private void visitFieldDeclarationModifiers(FieldDeclaration fieldDeclaration) {
         fScanner.resetTo(fieldDeclaration.declarationSourceStart, fieldDeclaration.sourceStart());
-        visitModifiers(fieldDeclaration, fieldDeclaration.modifiers);
+        visitModifiers(fieldDeclaration.modifiers);
     }
 
     private void visitMethodDeclarationModifiers(AbstractMethodDeclaration methodDeclaration) {
         fScanner.resetTo(methodDeclaration.declarationSourceStart, methodDeclaration.sourceStart());
-        visitModifiers(methodDeclaration, methodDeclaration.modifiers);
+        visitModifiers(methodDeclaration.modifiers);
     }
 
     private void visitTypeDeclarationModifiers(TypeDeclaration typeDeclaration) {
         fScanner.resetTo(typeDeclaration.declarationSourceStart, typeDeclaration.sourceStart());
-        visitModifiers(typeDeclaration, typeDeclaration.modifiers);
+        visitModifiers(typeDeclaration.modifiers);
     }
 
     // logic partly taken from org.eclipse.jdt.core.dom.ASTConverter
-    private void visitModifiers(ASTNode node, int modifierMask) {
+    private void visitModifiers(int modifierMask) {
         push(JavaEntityType.MODIFIERS, "", -1, -1);
         if (modifierMask != 0) {
             Node modifiers = fNodeStack.peek();

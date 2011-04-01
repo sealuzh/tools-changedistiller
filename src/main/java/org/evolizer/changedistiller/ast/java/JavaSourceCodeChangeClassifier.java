@@ -172,8 +172,7 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
                             insert.getRootEntity().getType(),
                             insert.getRootEntity().getUniqueName(),
                             insert.getParentEntity().getType(),
-                            insert.getParentEntity().getUniqueName(),
-                            null);
+                            insert.getParentEntity().getUniqueName());
             if (del != null) {
                 result =
                         new Update(
@@ -309,8 +308,7 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
                                 insert.getRootEntity().getType(),
                                 insert.getRootEntity().getUniqueName(),
                                 insert.getParentEntity().getType(),
-                                insert.getParentEntity().getUniqueName(),
-                                null);
+                                insert.getParentEntity().getUniqueName());
 
                 del.setChangeType(ChangeType.RETURN_TYPE_DELETE);
                 result = del;
@@ -926,13 +924,11 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
             if (upd.getParentEntity().getType() == JavaEntityType.PARAMETER) {
                 String[] oldSplit = upd.getChangedEntity().getUniqueName().split(COLON);
                 String[] newSplit = upd.getNewEntity().getUniqueName().split(COLON);
-                if ((oldSplit.length > 1) && (newSplit.length > 1)) {
+                if ((oldSplit.length > 1) && (newSplit.length > 1) && !oldSplit[1].equals(newSplit[1])) {
                     // MW: BUG FIX for IndexOutOfBoundsException
                     // BF: use 1 as index!!
-                    if (!oldSplit[1].equals(newSplit[1])) {
-                        upd.setChangeType(ChangeType.PARAMETER_TYPE_CHANGE);
-                        result = upd;
-                    }
+                    upd.setChangeType(ChangeType.PARAMETER_TYPE_CHANGE);
+                    result = upd;
                 }
             } else {
                 if (upd.getNewEntity().getUniqueName().endsWith(VOID_RETURN)) {
@@ -1001,8 +997,7 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
             EntityType structureEntityType,
             String structureEntityName,
             EntityType parentEntityType,
-            String parentEntityName,
-            String entityName) {
+            String parentEntityName) {
         for (Delete del : fDeletes) {
             if (isEqual(del.getRootEntity(), structureEntityType, structureEntityName)
                     && isEqual(del.getParentEntity(), parentEntityType, parentEntityName)

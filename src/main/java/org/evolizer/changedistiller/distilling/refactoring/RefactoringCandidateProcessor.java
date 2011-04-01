@@ -89,9 +89,9 @@ public class RefactoringCandidateProcessor {
             List<RefactoringCandidate> deleted,
             AbstractRefactoringHelper refactoringHelper) {
         StructureEntityVersion clazz = getCurrentClass();
-        processRefactorings(refactoringHelper, clazz.getUniqueName(), added, deleted);
-        processRemainingDiffs(clazz, added, refactoringHelper, fRightASTHelper);
-        processRemainingDiffs(clazz, deleted, refactoringHelper, fLeftASTHelper);
+        processRefactorings(refactoringHelper, added, deleted);
+        processRemainingDiffs(clazz, added);
+        processRemainingDiffs(clazz, deleted);
     }
 
     private StructureEntityVersion getCurrentClass() {
@@ -100,7 +100,6 @@ public class RefactoringCandidateProcessor {
 
     private void processRefactorings(
             AbstractRefactoringHelper refactoringHelper,
-            String className,
             List<RefactoringCandidate> added,
             List<RefactoringCandidate> deleted) {
         List<RefactoringPair> refactorings =
@@ -148,11 +147,7 @@ public class RefactoringCandidateProcessor {
         distiller.extractClassifiedSourceCodeChanges(left, right);
     }
 
-    private void processRemainingDiffs(
-            StructureEntityVersion clazz,
-            List<RefactoringCandidate> candidates,
-            AbstractRefactoringHelper helper,
-            ASTHelper<StructureNode> astHelper) {
+    private void processRemainingDiffs(StructureEntityVersion clazz, List<RefactoringCandidate> candidates) {
         for (RefactoringCandidate candidate : candidates) {
             if (!candidate.isRefactoring()) {
                 List<SourceCodeChange> classifiedChanges =

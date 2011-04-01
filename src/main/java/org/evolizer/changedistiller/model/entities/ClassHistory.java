@@ -105,26 +105,6 @@ public class ClassHistory extends AbstractHistory {
     }
 
     /**
-     * Returns class entity with unique name saved as class version with version or creates a version for the class with
-     * the given unique name and modifiers.
-     * 
-     * @param uniqueName
-     *            of class entity
-     * @param modifiers
-     *            the modifiers
-     * 
-     * @return found or created class entity
-     */
-    public StructureEntityVersion getClass(String uniqueName, int modifiers) {
-        for (int i = 0; i < getVersions().size(); i++) {
-            if (getVersions().get(i).getUniqueName().equals(uniqueName)) {
-                return getVersions().get(i);
-            }
-        }
-        return createClass(uniqueName, modifiers);
-    }
-
-    /**
      * Returns {@link Map} of inner class histories belonging to this class history. Key is the unique name of inner
      * class history.
      * 
@@ -132,20 +112,6 @@ public class ClassHistory extends AbstractHistory {
      */
     public Map<String, ClassHistory> getInnerClassHistories() {
         return fInnerClassHistories;
-    }
-
-    /**
-     * Returns label for this history:
-     * 
-     * <pre>
-     * ClassHistory:&lt;className&gt;
-     * </pre>
-     * 
-     * @return label for this history.
-     */
-    @Override
-    public String getLabel() {
-        return super.getLabel();
     }
 
     /**
@@ -242,12 +208,6 @@ public class ClassHistory extends AbstractHistory {
         fMethodHistories = methodHistories;
     }
 
-    private StructureEntityVersion createClass(String uniqueName, int modifiers) {
-        // StructureEntityVersion clazz = new StructureEntityVersion(EntityType.CLASS, uniqueName, modifiers);
-        // addVersion(clazz);
-        return null;
-    }
-
     private void initHistories() {
         setMethodHistories(new HashMap<String, MethodHistory>());
         setAttributeHistories(new HashMap<String, AttributeHistory>());
@@ -268,8 +228,9 @@ public class ClassHistory extends AbstractHistory {
             return;
         }
         MethodHistory methodHistory = getMethodHistories().get(method.getUniqueName());
-        if ((methodHistory != null) && methodHistory.getVersions().remove(method)) {
-            if (methodHistory.getVersions().isEmpty()) {
+        if (methodHistory != null) {
+            boolean wasMethodRemoved = methodHistory.getVersions().remove(method);
+            if (wasMethodRemoved && methodHistory.getVersions().isEmpty()) {
                 getMethodHistories().remove(method.getUniqueName());
             }
         }
@@ -289,8 +250,9 @@ public class ClassHistory extends AbstractHistory {
             return;
         }
         AttributeHistory attributeHistory = getAttributeHistories().get(attribute.getUniqueName());
-        if ((attributeHistory != null) && attributeHistory.getVersions().remove(attribute)) {
-            if (attributeHistory.getVersions().isEmpty()) {
+        if (attributeHistory != null) {
+            boolean wasAttributeRemoved = attributeHistory.getVersions().remove(attribute);
+            if (wasAttributeRemoved && attributeHistory.getVersions().isEmpty()) {
                 getAttributeHistories().remove(attribute.getUniqueName());
             }
         }

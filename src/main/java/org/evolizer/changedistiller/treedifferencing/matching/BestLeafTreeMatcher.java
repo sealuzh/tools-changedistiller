@@ -133,33 +133,31 @@ public class BestLeafTreeMatcher implements TreeMatcher {
             if (x.isLeaf()) {
                 for (Enumeration<Node> rightNodes = right.postorderEnumeration(); rightNodes.hasMoreElements();) {
                     Node y = rightNodes.nextElement();
-                    if (y.isLeaf()) {
-                        if (x.getLabel() == y.getLabel()) {
-                            double similarity = 0;
+                    if (y.isLeaf() && haveSameLabel(x, y)) {
+                        double similarity = 0;
 
-                            if (x.getLabel().isComment()) {
-                                similarity =
-                                        fLeafCommentStringSimilarityCalculator.calculateSimilarity(
-                                                x.getValue(),
-                                                y.getValue());
+                        if (x.getLabel().isComment()) {
+                            similarity =
+                                    fLeafCommentStringSimilarityCalculator.calculateSimilarity(
+                                            x.getValue(),
+                                            y.getValue());
 
-                                // Important! Otherwhise nodes that match poorly will make it into final matching set,
-                                // if no better matches are found!
-                                if (similarity >= fLeafCommentStringSimilarityThreshold) {
-                                    matchedLeafs.add(new LeafPair(x, y, similarity));
-                                }
+                            // Important! Otherwhise nodes that match poorly will make it into final matching set,
+                            // if no better matches are found!
+                            if (similarity >= fLeafCommentStringSimilarityThreshold) {
+                                matchedLeafs.add(new LeafPair(x, y, similarity));
+                            }
 
-                            } else { // ...other statements.
-                                similarity =
-                                        fLeafGenericStringSimilarityCalculator.calculateSimilarity(
-                                                x.getValue(),
-                                                y.getValue());
+                        } else { // ...other statements.
+                            similarity =
+                                    fLeafGenericStringSimilarityCalculator.calculateSimilarity(
+                                            x.getValue(),
+                                            y.getValue());
 
-                                // Important! Otherwhise nodes that match poorly will make it into final matching set,
-                                // if no better matches are found!
-                                if (similarity >= fLeafGenericStringSimilarityThreshold) {
-                                    matchedLeafs.add(new LeafPair(x, y, similarity));
-                                }
+                            // Important! Otherwhise nodes that match poorly will make it into final matching set,
+                            // if no better matches are found!
+                            if (similarity >= fLeafGenericStringSimilarityThreshold) {
+                                matchedLeafs.add(new LeafPair(x, y, similarity));
                             }
                         }
                     }
@@ -169,28 +167,42 @@ public class BestLeafTreeMatcher implements TreeMatcher {
         return matchedLeafs;
     }
 
+    private boolean haveSameLabel(Node x, Node y) {
+        return x.getLabel() == y.getLabel();
+    }
+
     private boolean equal(Node x, Node y) {
         // inner nodes
-        if ((!x.isLeaf() && !y.isLeaf()) || (x.isRoot() && y.isRoot())) {
-            if (x.getLabel() == y.getLabel()) {
-                // little heuristic
-                if (x.isRoot()) {
-                    return x.getValue().equals(x.getValue());
+        if (areInnerOrRootNodes(x, y) && haveSameLabel(x, y)) {
+            // little heuristic
+            if (x.isRoot()) {
+                return x.getValue().equals(x.getValue());
+            } else {
+                double t = fNodeSimilarityThreshold;
+                if (fDynamicEnabled && (x.getLeafCount() < fDynamicDepth) && (y.getLeafCount() < fDynamicDepth)) {
+                    t = fDynamicThreshold;
+                }
+                double simNode = fNodeSimilarityCalculator.calculateSimilarity(x, y);
+                double simString = fNodeStringSimilarityCalculator.calculateSimilarity(x.getValue(), y.getValue());
+                if ((simString < fNodeStringSimilarityThreshold) && (simNode >= fWeightingThreshold)) {
+                    return true;
                 } else {
-                    double t = fNodeSimilarityThreshold;
-                    if (fDynamicEnabled && (x.getLeafCount() < fDynamicDepth) && (y.getLeafCount() < fDynamicDepth)) {
-                        t = fDynamicThreshold;
-                    }
-                    double simNode = fNodeSimilarityCalculator.calculateSimilarity(x, y);
-                    double simString = fNodeStringSimilarityCalculator.calculateSimilarity(x.getValue(), y.getValue());
-                    if ((simString < fNodeStringSimilarityThreshold) && (simNode >= fWeightingThreshold)) {
-                        return true;
-                    } else {
-                        return (simNode >= t) && (simString >= fNodeStringSimilarityThreshold);
-                    }
+                    return (simNode >= t) && (simString >= fNodeStringSimilarityThreshold);
                 }
             }
         }
         return false;
+    }
+
+    private boolean areInnerOrRootNodes(Node x, Node y) {
+        return areInnerNodes(x, y) || areRootNodes(x, y);
+    }
+
+    private boolean areInnerNodes(Node x, Node y) {
+        return (!x.isLeaf() && !y.isLeaf());
+    }
+
+    private boolean areRootNodes(Node x, Node y) {
+        return (x.isRoot() && y.isRoot());
     }
 }
