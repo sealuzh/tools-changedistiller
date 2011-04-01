@@ -51,35 +51,4 @@ public class AttributeHistory extends AbstractHistory {
         }
     }
 
-    /**
-     * Returns label for this history, that is
-     * 
-     * <pre>
-     * AttributeHistory:&lt;attributeName&gt;:&lt;attributeType&gt;
-     * </pre>
-     * 
-     * @return label for this history.
-     */
-    @Override
-    public String getLabel() {
-        return super.getLabel();
-    }
-
-    /**
-     * Returns unique name of this attribute history, that is
-     * 
-     * <pre>
-     * &lt;fullyQualifiedClassName&gt;.&lt;attributeName&gt; : &lt;attributeType&gt;
-     * </pre>
-     * 
-     * , e.g. <code>org.foo.Bar.imba : String</code>.
-     * <p>
-     * The unique name is built for the most recent attribute version of this history.
-     * 
-     * @return unique name of this history.
-     */
-    @Override
-    public String getUniqueName() {
-        return super.getUniqueName();
-    }
 }
