@@ -36,6 +36,7 @@ public class ClassDistiller {
     private SourceCodeEntity fParentEntity;
     private List<SourceCodeChange> fChanges;
     private RefactoringCandidateContainer fRefactoringContainer;
+    private String fVersion;
 
     /**
      * Creates a new class distiller.
@@ -69,6 +70,43 @@ public class ClassDistiller {
         fChanges = new LinkedList<SourceCodeChange>();
         fRefactoringContainer = new RefactoringCandidateContainer();
     }
+    
+    /**
+     * Creates a new class distiller.
+     * 
+     * @param classNode
+     *            of which the changes should be extracted
+     * @param classHistory
+     *            to which the changes should be attached
+     * @param leftASTHelper
+     *            aids getting info from the left AST
+     * @param rightASTHelper
+     *            aids getting info from the right AST
+     * @param refactoringProcessor
+     *            to process potential refactorings
+     * @param distillerFactory
+     *            to create distillers
+     * @param version
+     *            the number or ID of the version associated to the changes being distilled
+     */
+    public ClassDistiller(
+            StructureDiffNode classNode,
+            ClassHistory classHistory,
+            ASTHelper<StructureNode> leftASTHelper,
+            ASTHelper<StructureNode> rightASTHelper,
+            RefactoringCandidateProcessor refactoringProcessor,
+            DistillerFactory distillerFactory,
+            String version) {
+        fClassDiffNode = classNode;
+        fClassHistory = classHistory;
+        fLeftASTHelper = leftASTHelper;
+        fRightASTHelper = rightASTHelper;
+        fRefactoringProcessor = refactoringProcessor;
+        fDistillerFactory = distillerFactory;
+        fChanges = new LinkedList<SourceCodeChange>();
+        fRefactoringContainer = new RefactoringCandidateContainer();
+        fVersion = version;
+    }
 
     /**
      * Extract the {@link SourceCodeChange}s of the {@link StructureDiffNode} with which the class distiller was
@@ -76,15 +114,21 @@ public class ClassDistiller {
      */
     public void extractChanges() {
         fParentEntity = fLeftASTHelper.createSourceCodeEntity(fClassDiffNode.getLeft());
-        fRootEntity = fLeftASTHelper.createStructureEntityVersion(fClassDiffNode.getLeft());
+        if (fVersion != null) {
+        	fRootEntity = fLeftASTHelper.createStructureEntityVersion(fClassDiffNode.getLeft(), fVersion);
+        } else {
+        	fRootEntity = fLeftASTHelper.createStructureEntityVersion(fClassDiffNode.getLeft());
+        }
         processDeclarationChanges(fClassDiffNode, fRootEntity);
         fChanges.addAll(fRootEntity.getSourceCodeChanges());
         processChildren();
+        
         fRefactoringProcessor.processRefactoringCandidates(
                 fClassHistory,
                 fLeftASTHelper,
                 fRightASTHelper,
                 fRefactoringContainer);
+        
         fChanges.addAll(fRefactoringProcessor.getSourceCodeChanges());
         cleanupInnerClassHistories();
     }
@@ -117,8 +161,21 @@ public class ClassDistiller {
     }
 
     private void processClassDiffNode(StructureDiffNode diffNode) {
-    	ClassHistory classHistory = fClassHistory.createInnerClassHistory(fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft()));
-        ClassDistiller classDistiller =
+    	ClassDistiller classDistiller;
+    	if (fVersion != null) {
+    		ClassHistory classHistory = fClassHistory.createInnerClassHistory(fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft(), fVersion));
+    		classDistiller =
+                new ClassDistiller(
+                        diffNode,
+                        classHistory,
+                        fLeftASTHelper,
+                        fRightASTHelper,
+                        fRefactoringProcessor,
+                        fDistillerFactory,
+                        fVersion);
+    	} else {
+    		ClassHistory classHistory = fClassHistory.createInnerClassHistory(fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft()));
+    		classDistiller =
                 new ClassDistiller(
                         diffNode,
                         classHistory,
@@ -126,6 +183,7 @@ public class ClassDistiller {
                         fRightASTHelper,
                         fRefactoringProcessor,
                         fDistillerFactory);
+    	}
         classDistiller.extractChanges();
         fChanges.addAll(classDistiller.getSourceCodeChanges());
     }
@@ -149,7 +207,12 @@ public class ClassDistiller {
     }
 
     private void processFineGrainedChanges(StructureDiffNode diffNode) {
-        StructureEntityVersion entity = fRightASTHelper.createStructureEntityVersion(diffNode.getRight());
+    	StructureEntityVersion entity;
+    	if (fVersion != null) {
+    		entity = fRightASTHelper.createStructureEntityVersion(diffNode.getRight(), fVersion);
+    	} else {
+    		entity = fRightASTHelper.createStructureEntityVersion(diffNode.getRight());
+    	}
         if (diffNode.isMethodOrConstructorDiffNode()) {
             entity = createMethodStructureEntity(diffNode);
         } else if (diffNode.isFieldDiffNode()) {
@@ -171,15 +234,27 @@ public class ClassDistiller {
     }
 
     private StructureEntityVersion createInnerClassStructureEntity(StructureDiffNode diffNode) {
-        return fRightASTHelper.createInnerClassInClassHistory(fClassHistory, diffNode.getRight());
+    	if (fVersion != null) {
+    		return fRightASTHelper.createInnerClassInClassHistory(fClassHistory, diffNode.getRight(), fVersion);
+    	} else {
+    		return fRightASTHelper.createInnerClassInClassHistory(fClassHistory, diffNode.getRight());
+    	}
     }
 
     private StructureEntityVersion createFieldStructureEntity(StructureDiffNode diffNode) {
-        return fRightASTHelper.createFieldInClassHistory(fClassHistory, diffNode.getRight());
+    	if (fVersion != null) {
+    		return fRightASTHelper.createFieldInClassHistory(fClassHistory, diffNode.getRight(), fVersion);
+    	} else {
+    		return fRightASTHelper.createFieldInClassHistory(fClassHistory, diffNode.getRight());
+    	}
     }
 
     private StructureEntityVersion createMethodStructureEntity(StructureDiffNode diffNode) {
-        return fRightASTHelper.createMethodInClassHistory(fClassHistory, diffNode.getRight());
+    	if (fVersion != null) {
+    		return fRightASTHelper.createMethodInClassHistory(fClassHistory, diffNode.getRight(), fVersion);
+    	} else {
+    		return fRightASTHelper.createMethodInClassHistory(fClassHistory, diffNode.getRight());
+    	}
     }
 
     private void processDeclarationChanges(StructureDiffNode diffNode, StructureEntityVersion rootEntity) {

@@ -31,6 +31,7 @@ public class RefactoringCandidateProcessor {
     private DistillerFactory fDistillerFactory;
     private SourceCodeChangeClassifier fChangeClassifier;
     private List<SourceCodeChange> fChanges;
+    private String fVersion;
 
     @Inject
     RefactoringCandidateProcessor(DistillerFactory distillerFactory, SourceCodeChangeClassifier changeClassifier) {
@@ -56,6 +57,37 @@ public class RefactoringCandidateProcessor {
             ASTHelper<StructureNode> leftHelper,
             ASTHelper<StructureNode> rightHelper,
             RefactoringCandidateContainer candidates) {
+        fClassHistory = classHistory;
+        fLeftASTHelper = leftHelper;
+        fRightASTHelper = rightHelper;
+        fChanges = new LinkedList<SourceCodeChange>();
+        processMethodRefactoringCandidates(candidates);
+        processFieldRefactoringCandidates(candidates);
+        processInnerClassesRefactoringCandidates(candidates);
+    }
+    
+    /**
+     * Processes all {@link RefactoringCandidate}s in the {@link RefactoringCandidateContainer} and stores all resulting
+     * changes to the {@link ClassHistory}.
+     * 
+     * @param classHistory
+     *            in which the refactorings took place
+     * @param leftHelper
+     *            to access the AST of the left side of the refactoring
+     * @param rightHelper
+     *            to access the AST of the right side of the refactoring
+     * @param candidates
+     *            to process
+     * @param version
+     *            the number/ID of the version being distilled
+     */
+    public void processRefactoringCandidates(
+            ClassHistory classHistory,
+            ASTHelper<StructureNode> leftHelper,
+            ASTHelper<StructureNode> rightHelper,
+            RefactoringCandidateContainer candidates,
+            String version) {
+    	fVersion = version;
         fClassHistory = classHistory;
         fLeftASTHelper = leftHelper;
         fRightASTHelper = rightHelper;
@@ -108,14 +140,24 @@ public class RefactoringCandidateProcessor {
             StructureNode leftDrn = pair.getDeletedEntity().getDiffNode().getLeft();
             StructureNode rightDrn = pair.getInsertedEntity().getDiffNode().getRight();
 
-            StructureEntityVersion structureEntityVersion = refactoringHelper.createStructureEntityVersion(rightDrn);
+            StructureEntityVersion structureEntityVersion;
+            if (fVersion != null) {
+            	structureEntityVersion = refactoringHelper.createStructureEntityVersionWithID(rightDrn, fVersion);
+            } else {
+            	structureEntityVersion = refactoringHelper.createStructureEntityVersion(rightDrn);
+            }
 
             Node rightRoot = fRightASTHelper.createDeclarationTree(rightDrn);
             // use the new qualified name for the method; otherwise TreeDifferencer detects a return type change
             Node leftRoot = fLeftASTHelper.createDeclarationTree(leftDrn, rightRoot.getValue());
             if (isRenaming(leftDrn, rightDrn, refactoringHelper)) {
-                structureEntityVersion =
+            	if (fVersion != null) {
+            		structureEntityVersion =
+                        refactoringHelper.createStructureEntityVersionWithID(leftDrn, rightDrn.getFullyQualifiedName(), fVersion);
+            	} else {
+            		structureEntityVersion =
                         refactoringHelper.createStructureEntityVersion(leftDrn, rightDrn.getFullyQualifiedName());
+            	}
                 Update upd =
                         new Update(
                                 structureEntityVersion,

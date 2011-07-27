@@ -68,6 +68,16 @@ public interface ASTHelper<T extends StructureNode> {
      * 
      * @param node
      *            to create the structure entity version for
+     * @param version
+     *            the number or id of the version to create
+     * @return the structure entity version for the node
+     */
+    StructureEntityVersion createStructureEntityVersion(T node, String version);
+    /**
+     * Creates and returns the {@link StructureEntityVersion} for the {@link StructureNode}.
+     * 
+     * @param node
+     *            to create the structure entity version for
      * @return the structure entity version for the node
      */
     StructureEntityVersion createStructureEntityVersion(T node);
@@ -80,9 +90,37 @@ public interface ASTHelper<T extends StructureNode> {
      *            to create the structure entity version for
      * @param node
      *            to create the structure entity version
+     * @param version
+     *            the number or id of the version to create
+     * @return the method structure entity version in the class history for the node
+     */
+    StructureEntityVersion createMethodInClassHistory(ClassHistory classHistory, T node, String version);
+
+    /**
+     * Creates and returns the {@link StructureEntityVersion} as method of the {@link ClassHistory}. The method is
+     * attached to the corresponding {@link MethodHistory}, if exists. Otherwise a new one is created.
+     * 
+     * @param classHistory
+     *            to create the structure entity version for
+     * @param node
+     *            to create the structure entity version
      * @return the method structure entity version in the class history for the node
      */
     StructureEntityVersion createMethodInClassHistory(ClassHistory classHistory, T node);
+    
+    /**
+     * Creates and returns the {@link StructureEntityVersion} as field of the {@link ClassHistory}. The field is
+     * attached to the corresponding {@link AttributeHistory}, if exists. Otherwise a new one is created.
+     * 
+     * @param classHistory
+     *            to create the structure entity version for
+     * @param node
+     *            to create the structure entity version
+     * @param version
+     *            the number or id of the version to create
+     * @return the field structure entity version in the class history for the node
+     */
+    StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, T node, String version);
 
     /**
      * Creates and returns the {@link StructureEntityVersion} as field of the {@link ClassHistory}. The field is
@@ -95,6 +133,20 @@ public interface ASTHelper<T extends StructureNode> {
      * @return the field structure entity version in the class history for the node
      */
     StructureEntityVersion createFieldInClassHistory(ClassHistory classHistory, T node);
+    
+    /**
+     * Creates and returns the {@link StructureEntityVersion} as class of the {@link ClassHistory}. An inner class
+     * version is added to this resulting Inner{@link ClassHistory}.
+     * 
+     * @param classHistory
+     *            to create the structure entity version for
+     * @param node
+     *            to create the structure entity version
+     * @param version
+     *            the number or id of the version to create
+     * @return the class structure entity version in the class history for the node
+     */
+    StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, T node, String version);
 
     /**
      * Creates and returns the {@link StructureEntityVersion} as class of the {@link ClassHistory}. An inner class
@@ -107,7 +159,7 @@ public interface ASTHelper<T extends StructureNode> {
      * @return the class structure entity version in the class history for the node
      */
     StructureEntityVersion createInnerClassInClassHistory(ClassHistory classHistory, T node);
-
+    
     /**
      * Creates and returns the declaration {@link Node} tree for the {@link StructureNode}. In addition it replaces the
      * qualified name with the given one.

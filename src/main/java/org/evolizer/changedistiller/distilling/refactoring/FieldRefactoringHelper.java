@@ -31,10 +31,25 @@ public class FieldRefactoringHelper extends AbstractRefactoringHelper {
     public StructureEntityVersion createStructureEntityVersion(StructureNode node) {
         return getASTHelper().createFieldInClassHistory(getClassHistory(), node);
     }
+    
+    @Override
+    public StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String version) {
+        return getASTHelper().createFieldInClassHistory(getClassHistory(), node, version);
+    }
 
     @Override
     public StructureEntityVersion createStructureEntityVersion(StructureNode node, String newEntityName) {
         StructureEntityVersion attribute = createStructureEntityVersion(node);
+        if (!node.getFullyQualifiedName().equals(newEntityName)) {
+            attribute.setUniqueName(newEntityName);
+            getClassHistory().overrideAttributeHistory(node.getFullyQualifiedName(), newEntityName);
+        }
+        return attribute;
+    }
+    
+    @Override
+    public StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String newEntityName, String version) {
+        StructureEntityVersion attribute = createStructureEntityVersionWithID(node, version);
         if (!node.getFullyQualifiedName().equals(newEntityName)) {
             attribute.setUniqueName(newEntityName);
             getClassHistory().overrideAttributeHistory(node.getFullyQualifiedName(), newEntityName);

@@ -30,6 +30,7 @@ public class FileDistiller {
     private ASTHelper<StructureNode> fLeftASTHelper;
     private ASTHelper<StructureNode> fRightASTHelper;
     private ClassHistory fClassHistory;
+    private String fVersion;
 
     @Inject
     FileDistiller(
@@ -65,11 +66,20 @@ public class FileDistiller {
         }
     }
 
+    public void extractClassifiedSourceCodeChanges(File left, File right, String version) {
+    	fVersion = version;
+    	this.extractClassifiedSourceCodeChanges(left, right);
+    }
+    
     private void processRootChildren(StructureDiffNode diffNode) {
         for (StructureDiffNode child : diffNode.getChildren()) {
             if (child.isClassOrInterfaceDiffNode() && mayHaveChanges(child.getLeft(), child.getRight())) {
                 if (fClassHistory == null) {
-                    fClassHistory = new ClassHistory(fRightASTHelper.createStructureEntityVersion(child.getRight()));
+                	if (fVersion != null) {
+                		fClassHistory = new ClassHistory(fRightASTHelper.createStructureEntityVersion(child.getRight(), fVersion));
+                	} else {
+                		fClassHistory = new ClassHistory(fRightASTHelper.createStructureEntityVersion(child.getRight()));
+                	}
                 }
                 processClassDiffNode(child);
             }
@@ -77,7 +87,19 @@ public class FileDistiller {
     }
 
     private void processClassDiffNode(StructureDiffNode child) {
-        ClassDistiller classDistiller =
+    	ClassDistiller classDistiller;
+    	if (fVersion != null) {
+        classDistiller =
+                new ClassDistiller(
+                        child,
+                        fClassHistory,
+                        fLeftASTHelper,
+                        fRightASTHelper,
+                        fRefactoringProcessor,
+                        fDistillerFactory,
+                        fVersion);
+    	} else {
+    		classDistiller =
                 new ClassDistiller(
                         child,
                         fClassHistory,
@@ -85,6 +107,7 @@ public class FileDistiller {
                         fRightASTHelper,
                         fRefactoringProcessor,
                         fDistillerFactory);
+    	}
         classDistiller.extractChanges();
         fChanges.addAll(classDistiller.getSourceCodeChanges());
     }

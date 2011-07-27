@@ -49,6 +49,19 @@ public abstract class AbstractRefactoringHelper {
      * @return structure entity version for the structure node
      */
     public abstract StructureEntityVersion createStructureEntityVersion(StructureNode node);
+    
+    /**
+     * Creates a {@link StructureEntityVersion} for the given {@link StructureNode} and attaches it to the
+     * {@link ClassHistory}.
+     * 
+     * @param node
+     *            to create the structure entity version
+     * @param version
+     *            the number or ID associated to the structure entity version
+     * @return structure entity version for the structure node
+     */
+    public abstract StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String version);
+
 
     /**
      * Creates a {@link StructureEntityVersion} with newEntityName and replaces the {@link StructureEntityVersion} of
@@ -62,6 +75,23 @@ public abstract class AbstractRefactoringHelper {
      *         version of the structure node
      */
     public abstract StructureEntityVersion createStructureEntityVersion(StructureNode node, String newEntityName);
+    
+	/**
+	 * Creates a {@link StructureEntityVersion} with newEntityName and replaces
+	 * the {@link StructureEntityVersion} of the {@link StructureNode} (if
+	 * exists) with it in the {@link ClassHistory}. took place.
+	 * 
+	 * @param node
+	 *            to create the structure entity version
+	 * @param newEntityName
+	 *            of the new structure entity version
+     * @param version
+     *            the number or ID associated to the structure entity version
+	 * @return structure entity with newEntityName and the modifiers that is a
+	 *         replacement of the structure entity version of the structure node
+	 */
+	public abstract StructureEntityVersion createStructureEntityVersionWithID(
+			StructureNode node, String newEntityName, String version);
 
     /**
      * Extracts a short form of the unique name provided.

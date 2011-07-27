@@ -33,6 +33,11 @@ public class MethodRefactoringHelper extends AbstractRefactoringHelper {
     }
 
     @Override
+    public StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String version) {
+        return getASTHelper().createMethodInClassHistory(getClassHistory(), node, version);
+    }
+    
+    @Override
     public StructureEntityVersion createStructureEntityVersion(StructureNode node, String newEntityName) {
         StructureEntityVersion method = createStructureEntityVersion(node);
         if (!node.getFullyQualifiedName().equals(newEntityName)) {
@@ -42,6 +47,16 @@ public class MethodRefactoringHelper extends AbstractRefactoringHelper {
         return method;
     }
 
+    @Override
+    public StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String newEntityName, String version) {
+        StructureEntityVersion method = createStructureEntityVersionWithID(node, version);
+        if (!node.getFullyQualifiedName().equals(newEntityName)) {
+            method.setUniqueName(newEntityName);
+            getClassHistory().overrideMethodHistory(node.getFullyQualifiedName(), newEntityName);
+        }
+        return method;
+    }
+    
     /**
      * {@inheritDoc}
      */

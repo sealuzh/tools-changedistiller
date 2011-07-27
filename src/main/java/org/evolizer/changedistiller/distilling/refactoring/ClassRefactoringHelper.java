@@ -26,15 +26,30 @@ public class ClassRefactoringHelper extends AbstractRefactoringHelper {
         super(classHistory, astHelper);
         setThreshold(0.65);
     }
-
+    
     @Override
     public StructureEntityVersion createStructureEntityVersion(StructureNode node) {
         return getASTHelper().createInnerClassInClassHistory(getClassHistory(), node);
     }
 
     @Override
+    public StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String version) {
+        return getASTHelper().createInnerClassInClassHistory(getClassHistory(), node, version);
+    }
+    
+    @Override
     public StructureEntityVersion createStructureEntityVersion(StructureNode node, String newEntityName) {
         StructureEntityVersion clazz = createStructureEntityVersion(node);
+        if (!node.getFullyQualifiedName().equals(newEntityName)) {
+            clazz.setUniqueName(newEntityName);
+            getClassHistory().overrideClassHistory(node.getFullyQualifiedName(), newEntityName);
+        }
+        return clazz;
+    }
+    
+    @Override
+    public StructureEntityVersion createStructureEntityVersionWithID(StructureNode node, String newEntityName, String version) {
+        StructureEntityVersion clazz = createStructureEntityVersionWithID(node, version);
         if (!node.getFullyQualifiedName().equals(newEntityName)) {
             clazz.setUniqueName(newEntityName);
             getClassHistory().overrideClassHistory(node.getFullyQualifiedName(), newEntityName);
