@@ -49,6 +49,9 @@ public class WhenFilesAreDistilled {
         assertThat(classHistory.getMethodHistories().size(), is(1));
         assertThat(classHistory.getInnerClassHistories().size(), is(1));
         classHistory = classHistory.getInnerClassHistories().values().iterator().next();
+        assertThat(classHistory.getUniqueName(), is("test.Test.Bar"));
         assertThat(classHistory.getMethodHistories().size(), is(1));
+        String k = classHistory.getMethodHistories().keySet().iterator().next();
+        assertThat(classHistory.getMethodHistories().get(k).getUniqueName(), is("test.Test.Bar.newMethod()"));
     }
 }

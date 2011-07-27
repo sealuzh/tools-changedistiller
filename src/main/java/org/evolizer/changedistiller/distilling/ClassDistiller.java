@@ -117,7 +117,7 @@ public class ClassDistiller {
     }
 
     private void processClassDiffNode(StructureDiffNode diffNode) {
-        ClassHistory classHistory = fClassHistory.createInnerClassHistory(fRootEntity);
+    	ClassHistory classHistory = fClassHistory.createInnerClassHistory(fLeftASTHelper.createStructureEntityVersion(diffNode.getLeft()));
         ClassDistiller classDistiller =
                 new ClassDistiller(
                         diffNode,
