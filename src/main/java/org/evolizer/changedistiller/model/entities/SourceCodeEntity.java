@@ -178,11 +178,18 @@ public class SourceCodeEntity {
         fRange.setEnd(end);
     }
 
-//    @Override
-//    public int hashCode() {
-//        return new HashCodeBuilder(17, 37).append(getUniqueName()).append(getType()).append(getModifiers())
-//                .append(getSourceRange()).append(new ArrayList<SourceCodeEntity>(getAssociatedEntities())).toHashCode();
-//    }
+    @Override
+    public int hashCode() {
+    	HashCodeBuilder b = new HashCodeBuilder(17, 37);
+    	for (SourceCodeEntity e : getAssociatedEntities()) {
+    		b.append(e.getUniqueName());
+    		b.append(e.getSourceRange());
+    		b.append(e.getModifiers());
+    		b.append(e.getType());
+    	}
+        return new HashCodeBuilder(17, 37).append(getUniqueName()).append(getType()).append(getModifiers())
+                .append(getSourceRange()).append(b.toHashCode()).toHashCode();
+    }
 
     @Override
     public boolean equals(Object obj) {
