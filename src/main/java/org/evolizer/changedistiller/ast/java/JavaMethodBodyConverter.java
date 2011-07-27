@@ -303,21 +303,15 @@ public class JavaMethodBodyConverter extends ASTVisitor {
             return "";
         }
         String result = node.toString();
-        int start = 0;
         // method and type declaration strings contain their javadoc
         // get rid of the javadoc
-        if (node instanceof MethodDeclaration) {
+        if (node instanceof MethodDeclaration || node instanceof TypeDeclaration) {
             MethodDeclaration method = (MethodDeclaration) node;
             if (method.javadoc != null) {
-                start += method.javadoc.sourceEnd();
-            }
-        } else if (node instanceof TypeDeclaration) {
-            TypeDeclaration type = (TypeDeclaration) node;
-            if (type.javadoc != null) {
-                start += type.javadoc.sourceEnd();
+            	return result.replace(method.javadoc.toString(), "");
             }
         }
-        return result.substring(start);
+        return result;
     }
 
     private String getCommentString(ASTNode node) {
