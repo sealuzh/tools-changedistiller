@@ -13,6 +13,7 @@ import org.evolizer.changedistiller.model.classifiers.EntityType;
  * For each new version of an attribute, a class, or a method, a new structure entity version is created.
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  * @author zubi
  */
 public class StructureEntityVersion {

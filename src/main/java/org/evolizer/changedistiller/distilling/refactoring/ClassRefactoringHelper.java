@@ -9,7 +9,7 @@ import org.evolizer.changedistiller.treedifferencing.matching.measure.Levenshtei
 /**
  * Helps finding refactorings of classes.
  * 
- * @author Beat Fluri
+ * @author Beat Fluri, Giacomo Ghezzi
  * @see AbstractRefactoringHelper
  */
 public class ClassRefactoringHelper extends AbstractRefactoringHelper {

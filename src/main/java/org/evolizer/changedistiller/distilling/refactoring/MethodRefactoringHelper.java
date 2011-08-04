@@ -9,7 +9,7 @@ import org.evolizer.changedistiller.treedifferencing.matching.measure.NGramsCalc
 /**
  * Helps finding refactorings of methods.
  * 
- * @author Beat Fluri
+ * @author Beat Fluri, Giacomo Ghezzi
  * @see AbstractRefactoringHelper
  */
 public class MethodRefactoringHelper extends AbstractRefactoringHelper {

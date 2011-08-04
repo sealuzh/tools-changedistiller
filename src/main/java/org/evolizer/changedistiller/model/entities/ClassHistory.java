@@ -21,6 +21,7 @@ import java.util.Map;
  * 
  * @author Beat Fluri
  * @author zubi
+ * @author Giacomo Ghezzi
  * @see AbstractHistory
  * @see AttributeHistory
  * @see MethodHistory

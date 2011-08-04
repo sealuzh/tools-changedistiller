@@ -22,6 +22,7 @@ import com.google.inject.Inject;
  * the {@link ClassHistory}, and its member histories respectively.
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  */
 public class RefactoringCandidateProcessor {
 

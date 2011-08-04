@@ -17,6 +17,7 @@ import org.evolizer.changedistiller.structuredifferencing.StructureNode;
  * made via the provided {@link ClassHistory}.
  * 
  * @author Beat Fluri
+ * @authro Giacomo Ghezzi
  * @see ClassRefactoringHelper
  * @see FieldRefactoringHelper
  * @see MethodRefactoringHelper

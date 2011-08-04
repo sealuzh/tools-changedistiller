@@ -31,7 +31,8 @@ import com.google.inject.assistedinject.Assisted;
 /**
  * Implementation of {@link ASTHelper} for the Java programming language.
  * 
- * @author Beat Fluri
+ * @author Beat Fluri,
+ * @author Giacomo Ghezzi
  */
 public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
 

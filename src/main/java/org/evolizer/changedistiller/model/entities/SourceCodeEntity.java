@@ -1,6 +1,5 @@
 package org.evolizer.changedistiller.model.entities;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +16,7 @@ import org.evolizer.changedistiller.model.classifiers.SourceRange;
  * source code entity depends on its {@link EntityType}.
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  * @author zubi
  */
 public class SourceCodeEntity {

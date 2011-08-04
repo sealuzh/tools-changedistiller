@@ -53,7 +53,7 @@ import com.google.inject.Inject;
 /**
  * Visitor to generate an intermediate tree (general, rooted, labeled, valued tree) out of a method body.
  * 
- * @author Beat Fluri
+ * @author Beat Fluri, Giacomo Ghezzi
  * 
  */
 public class JavaMethodBodyConverter extends ASTVisitor {
@@ -600,7 +600,12 @@ public class JavaMethodBodyConverter extends ASTVisitor {
     public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
         preVisit(localDeclaration);
         int start = localDeclaration.type.sourceStart();
-        int end = localDeclaration.initialization.sourceEnd();
+        int end = start;
+        if (localDeclaration.initialization != null) {
+        	end = localDeclaration.initialization.sourceEnd();
+        } else {
+        	end = localDeclaration.sourceEnd;
+        }
         push(fASTHelper.convertNode(localDeclaration), localDeclaration.toString(), start, end + 1);
         return false;
     }

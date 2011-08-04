@@ -22,6 +22,7 @@ import org.evolizer.changedistiller.treedifferencing.Node;
  * Extracts changes from a class {@link StructureDiffNode}.
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  */
 public class ClassDistiller {
 
@@ -123,12 +124,13 @@ public class ClassDistiller {
         fChanges.addAll(fRootEntity.getSourceCodeChanges());
         processChildren();
         
-        fRefactoringProcessor.processRefactoringCandidates(
-                fClassHistory,
-                fLeftASTHelper,
-                fRightASTHelper,
-                fRefactoringContainer);
-        
+        if (fVersion != null) {
+        	fRefactoringProcessor.processRefactoringCandidates(fClassHistory,
+					fLeftASTHelper, fRightASTHelper, fRefactoringContainer, fVersion);
+        } else {
+			fRefactoringProcessor.processRefactoringCandidates(fClassHistory,
+					fLeftASTHelper, fRightASTHelper, fRefactoringContainer);
+        }
         fChanges.addAll(fRefactoringProcessor.getSourceCodeChanges());
         cleanupInnerClassHistories();
     }

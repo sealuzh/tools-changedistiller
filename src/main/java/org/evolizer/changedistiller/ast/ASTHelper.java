@@ -16,6 +16,7 @@ import org.evolizer.changedistiller.treedifferencing.Node;
  *            subtype of {@link StructureNode} with which the AST helper works
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  */
 public interface ASTHelper<T extends StructureNode> {
 

@@ -25,6 +25,7 @@ import org.evolizer.changedistiller.model.classifiers.SignificanceLevel;
  * Other entities involved in a source code change are described in the corresponding concrete implementation.
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  * @author zubi
  * @see Delete
  * @see Insert

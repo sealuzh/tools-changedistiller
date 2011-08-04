@@ -19,6 +19,7 @@ import com.google.inject.Inject;
  * Distills {@link SourceCodeChange}s between two {@link File}.
  * 
  * @author Beat Fluri
+ * @author Giacomo Ghezzi
  */
 public class FileDistiller {
 
