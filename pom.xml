@@ -10,6 +10,7 @@
 	<properties>
 		<project.year>2011</project.year>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
 		<compiler.source>1.7</compiler.source>
 	</properties>
 	
@@ -152,7 +153,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>${maven-pmd-plugin.version}</version>
+				<version>2.5</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -169,7 +170,7 @@
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
-			<artifactId>junit-dep</artifactId>
+			<artifactId>junit</artifactId>
 			<version>4.11</version>
 			<scope>test</scope>
 			<exclusions>
@@ -194,38 +195,13 @@
 			<version>3.0</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
-		</dependency>
-		
 		<!-- JDT Compiler -->
 		<dependency>
 			<groupId>org.eclipse.jdt.core.compiler</groupId>
 			<artifactId>ecj</artifactId>
 			<version>4.2.1</version>
 		</dependency>
-		
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.9</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.2</version>
-		</dependency>
-		
+				
 		<!-- Apache Commons -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
