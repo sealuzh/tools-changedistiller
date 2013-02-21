@@ -3,8 +3,8 @@ package ch.uzh.ifi.seal.changedistiller.model.entities;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.SignificanceLevel.CRUCIAL;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.SignificanceLevel.HIGH;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.ChangeType;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.SignificanceLevel;

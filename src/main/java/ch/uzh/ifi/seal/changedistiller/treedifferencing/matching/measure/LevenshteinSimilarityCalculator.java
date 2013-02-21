@@ -1,6 +1,6 @@
 package ch.uzh.ifi.seal.changedistiller.treedifferencing.matching.measure;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Implementation of a {@link StringSimilarityCalculator} based on the Levenshtein distance.
