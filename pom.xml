@@ -28,6 +28,13 @@
 			<name>Jonas Zuberbühler</name>
 			<organization>Department of Informatics, UZH</organization>
 		</developer>
+		
+		<developer>
+			<id>ghezzi</id>
+			<name>Giacomo Ghezzi</name>
+			<organization>Department of Informatics, UZH</organization>
+		</developer>
+		
 		<developer>
 			<id>wuersch</id>
 			<name>Michael Würsch</name>
