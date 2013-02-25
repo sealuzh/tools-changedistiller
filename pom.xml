@@ -1,11 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>ch.uzh.ifi.seal</groupId>
 	<artifactId>changedistiller</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<!-- More Project Information -->
+	<!-- Project information -->
 	<name>ChangeDistiller</name>
 	<description>Fine-grained source code change extractor</description>
 	<inceptionYear>2011</inceptionYear>
@@ -34,18 +35,29 @@
 		</developer>
 	</developers>
 
+	<issueManagement>
+		<system>Bitbucket</system>
+		<url>https://bitbucket.org/sealuzh/tools-changedistiller/issues/</url>
+	</issueManagement>
 
-	<!-- Configuration properties which should be consistent across all children 
-		POMS -->
+	<ciManagement>
+		<system>jenkins</system>
+		<url>https://seal-team.ifi.uzh.ch/jenkins/job/changedistiller/</url>
+	</ciManagement>
+
+	<scm>
+		<connection>scm:git:git@bitbucket.org:sealuzh/tools-changedistiller.git</connection>
+		<developerConnection>scm:git:git@bitbucket.org:sealuzh/tools-changedistiller.git</developerConnection>
+		<url>https://bitbucket.org/sealuzh/tools-changedistiller/</url>
+	</scm>
+
+	<!-- Global properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<compiler.source>1.7</compiler.source>
 	</properties>
 
 	<build>
-		<finalName>${project.artifactId}-${project.version}</finalName>
-
 		<plugins>
 			<!-- License header -->
 			<plugin>
@@ -69,6 +81,7 @@
 								<root>src/test/java</root>
 							</roots>
 							<excludes>
+								<!-- Eclipse Public License (EPL) -->
 								<exclude>**/CommentRecorderParser.java</exclude>
 							</excludes>
 						</configuration>
@@ -99,7 +112,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Add sources and Javadoc -->
+			<!-- Create jar with sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -114,6 +127,7 @@
 				</executions>
 			</plugin>
 
+			<!-- Create jar with Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
