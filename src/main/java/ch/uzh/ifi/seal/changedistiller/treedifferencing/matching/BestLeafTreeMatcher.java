@@ -47,14 +47,14 @@ public class BestLeafTreeMatcher implements TreeMatcher {
 
     // Hardcoded! Needs integration into benchmark facilities.
     private StringSimilarityCalculator fLeafCommentStringSimilarityCalculator = new TokenBasedCalculator();
-    private final static double fLeafCommentStringSimilarityThreshold = 0.4;
+    private static final double LEAF_COMMENT_STRING_SIMILARITY_THRESHOLD = 0.4;
 
     private NodeSimilarityCalculator fNodeSimilarityCalculator;
     private double fNodeSimilarityThreshold;
 
     private StringSimilarityCalculator fNodeStringSimilarityCalculator;
     private double fNodeStringSimilarityThreshold;
-    private final static double fWeightingThreshold = 0.8;
+    private static final double WEIGHTING_THRESHOLD = 0.8;
 
     private boolean fDynamicEnabled;
     private int fDynamicDepth;
@@ -164,7 +164,7 @@ public class BestLeafTreeMatcher implements TreeMatcher {
 
                             // Important! Otherwhise nodes that match poorly will make it into final matching set,
                             // if no better matches are found!
-                            if (similarity >= fLeafCommentStringSimilarityThreshold) {
+                            if (similarity >= LEAF_COMMENT_STRING_SIMILARITY_THRESHOLD) {
                                 matchedLeafs.add(new LeafPair(x, y, similarity));
                             }
 
@@ -204,7 +204,7 @@ public class BestLeafTreeMatcher implements TreeMatcher {
                 }
                 double simNode = fNodeSimilarityCalculator.calculateSimilarity(x, y);
                 double simString = fNodeStringSimilarityCalculator.calculateSimilarity(x.getValue(), y.getValue());
-                if ((simString < fNodeStringSimilarityThreshold) && (simNode >= fWeightingThreshold)) {
+                if ((simString < fNodeStringSimilarityThreshold) && (simNode >= WEIGHTING_THRESHOLD)) {
                     return true;
                 } else {
                     return (simNode >= t) && (simString >= fNodeStringSimilarityThreshold);

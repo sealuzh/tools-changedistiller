@@ -227,7 +227,7 @@ public class ClassHistory extends AbstractHistory {
         fMethodHistories = methodHistories;
     }
 
-    private final void initHistories() {
+    private void initHistories() {
         setMethodHistories(new HashMap<String, MethodHistory>());
         setAttributeHistories(new HashMap<String, AttributeHistory>());
         setInnerClassHistories(new HashMap<String, ClassHistory>());
