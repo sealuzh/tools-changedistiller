@@ -45,17 +45,6 @@ public abstract class AbstractHistory {
         setVersions(new LinkedList<StructureEntityVersion>());
     }
 
-    /**
-     * Creates a new history for a given version.
-     * 
-     * @param version
-     *            to be added to this history
-     */
-    public AbstractHistory(StructureEntityVersion version) {
-        this();
-        addVersion(version);
-    }
-
     @Override
     public final int hashCode() {
         return new HashCodeBuilder(11, 19).append(getUniqueName())
@@ -100,7 +89,7 @@ public abstract class AbstractHistory {
      */
     public String getLabel() {
         String label = getVersions().get(getVersions().size() - 1).getLabel();
-        label = label.substring(0, label.lastIndexOf("@"));
+        label = label.substring(0, label.lastIndexOf('@'));
         return getClass().getSimpleName() + ":" + label;
     }
 

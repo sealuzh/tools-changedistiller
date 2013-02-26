@@ -156,7 +156,7 @@ public class StructureDifferencer {
                 }
             }
         } catch (IOException e) {
-            new RuntimeException(e);
+            throw new RuntimeException(e);
         } finally {
             leftContent.close();
             rightContent.close();

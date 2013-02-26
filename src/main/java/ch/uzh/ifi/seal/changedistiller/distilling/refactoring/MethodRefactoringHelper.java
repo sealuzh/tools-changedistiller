@@ -86,7 +86,7 @@ public class MethodRefactoringHelper extends AbstractRefactoringHelper {
         if (pos > 0) {
             return fullName.substring(0, pos);
         }
-        return fullName.substring(0);
+        return fullName;
     }
 
     @Override

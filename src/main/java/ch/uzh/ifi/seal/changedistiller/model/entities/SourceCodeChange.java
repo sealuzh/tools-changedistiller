@@ -108,7 +108,7 @@ public class SourceCodeChange {
         setRootEntity(rootEntity);
     }
 
-    public void setChangedEntity(SourceCodeEntity changedEntity) {
+    public final void setChangedEntity(SourceCodeEntity changedEntity) {
         fChangedEntity = changedEntity;
     }
 
@@ -116,7 +116,7 @@ public class SourceCodeChange {
         return fChangedEntity;
     }
 
-    public void setRootEntity(StructureEntityVersion rootEntity) {
+    public final void setRootEntity(StructureEntityVersion rootEntity) {
         fRootEntity = rootEntity;
     }
 
@@ -128,7 +128,7 @@ public class SourceCodeChange {
         return fChangeType;
     }
 
-    public void setChangeType(ChangeType changeType) {
+    public final void setChangeType(ChangeType changeType) {
         fChangeType = changeType;
     }
 
@@ -205,7 +205,7 @@ public class SourceCodeChange {
         return fParentEntity;
     }
 
-    public void setParentEntity(SourceCodeEntity parentEntity) {
+    public final void setParentEntity(SourceCodeEntity parentEntity) {
         fParentEntity = parentEntity;
     }
 

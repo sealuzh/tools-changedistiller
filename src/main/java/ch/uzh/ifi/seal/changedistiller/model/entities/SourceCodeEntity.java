@@ -86,7 +86,7 @@ public class SourceCodeEntity {
         return fUniqueName;
     }
 
-    public void setUniqueName(String uniqueName) {
+    public final void setUniqueName(String uniqueName) {
         fUniqueName = uniqueName;
     }
 
@@ -94,7 +94,7 @@ public class SourceCodeEntity {
         return fType;
     }
 
-    public void setType(EntityType type) {
+    public final void setType(EntityType type) {
         fType = type;
     }
 
@@ -102,7 +102,7 @@ public class SourceCodeEntity {
         return fModifiers;
     }
 
-    public void setModifiers(int modifiers) {
+    public final void setModifiers(int modifiers) {
         fModifiers = modifiers;
     }
 
@@ -141,11 +141,11 @@ public class SourceCodeEntity {
         fAssociatedEntities.add(entity);
     }
 
-    public void setAssociatedEntities(List<SourceCodeEntity> associatedEntities) {
+    public final void setAssociatedEntities(List<SourceCodeEntity> associatedEntities) {
         fAssociatedEntities = associatedEntities;
     }
 
-    public void setSourceRange(SourceRange range) {
+    public final void setSourceRange(SourceRange range) {
         fRange = range;
     }
 

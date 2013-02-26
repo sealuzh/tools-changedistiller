@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>ch.uzh.ifi.seal</groupId>
 	<artifactId>changedistiller</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -28,13 +28,13 @@
 			<name>Jonas Zuberbühler</name>
 			<organization>Department of Informatics, UZH</organization>
 		</developer>
-		
+
 		<developer>
 			<id>ghezzi</id>
 			<name>Giacomo Ghezzi</name>
 			<organization>Department of Informatics, UZH</organization>
 		</developer>
-		
+
 		<developer>
 			<id>wuersch</id>
 			<name>Michael Würsch</name>
@@ -148,6 +148,29 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Copy dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 
 		<pluginManagement>
@@ -175,6 +198,27 @@
 										<goals>
 											<goal>
 												update-file-header
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.6,)
+										</versionRange>
+										<goals>
+											<goal>
+												copy-dependencies
 											</goal>
 										</goals>
 									</pluginExecutionFilter>

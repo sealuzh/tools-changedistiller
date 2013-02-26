@@ -103,7 +103,7 @@ public class Update extends SourceCodeChange {
         return fNewEntity;
     }
 
-    public void setNewEntity(SourceCodeEntity newEntity) {
+    public final void setNewEntity(SourceCodeEntity newEntity) {
         fNewEntity = newEntity;
     }
 

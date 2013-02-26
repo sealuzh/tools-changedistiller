@@ -77,7 +77,8 @@ public class DeleteOperation implements TreeEditOperation {
         return fParent;
     }
 
-    public OperationType getOperationType() {
+    @Override
+	public OperationType getOperationType() {
         return OperationType.DELETE;
     }
 

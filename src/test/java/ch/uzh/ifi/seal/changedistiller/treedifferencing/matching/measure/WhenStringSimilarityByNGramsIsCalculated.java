@@ -24,7 +24,8 @@ import ch.uzh.ifi.seal.changedistiller.treedifferencing.matching.measure.NGramsC
 
 public class WhenStringSimilarityByNGramsIsCalculated extends WhenStringSimilarityIsCalculated {
 
-    protected double calculateSimilarity(String left, String right) {
+    @Override
+	protected double calculateSimilarity(String left, String right) {
         return new NGramsCalculator(2).calculateSimilarity(left, right);
     }
 

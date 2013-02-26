@@ -357,7 +357,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convertMethod("method");
         assertThat(getTreeString(), is("method { ,method: void,,, { IOException } }"));
-        Node exceptions = (Node) getLastChild();
+        Node exceptions = getLastChild();
         assertThat(getSource(exceptions), is("IOException"));
         assertThat(exceptions.getLabel(), is(JavaEntityType.THROW));
         Node exception = (Node) exceptions.getFirstLeaf();
@@ -371,7 +371,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convertMethod("method");
         assertThat(getTreeString(), is("method { ,method: void,,, { IOException,OutOfBoundException } }"));
-        Node exceptions = (Node) getLastChild();
+        Node exceptions = getLastChild();
         assertThat(getSource(exceptions), is("IOException, OutOfBoundException"));
         Node firstException = (Node) exceptions.getFirstLeaf();
         assertThat(exceptions.getLabel(), is(JavaEntityType.THROW));
@@ -398,7 +398,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convertMethod("method");
         assertThat(getTreeString(), is("method { /**\n * A method\n */,,method: void,,, }"));
-        Node javadoc = (Node) getFirstChild();
+        Node javadoc = getFirstChild();
         assertThat(getSource(javadoc), is("/**\n * A method\n */"));
         assertThat(javadoc.getLabel(), is(JavaEntityType.JAVADOC));
     }
@@ -504,7 +504,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convertClass("Bar");
         assertThat(getTreeString(), is("Bar { ,, { Number } }"));
-        Node superInterfaces = (Node) getLastChild();
+        Node superInterfaces = getLastChild();
         assertThat(getSource(superInterfaces), is("Number"));
         assertThat(superInterfaces.getLabel(), is(JavaEntityType.SUPER_INTERFACE_TYPES));
         Node superInterface = (Node) superInterfaces.getFirstLeaf();
@@ -518,7 +518,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convertClass("Bar");
         assertThat(getTreeString(), is("Bar { ,, { Number,Serializable } }"));
-        Node superInterfaces = (Node) getLastChild();
+        Node superInterfaces = getLastChild();
         assertThat(getSource(superInterfaces), is("Number, Serializable"));
         assertThat(superInterfaces.getLabel(), is(JavaEntityType.SUPER_INTERFACE_TYPES));
         Node firstSuperInterface = (Node) superInterfaces.getFirstLeaf();
@@ -535,7 +535,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convertClass("Bar");
         assertThat(getTreeString(), is("Bar { /**\n * A class\n */,,, }"));
-        Node javadoc = (Node) getFirstChild();
+        Node javadoc = getFirstChild();
         assertThat(getSource(javadoc), is("/**\n * A class\n */"));
         assertThat(javadoc.getLabel(), is(JavaEntityType.JAVADOC));
     }

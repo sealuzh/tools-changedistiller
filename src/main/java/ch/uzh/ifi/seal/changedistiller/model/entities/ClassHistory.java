@@ -72,7 +72,7 @@ public class ClassHistory extends AbstractHistory {
      *            the clazz to add to this history
      */
     public ClassHistory(StructureEntityVersion clazz) {
-        super(clazz);
+    	addVersion(clazz);
         initHistories();
     }
 
@@ -87,7 +87,7 @@ public class ClassHistory extends AbstractHistory {
      *            a class version
      */
     @Override
-    public void addVersion(StructureEntityVersion version) {
+    public final void addVersion(StructureEntityVersion version) {
         if (version.getType().isClass()) {
             getVersions().add(version);
         }

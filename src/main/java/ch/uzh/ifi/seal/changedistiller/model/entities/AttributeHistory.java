@@ -56,7 +56,7 @@ public class AttributeHistory extends AbstractHistory {
      *            the attribute that is added to this history
      */
     public AttributeHistory(StructureEntityVersion attribute) {
-        super(attribute);
+    	addVersion(attribute);
     }
 
     /**
@@ -66,10 +66,9 @@ public class AttributeHistory extends AbstractHistory {
      *            a attribute version
      */
     @Override
-    public void addVersion(StructureEntityVersion version) {
+    public final void addVersion(StructureEntityVersion version) {
         if (version.getType().isField()) {
             getVersions().add(version);
         }
     }
-
 }

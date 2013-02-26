@@ -100,7 +100,8 @@ public class JavaStructureNode implements StructureNode {
         return fType;
     }
 
-    public String getName() {
+    @Override
+	public String getName() {
         return fName;
     }
 
@@ -110,7 +111,8 @@ public class JavaStructureNode implements StructureNode {
      * 
      * @return the fully qualified name of this node, if the node has a qualifier; name otherwise.
      */
-    public String getFullyQualifiedName() {
+    @Override
+	public String getFullyQualifiedName() {
         if (fQualifier != null) {
             return fQualifier + "." + fName;
         }

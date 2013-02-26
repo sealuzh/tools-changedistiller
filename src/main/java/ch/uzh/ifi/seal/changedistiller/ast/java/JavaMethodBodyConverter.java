@@ -22,6 +22,7 @@ package ch.uzh.ifi.seal.changedistiller.ast.java;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.jdt.core.compiler.InvalidInputException;
@@ -262,8 +263,8 @@ public class JavaMethodBodyConverter extends ASTVisitor {
         String betweenOneAndComment = fSource.substring(endOfNodePosition, nodeTwo.sourceStart());
 
         // Comment is on the same line as code, but node in code
-        int positionAfterBracket = betweenOneAndComment.lastIndexOf("}");
-        int positionAfterSemicolon = betweenOneAndComment.lastIndexOf(";");
+        int positionAfterBracket = betweenOneAndComment.lastIndexOf('}');
+        int positionAfterSemicolon = betweenOneAndComment.lastIndexOf(';');
         int sameLinePosition = Math.max(positionAfterBracket, positionAfterSemicolon);
         if (sameLinePosition > -1) {
             betweenOneAndComment = betweenOneAndComment.substring(sameLinePosition + 1, betweenOneAndComment.length());
@@ -297,7 +298,7 @@ public class JavaMethodBodyConverter extends ASTVisitor {
         int result = 0;
 
         // split and tokenize candidate string into a hash table
-        Hashtable<String, Integer> tokenMatchTable = new Hashtable<String, Integer>();
+        Map<String, Integer> tokenMatchTable = new Hashtable<String, Integer>();
         String[] candidateTokens = candidate.split("[\\.\\s]+");
         for (String candidateToken : candidateTokens) {
             if (tokenMatchTable.containsKey(candidateToken)) {

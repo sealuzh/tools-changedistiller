@@ -21,6 +21,7 @@ package ch.uzh.ifi.seal.changedistiller.treedifferencing.matching.measure;
  */
 
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Implementation of a token based string similarity calculator.
@@ -51,11 +52,11 @@ public class TokenBasedCalculator implements StringSimilarityCalculator {
 
     private String removeRegexOccurrences(String string, String regex) {
         String[] leftTmp = string.split(regex);
-        String cleanedString = "";
+        StringBuilder cleanedString = new StringBuilder();
         for (String s : leftTmp) {
-            cleanedString += s;
+            cleanedString.append(s);
         }
-        return cleanedString;
+        return cleanedString.toString();
     }
 
     @Override
@@ -71,13 +72,13 @@ public class TokenBasedCalculator implements StringSimilarityCalculator {
         }
         String[] leftTokens = leftString.split(fSeparator);
         String[] rightTokens = rightString.split(fSeparator);
-        Hashtable<String, Integer> tokens = createTokenHashtable(leftTokens);
+        Map<String, Integer> tokens = createTokenHashtable(leftTokens);
         double match = removeTokensOccuringInRightString(rightTokens, tokens);
         double maximumTokens = Math.max(leftTokens.length, rightTokens.length);
         return match / maximumTokens;
     }
 
-    private double removeTokensOccuringInRightString(String[] rightTokens, Hashtable<String, Integer> tokens) {
+    private double removeTokensOccuringInRightString(String[] rightTokens, Map<String, Integer> tokens) {
         double match = 0.0;
         // delete the tokens in right from the Hashtable
         for (int i = 0; i < rightTokens.length; i++) {
@@ -96,8 +97,8 @@ public class TokenBasedCalculator implements StringSimilarityCalculator {
         return match;
     }
 
-    private Hashtable<String, Integer> createTokenHashtable(String[] leftTokens) {
-        Hashtable<String, Integer> tokens = new Hashtable<String, Integer>();
+    private Map<String, Integer> createTokenHashtable(String[] leftTokens) {
+        Map<String, Integer> tokens = new Hashtable<String, Integer>();
 
         // fill the Hashtable with the tokens from left
         for (String token : leftTokens) {

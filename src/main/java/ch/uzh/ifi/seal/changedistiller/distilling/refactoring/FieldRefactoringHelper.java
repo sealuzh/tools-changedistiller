@@ -83,7 +83,7 @@ public class FieldRefactoringHelper extends AbstractRefactoringHelper {
         if (pos > 0) {
             return uniqueName.substring(0, pos);
         }
-        return uniqueName.substring(0);
+        return uniqueName;
     }
 
     @Override

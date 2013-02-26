@@ -47,14 +47,14 @@ public class BestLeafTreeMatcher implements TreeMatcher {
 
     // Hardcoded! Needs integration into benchmark facilities.
     private StringSimilarityCalculator fLeafCommentStringSimilarityCalculator = new TokenBasedCalculator();
-    private final double fLeafCommentStringSimilarityThreshold = 0.4;
+    private final static double fLeafCommentStringSimilarityThreshold = 0.4;
 
     private NodeSimilarityCalculator fNodeSimilarityCalculator;
     private double fNodeSimilarityThreshold;
 
     private StringSimilarityCalculator fNodeStringSimilarityCalculator;
     private double fNodeStringSimilarityThreshold;
-    private final double fWeightingThreshold = 0.8;
+    private final static double fWeightingThreshold = 0.8;
 
     private boolean fDynamicEnabled;
     private int fDynamicDepth;

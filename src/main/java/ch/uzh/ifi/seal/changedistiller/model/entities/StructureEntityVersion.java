@@ -98,7 +98,7 @@ public class StructureEntityVersion {
      * @throws RuntimeException
      *             if illegal type is passed in
      */
-    public void setType(EntityType type) {
+    public final void setType(EntityType type) {
         if (type.isStructureEntityType()) {
             fType = type;
         } else {
@@ -122,7 +122,7 @@ public class StructureEntityVersion {
         return ChangeModifier.isPublic(fModifiers);
     }
 
-    public void setModifiers(int modifiers) {
+    public final void setModifiers(int modifiers) {
         fModifiers = modifiers;
     }
 
@@ -134,7 +134,7 @@ public class StructureEntityVersion {
 		return fVersion;
 	}
 
-	public void setVersion(String version) {
+	public final void setVersion(String version) {
 		fVersion = version;
 	}
 
@@ -142,7 +142,7 @@ public class StructureEntityVersion {
         return fUniqueName;
     }
 
-    public void setUniqueName(String uniqueName) {
+    public final void setUniqueName(String uniqueName) {
         fUniqueName = uniqueName;
     }
 

@@ -54,7 +54,7 @@ public class MethodHistory extends AbstractHistory {
      *            the method that is added to this history
      */
     public MethodHistory(StructureEntityVersion method) {
-        super(method);
+        addVersion(method);
     }
 
     /**
@@ -64,7 +64,7 @@ public class MethodHistory extends AbstractHistory {
      *            a method version
      */
     @Override
-    public void addVersion(StructureEntityVersion version) {
+    public final void addVersion(StructureEntityVersion version) {
         if (version.getType().isMethod()) {
             getVersions().add(version);
         }

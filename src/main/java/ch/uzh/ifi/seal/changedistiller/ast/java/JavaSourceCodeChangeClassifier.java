@@ -55,21 +55,22 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
     private List<Move> fMoves;
     private List<Update> fUpdates;
 
-    private List<SourceCodeChange> fClassifiedChanges;
     private List<Insert> fInsertsToDelete;
 
     @Override
     public List<SourceCodeChange> classifySourceCodeChanges(List<? extends SourceCodeChange> sourceCodeChanges) {
+    	List<SourceCodeChange> classifiedChanges = new LinkedList<SourceCodeChange>();
+    	
         splitOperations(sourceCodeChanges);
-        fClassifiedChanges = new LinkedList<SourceCodeChange>();
+        
         fInsertsToDelete = new LinkedList<Insert>();
         SourceCodeChange scc = null;
         for (Iterator<Insert> it = fInserts.iterator(); it.hasNext();) {
             Insert ins = it.next();
             if (!fInsertsToDelete.contains(ins)) {
                 scc = classify(ins);
-                if ((scc != null) && !fClassifiedChanges.contains(scc)) {
-                    fClassifiedChanges.add(scc);
+                if ((scc != null) && !classifiedChanges.contains(scc)) {
+                    classifiedChanges.add(scc);
                     it.remove();
                 }
             }
@@ -81,29 +82,29 @@ public class JavaSourceCodeChangeClassifier implements SourceCodeChangeClassifie
         for (Iterator<Delete> it = fDeletes.iterator(); it.hasNext();) {
             Delete del = it.next();
             scc = classify(del);
-            if ((scc != null) && !fClassifiedChanges.contains(scc)) {
-                fClassifiedChanges.add(scc);
+            if ((scc != null) && !classifiedChanges.contains(scc)) {
+                classifiedChanges.add(scc);
                 it.remove();
             }
         }
         for (Iterator<Move> it = fMoves.iterator(); it.hasNext();) {
             Move mov = it.next();
             scc = classify(mov);
-            if ((scc != null) && !fClassifiedChanges.contains(scc)) {
-                fClassifiedChanges.add(scc);
+            if ((scc != null) && !classifiedChanges.contains(scc)) {
+                classifiedChanges.add(scc);
                 it.remove();
             }
         }
         for (Iterator<Update> it = fUpdates.iterator(); it.hasNext();) {
             Update upd = it.next();
             scc = classify(upd);
-            if ((scc != null) && !fClassifiedChanges.contains(scc)) {
-                fClassifiedChanges.add(scc);
+            if ((scc != null) && !classifiedChanges.contains(scc)) {
+                classifiedChanges.add(scc);
                 it.remove();
             }
         }
 
-        return fClassifiedChanges;
+        return classifiedChanges;
     }
 
     private SourceCodeChange classify(Insert insert) {

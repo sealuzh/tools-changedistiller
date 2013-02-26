@@ -249,15 +249,19 @@ public class JavaDeclarationConverter extends ASTVisitor {
 
     private boolean isJavadocEmpty(String doc) {
         String[] splittedDoc = doc.split("/\\*+\\s*");
-        String result = "";
+        StringBuilder tmp = new StringBuilder();
         for (String s : splittedDoc) {
-            result += s;
+            tmp.append(s);
         }
+        
+        String result = tmp.toString();
+        
         try {
             result = result.split("\\s*\\*/")[0];
         } catch (ArrayIndexOutOfBoundsException e) {
             result = result.replace('/', ' ');
         }
+        
         result = result.replace('*', ' ').trim();
 
         return result.equals("");

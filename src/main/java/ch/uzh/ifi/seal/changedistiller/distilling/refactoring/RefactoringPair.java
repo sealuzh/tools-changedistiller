@@ -73,7 +73,8 @@ public class RefactoringPair implements Comparable<RefactoringPair> {
     /**
      * {@inheritDoc}
      */
-    public int compareTo(RefactoringPair other) {
+    @Override
+	public int compareTo(RefactoringPair other) {
         // Double.compare sorts ascending, we'd like to have it descending, so we return the negative result
         return -Double.compare(fSimilarity, (other).getSimilarity());
     }
