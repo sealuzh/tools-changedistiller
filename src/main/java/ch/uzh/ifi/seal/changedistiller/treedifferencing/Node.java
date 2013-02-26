@@ -48,6 +48,7 @@ public class Node extends DefaultMutableTreeNode {
 
     private boolean fMatched;
     private boolean fOrdered;
+    private boolean fInserted;
 
     private SourceCodeEntity fEntity;
     private List<Node> fAssociatedNodes = new ArrayList<Node>();
@@ -102,6 +103,14 @@ public class Node extends DefaultMutableTreeNode {
     public void enableInOrder() {
         fOrdered = true;
     }
+    
+	/**
+	 * The node was inserted during edit script generation and should not be
+	 * matched against other nodes.
+	 */
+    public void enableInserted() {
+    	fInserted = true;
+    }
 
     /**
      * Returns whether this node is in order with its siblings.
@@ -110,6 +119,15 @@ public class Node extends DefaultMutableTreeNode {
      */
     public boolean isInOrder() {
         return fOrdered;
+    }
+    
+    /**
+     * Returns whether this node was inserted during edit script generation.
+     * 
+     * @return <code>true</code> if this node was inserted during edit script generation, <code>false</code> otherwise
+     */
+    public boolean isInserted() {
+    	return fInserted;
     }
 
     public EntityType getLabel() {
@@ -145,7 +163,21 @@ public class Node extends DefaultMutableTreeNode {
 
     @Override
     public String toString() {
-        return getValue();
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("(value: ");
+    	
+    	if(fValue == null || fValue.equals("")) {
+    		sb.append("none)");
+    	} else {
+    		sb.append(fValue)
+    		  .append(')');
+    	}
+    	
+    	sb.append("(label: ")
+    	  .append(fLabel.toString())
+    	  .append(')');
+    	
+        return sb.toString();
     }
 
     public SourceCodeEntity getEntity() {

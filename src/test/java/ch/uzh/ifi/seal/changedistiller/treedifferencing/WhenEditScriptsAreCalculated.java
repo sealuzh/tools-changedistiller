@@ -118,6 +118,29 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         assertThat(update.getOldValue(), is("foo.bar();"));
 
     }
+    
+    
+    @Test
+	public void insertShouldWork() throws Exception {
+    	/* test case for https://bitbucket.org/sealuzh/tools-changedistiller/issue/1 */
+		Node outerTryRight = addToRight(JavaEntityType.TRY_STATEMENT, "");
+		Node innerTryRight = addToNode(outerTryRight,
+				JavaEntityType.TRY_STATEMENT, "");
+		createEditScript();
+		
+		assertThat(fEditScript.size(), is(2));
+		TreeEditOperation firstOperation = fEditScript.get(0);
+		assertThat(firstOperation.getOperationType(), is(OperationType.INSERT));
+		InsertOperation firstInsert = (InsertOperation) firstOperation;
+		assertThat(firstInsert.getNodeToInsert(), is(outerTryRight));
+
+		TreeEditOperation secondOperation = fEditScript.get(1);
+		assertThat(secondOperation.getOperationType(), is(OperationType.INSERT));
+		InsertOperation insert = (InsertOperation) secondOperation;
+		assertThat(insert.getNodeToInsert(), is(innerTryRight));
+		
+		assertThat((Node)insert.getNodeToInsert().getParent(), is(innerTryRight));
+	}
 
     private void createEditScript() {
         fDifferencer.calculateEditScript(fRootLeft, fRootRight);

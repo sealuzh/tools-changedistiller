@@ -118,13 +118,14 @@ public class TreeDifferencer {
             Node /* T1 */w = fRightToLeftMatchPrime.get(x);
 
             // (b) If x has no partner in M'
-            if (fRightToLeftMatchPrime.get(x) == null) {
+            if (fRightToLeftMatchPrime.get(x) == null || fRightToLeftMatchPrime.get(x).isInserted() /* fix for https://bitbucket.org/sealuzh/tools-changedistiller/issue/1 */) {
                 // i. k <- FindPos(x)
                 int k = findPosition(x);
 
                 // ii. Append INS((w, a, v(x)), z, k) to E, for a new identifier w.
                 w = (Node) x.clone();
                 w.enableMatched();
+                w.enableInserted();
                 x.enableMatched();
                 TreeEditOperation insert = new InsertOperation(w, z, k);
                 fEditScript.add(insert);
