@@ -150,7 +150,7 @@ public class StructureEntityVersion {
         return fSourceCodeChanges;
     }
 
-    public void setSourceCodeChanges(List<SourceCodeChange> sourceCodeChanges) {
+    public final void setSourceCodeChanges(List<SourceCodeChange> sourceCodeChanges) {
         fSourceCodeChanges = sourceCodeChanges;
     }
 

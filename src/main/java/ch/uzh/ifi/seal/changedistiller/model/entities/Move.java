@@ -115,7 +115,7 @@ public class Move extends SourceCodeChange {
         return fNewParentEntity;
     }
 
-    public void setNewParentEntity(SourceCodeEntity newParentEntity) {
+    public final void setNewParentEntity(SourceCodeEntity newParentEntity) {
         fNewParentEntity = newParentEntity;
     }
 
@@ -141,7 +141,7 @@ public class Move extends SourceCodeChange {
                 .append(getNewParentEntity(), other.getNewParentEntity()).isEquals();
     }
 
-    public void setNewEntity(SourceCodeEntity newEntity) {
+    public final void setNewEntity(SourceCodeEntity newEntity) {
         fNewEntity = newEntity;
     }
 

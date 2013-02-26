@@ -74,7 +74,7 @@ public abstract class AbstractHistory {
         return fVersions;
     }
 
-    public void setVersions(List<StructureEntityVersion> versions) {
+    public final void setVersions(List<StructureEntityVersion> versions) {
         fVersions = versions;
     }
 
