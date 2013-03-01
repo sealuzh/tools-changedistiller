@@ -64,6 +64,50 @@
 		<compiler.source>1.7</compiler.source>
 	</properties>
 
+	<dependencies>
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Dependency Injection with Guice -->
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-assistedinject</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+		<!-- JDT Compiler -->
+		<dependency>
+			<groupId>org.eclipse.jdt.core.compiler</groupId>
+			<artifactId>ecj</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+
+		<!-- Apache Commons -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- License header -->
@@ -171,36 +215,27 @@
 				</executions>
 			</plugin>
 
-			<!--  Create OSGI Bundle -->
+			<!-- Embedd dependencies -->
 			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+
 				<executions>
 					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
+						<id>make-my-jar-with-dependencies</id>
+						<phase>package</phase>
 						<goals>
-							<goal>manifest</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<instructions>
-						<Embed-Transitive>true</Embed-Transitive>
-						<Export-Package>ch.uzh.ifi.seal.changedistiller.*;</Export-Package>
-					</instructions>
-				</configuration>
 			</plugin>
 		</plugins>
 
@@ -264,49 +299,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-
-	<dependencies>
-		<!-- Testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Dependency Injection with Guice -->
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assistedinject</artifactId>
-			<version>3.0</version>
-		</dependency>
-
-		<!-- JDT Compiler -->
-		<dependency>
-			<groupId>org.eclipse.jdt.core.compiler</groupId>
-			<artifactId>ecj</artifactId>
-			<version>4.2.1</version>
-		</dependency>
-
-		<!-- Apache Commons -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
-		</dependency>
-	</dependencies>
 </project>
