@@ -37,7 +37,7 @@ import ch.uzh.ifi.seal.changedistiller.structuredifferencing.StructureNode;
  * made via the provided {@link ClassHistory}.
  * 
  * @author Beat Fluri
- * @authro Giacomo Ghezzi
+ * @author Giacomo Ghezzi
  * @see ClassRefactoringHelper
  * @see FieldRefactoringHelper
  * @see MethodRefactoringHelper

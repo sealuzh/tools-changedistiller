@@ -45,7 +45,7 @@ package ch.uzh.ifi.seal.changedistiller.distilling.refactoring;
  * refactoring pair.
  * 
  * @author fluri
- * @see Distiller
+ * @see ch.uzh.ifi.seal.changedistiller.distilling.Distiller
  * @see RefactoringExtractor
  */
 public class RefactoringPair implements Comparable<RefactoringPair> {

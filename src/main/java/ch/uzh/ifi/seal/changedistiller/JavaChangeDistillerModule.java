@@ -41,7 +41,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 public class JavaChangeDistillerModule extends AbstractModule {
 
     @Override
-    protected void configure() {
+    protected void configure() {    	
         bind(ASTNodeTypeConverter.class).to(JavaASTNodeTypeConverter.class);
         bind(SourceCodeChangeClassifier.class).to(JavaSourceCodeChangeClassifier.class);
         install(new FactoryModuleBuilder().build(DistillerFactory.class));

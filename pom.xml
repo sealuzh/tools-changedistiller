@@ -61,7 +61,11 @@
 	<!-- Global properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
+
 		<compiler.source>1.7</compiler.source>
+
+		<changedistiller.api.version>0.0.1</changedistiller.api.version>
 	</properties>
 
 	<dependencies>
@@ -151,6 +155,17 @@
 				</configuration>
 			</plugin>
 
+			<!-- Add OSGI Manifest -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<archive>
+						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+
 			<!-- Test Execution -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -233,6 +248,65 @@
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Build OSGI plug-in -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${project.name} OSGI Bundle</Bundle-Name>
+						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+
+						<Bundle-RequiredExecutionEnvironment>
+							J2SE-1.5,JavaSE-1.6,JavaSE-1.7
+						</Bundle-RequiredExecutionEnvironment>
+						
+						<Export-Package>
+							${project.groupId}.${project.artifactId}.*;version="${changedistiller.api.version}"
+						</Export-Package>
+						
+						
+						<Import-Package>
+							org.eclipse.jdt.core.compiler,
+							org.eclipse.jdt.internal.compiler,
+							org.eclipse.jdt.internal.compiler.ast,
+							org.eclipse.jdt.internal.compiler.batch,
+							org.eclipse.jdt.internal.compiler.env,
+							org.eclipse.jdt.internal.compiler.impl,
+							org.eclipse.jdt.internal.compiler.lookup,
+							org.eclipse.jdt.internal.compiler.parser,
+							org.eclipse.jdt.internal.compiler.problem
+						</Import-Package>
+						
+						<!-- Will be replaced with package-imports at a later stage -->
+						<Require-Bundle>com.google.inject;bundle-version="3.0.0"</Require-Bundle>
+						
+						<_removeheaders>
+							Embed-Dependency,Embed-Transitive,
+							Built-By,Tool,Created-By,Build-Jdk,
+							Originally-Created-By,Archiver-Version,
+							Include-Resource,Private-Package,
+							Ignore-Package,Bnd-LastModified
+						</_removeheaders>
+
+						<_nouses>true</_nouses>
+					</instructions>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
 						</goals>
 					</execution>
 				</executions>
