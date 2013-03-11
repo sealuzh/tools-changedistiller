@@ -43,7 +43,9 @@ import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 import ch.uzh.ifi.seal.changedistiller.util.CompilationUtils;
 
 public class WhenCommentsAreAssociatedToSourceCode extends JavaDistillerTestCase {
-
+	// see https://bitbucket.org/sealuzh/tools-changedistiller/issue/6
+	private final static String LF = System.getProperty("line.separator");
+	
     private static JavaCompilation sCompilation;
     private static List<Comment> sComments;
     private static Node sRoot;
@@ -76,7 +78,7 @@ public class WhenCommentsAreAssociatedToSourceCode extends JavaDistillerTestCase
         Node node = findNode("check");
         assertCorrectAssociation(
                 node,
-                "// check the interesting number\n        // and some new else",
+                "// check the interesting number" + LF + "        // and some new else",
                 JavaEntityType.LINE_COMMENT);
     }
 
@@ -85,7 +87,7 @@ public class WhenCommentsAreAssociatedToSourceCode extends JavaDistillerTestCase
         Node node = findNode("a = (23 + Integer.parseInt(\"42\"));");
         assertCorrectAssociation(
                 node,
-                "/* A block comment\n             * with stars\n             */",
+                "/* A block comment" + LF + "             * with stars" + LF + "             */",
                 JavaEntityType.BLOCK_COMMENT);
         node = findNode("b = Math.abs(number);");
         assertCorrectAssociation(node, "/* inside else */", JavaEntityType.BLOCK_COMMENT);

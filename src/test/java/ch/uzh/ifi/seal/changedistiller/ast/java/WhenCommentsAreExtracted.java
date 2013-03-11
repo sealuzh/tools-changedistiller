@@ -38,6 +38,8 @@ import ch.uzh.ifi.seal.changedistiller.util.CompilationUtils;
  * @author Beat Fluri
  */
 public class WhenCommentsAreExtracted {
+	// see https://bitbucket.org/sealuzh/tools-changedistiller/issue/6
+	private final static String LF = System.getProperty("line.separator");
 
     private static JavaCompilation sCompilationUnit;
 
@@ -50,7 +52,7 @@ public class WhenCommentsAreExtracted {
     public void compilationUnitOfClassWithCommentsShouldHaveComments() throws Exception {
         List<Comment> comments = CompilationUtils.extractComments(sCompilationUnit);
         assertThat(comments.size(), is(3));
-        assertThat(comments.get(0).getComment(), is("/**\n * A class with comments.\n *\n * @author Beat Fluri\n */"));
+        assertThat(comments.get(0).getComment(), is("/**" + LF + " * A class with comments." + LF + " *" + LF + " * @author Beat Fluri" + LF + " */"));
         assertThat(comments.get(1).getComment(), is("// a simple method invocation"));
         assertThat(comments.get(2).getComment(), is("/* no more methods */"));
     }

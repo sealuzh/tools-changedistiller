@@ -34,6 +34,8 @@ import ch.uzh.ifi.seal.changedistiller.ast.java.JavaCompilation;
 import ch.uzh.ifi.seal.changedistiller.util.CompilationUtils;
 
 public class WhenConsecutiveCommentsAreJoined {
+	// see https://bitbucket.org/sealuzh/tools-changedistiller/issue/6
+	private final static String LF = System.getProperty("line.separator");
 
     private static JavaCompilation sCompilationUnit;
     private static List<Comment> sComments;
@@ -51,8 +53,8 @@ public class WhenConsecutiveCommentsAreJoined {
 
     @Test
     public void consecutiveLineCommentsShouldBeJoined() throws Exception {
-        assertThat(getCommentString(sComments.get(0)), is("// a simple method invocation\n        // simple indeed"));
-        assertThat(sComments.get(0).getComment(), is("// a simple method invocation\n        // simple indeed"));
+        assertThat(getCommentString(sComments.get(0)), is("// a simple method invocation" + LF + "        // simple indeed"));
+        assertThat(sComments.get(0).getComment(), is("// a simple method invocation" + LF + "        // simple indeed"));
     }
 
     @Test
