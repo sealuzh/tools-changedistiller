@@ -48,7 +48,6 @@ public class Node extends DefaultMutableTreeNode {
 
     private boolean fMatched;
     private boolean fOrdered;
-    private boolean fInserted;
 
     private SourceCodeEntity fEntity;
     private List<Node> fAssociatedNodes = new ArrayList<Node>();
@@ -104,14 +103,6 @@ public class Node extends DefaultMutableTreeNode {
         fOrdered = true;
     }
     
-	/**
-	 * The node was inserted during edit script generation and should not be
-	 * matched against other nodes.
-	 */
-    public void enableInserted() {
-    	fInserted = true;
-    }
-
     /**
      * Returns whether this node is in order with its siblings.
      * 
@@ -121,15 +112,6 @@ public class Node extends DefaultMutableTreeNode {
         return fOrdered;
     }
     
-    /**
-     * Returns whether this node was inserted during edit script generation.
-     * 
-     * @return <code>true</code> if this node was inserted during edit script generation, <code>false</code> otherwise
-     */
-    public boolean isInserted() {
-    	return fInserted;
-    }
-
     public EntityType getLabel() {
         return fLabel;
     }
@@ -212,43 +194,45 @@ public class Node extends DefaultMutableTreeNode {
         return output;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((fLabel == null) ? 0 : fLabel.hashCode());
-        result = prime * result + ((fValue == null) ? 0 : fValue.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Node other = (Node) obj;
-        if (fLabel == null) {
-            if (other.fLabel != null) {
-                return false;
-            }
-        } else if (!fLabel.equals(other.fLabel)) {
-            return false;
-        }
-        if (fValue == null) {
-            if (other.fValue != null) {
-                return false;
-            }
-        } else if (!fValue.equals(other.fValue)) {
-            return false;
-        }
-        return true;
-    }
+// Removing hashCode and equals fixes issues #1, #8, #9. See https://bitbucket.org/sealuzh/tools-changedistiller/issue/1.
+    
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((fLabel == null) ? 0 : fLabel.hashCode());
+//        result = prime * result + ((fValue == null) ? 0 : fValue.hashCode());
+//        return result;
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (getClass() != obj.getClass()) {
+//            return false;
+//        }
+//        Node other = (Node) obj;
+//        if (fLabel == null) {
+//            if (other.fLabel != null) {
+//                return false;
+//            }
+//        } else if (!fLabel.equals(other.fLabel)) {
+//            return false;
+//        }
+//        if (fValue == null) {
+//            if (other.fValue != null) {
+//                return false;
+//            }
+//        } else if (!fValue.equals(other.fValue)) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     /**
      * Returns true if the leaf candidate is a leaf and is a descendant of this node.

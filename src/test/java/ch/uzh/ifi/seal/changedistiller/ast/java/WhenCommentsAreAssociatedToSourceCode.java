@@ -52,7 +52,7 @@ public class WhenCommentsAreAssociatedToSourceCode extends JavaDistillerTestCase
 
     @BeforeClass
     public static void prepareCompilationUnit() throws Exception {
-        sCompilation = CompilationUtils.compileFile("ClassWithCommentsToAssociate.java");
+        sCompilation = CompilationUtils.compileFile("src_comments/ClassWithCommentsToAssociate.java");
         List<Comment> comments = CompilationUtils.extractComments(sCompilation);
         CommentCleaner visitor = new CommentCleaner(sCompilation.getSource());
         for (Comment comment : comments) {

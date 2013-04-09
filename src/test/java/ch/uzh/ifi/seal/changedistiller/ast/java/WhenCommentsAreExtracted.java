@@ -45,7 +45,7 @@ public class WhenCommentsAreExtracted {
 
     @BeforeClass
     public static void prepareCompilationUnit() throws Exception {
-        sCompilationUnit = CompilationUtils.compileFile("ClassWithComments.java");
+        sCompilationUnit = CompilationUtils.compileFile("src_comments/ClassWithComments.java");
     }
 
     @Test

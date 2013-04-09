@@ -42,7 +42,7 @@ public class WhenConsecutiveCommentsAreJoined {
 
     @BeforeClass
     public static void prepareCompilationUnit() throws Exception {
-        sCompilationUnit = CompilationUtils.compileFile("ClassWithConsecutiveComments.java");
+        sCompilationUnit = CompilationUtils.compileFile("src_comments/ClassWithConsecutiveComments.java");
         List<Comment> comments = CompilationUtils.extractComments(sCompilationUnit);
         CommentCleaner visitor = new CommentCleaner(sCompilationUnit.getSource());
         for (Comment comment : comments) {

@@ -70,7 +70,8 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         assertThat(operation.getOperationType(), is(OperationType.INSERT));
         InsertOperation insert = (InsertOperation) operation;
         assertThat(insert.getParentNode(), is(fRootLeft));
-        assertThat(insert.getNodeToInsert(), is(methodInvocation));
+        assertThat(insert.getNodeToInsert().getLabel(), is(methodInvocation.getLabel()));
+        assertThat(insert.getNodeToInsert().getValue(), is(methodInvocation.getValue()));
     }
 
     @Test
@@ -99,9 +100,11 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
         assertThat(operation.getOperationType(), is(OperationType.MOVE));
         MoveOperation move = (MoveOperation) operation;
         assertThat(move.getOldParent(), is(fRootLeft));
-        assertThat(move.getNewParent(), is(ifStatementRight));
+        assertThat(move.getNewParent().getLabel(), is(ifStatementRight.getLabel()));
+        assertThat(move.getNewParent().getValue(), is(ifStatementRight.getValue()));
         assertThat(move.getNodeToMove(), is(methodInvocation));
-        assertThat(move.getNewNode(), is(methodInvocation));
+        assertThat(move.getNewNode().getLabel(), is(methodInvocation.getLabel()));
+        assertThat(move.getNewNode().getValue(), is(methodInvocation.getValue()));
     }
 
     @Test
@@ -132,14 +135,17 @@ public class WhenEditScriptsAreCalculated extends TreeDifferencingTestCase {
 		TreeEditOperation firstOperation = fEditScript.get(0);
 		assertThat(firstOperation.getOperationType(), is(OperationType.INSERT));
 		InsertOperation firstInsert = (InsertOperation) firstOperation;
-		assertThat(firstInsert.getNodeToInsert(), is(outerTryRight));
+		assertThat(firstInsert.getNodeToInsert().getLabel(), is(outerTryRight.getLabel()));
+		assertThat(firstInsert.getNodeToInsert().getValue(), is(outerTryRight.getValue()));
 
 		TreeEditOperation secondOperation = fEditScript.get(1);
 		assertThat(secondOperation.getOperationType(), is(OperationType.INSERT));
 		InsertOperation insert = (InsertOperation) secondOperation;
-		assertThat(insert.getNodeToInsert(), is(innerTryRight));
+		assertThat(insert.getNodeToInsert().getLabel(), is(innerTryRight.getLabel()));
+		assertThat(insert.getNodeToInsert().getValue(), is(innerTryRight.getValue()));
 		
-		assertThat((Node)insert.getNodeToInsert().getParent(), is(innerTryRight));
+		assertThat(((Node)insert.getNodeToInsert().getParent()).getLabel(), is(innerTryRight.getLabel()));
+		assertThat(((Node)insert.getNodeToInsert().getParent()).getValue(), is(innerTryRight.getValue()));
 	}
 
     private void createEditScript() {
