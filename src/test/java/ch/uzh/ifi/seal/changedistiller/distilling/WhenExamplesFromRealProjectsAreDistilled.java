@@ -70,4 +70,17 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         	fail("Source code change extraction failed because a node became its own ancestor.");
         }
     }
+    
+    @Test
+    public void noNullPointerExceptionShouldOccur() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "2/CompilerLeft.java");
+        File right = CompilationUtils.getFile(TEST_DATA + "2/CompilerRight.java");
+        
+        try {
+        	distiller.extractClassifiedSourceCodeChanges(left, right);
+        	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+        } catch (NullPointerException ex) {
+        	fail("Source code change extraction failed.");
+        }
+    }
 }
