@@ -158,8 +158,13 @@ public class StructureDifferencer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            leftContent.close();
-            rightContent.close();
+        	if(leftContent != null) { // shouldn't happen - checked to calm sonar
+        		leftContent.close();
+        	}
+        	
+        	if(rightContent != null) { // shouldn't happen - checked to calm sonar        		
+        		rightContent.close();
+        	}
         }
         return false;
     }

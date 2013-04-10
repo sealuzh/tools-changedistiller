@@ -157,7 +157,7 @@ public class Node extends DefaultMutableTreeNode {
     	
     	sb.append("(label: ");
     	
-    	if(fLabel == null || fLabel.equals("")) {
+    	if(fLabel == null) {
     		sb.append("none)");
     	} else {
     	  sb.append(fLabel.toString())
