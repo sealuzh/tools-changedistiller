@@ -93,6 +93,7 @@ import org.eclipse.jdt.internal.compiler.ast.CastExpression;
 import org.eclipse.jdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.jdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.jdt.internal.compiler.ast.Clinit;
+import org.eclipse.jdt.internal.compiler.ast.CombinedBinaryExpression;
 import org.eclipse.jdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
@@ -212,6 +213,7 @@ public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
         sConversionMap.put(ArrayReference.class, ARRAY_ACCESS);
         sConversionMap.put(ArrayTypeReference.class, ARRAY_TYPE);
         sConversionMap.put(BinaryExpression.class, INFIX_EXPRESSION);
+        sConversionMap.put(CombinedBinaryExpression.class, INFIX_EXPRESSION);
         sConversionMap.put(Block.class, BLOCK);
         sConversionMap.put(CastExpression.class, CAST_EXPRESSION);
         sConversionMap.put(ClassLiteralAccess.class, TYPE_LITERAL);

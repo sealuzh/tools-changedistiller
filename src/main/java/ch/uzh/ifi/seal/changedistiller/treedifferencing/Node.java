@@ -155,9 +155,14 @@ public class Node extends DefaultMutableTreeNode {
     		  .append(')');
     	}
     	
-    	sb.append("(label: ")
-    	  .append(fLabel.toString())
+    	sb.append("(label: ");
+    	
+    	if(fLabel == null || fLabel.equals("")) {
+    		sb.append("none)");
+    	} else {
+    	  sb.append(fLabel.toString())
     	  .append(')');
+    	}
     	
         return sb.toString();
     }

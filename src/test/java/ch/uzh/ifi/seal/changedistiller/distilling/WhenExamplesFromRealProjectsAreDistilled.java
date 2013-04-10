@@ -72,9 +72,22 @@ public class WhenExamplesFromRealProjectsAreDistilled {
     }
     
     @Test
-    public void noNullPointerExceptionShouldOccur() throws Exception {
+    public void noNullPointerExceptionShouldOccur1() throws Exception {
     	File left = CompilationUtils.getFile(TEST_DATA + "2/CompilerLeft.java");
         File right = CompilationUtils.getFile(TEST_DATA + "2/CompilerRight.java");
+        
+        try {
+        	distiller.extractClassifiedSourceCodeChanges(left, right);
+        	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+        } catch (NullPointerException ex) {
+        	fail("Source code change extraction failed.");
+        }
+    }
+    
+    @Test
+    public void noNullPointerExceptionShouldOccur2() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "10/ReadOnlyStorageEngineLeft.java");
+        File right = CompilationUtils.getFile(TEST_DATA + "10/ReadOnlyStorageEngineRight.java");
         
         try {
         	distiller.extractClassifiedSourceCodeChanges(left, right);
