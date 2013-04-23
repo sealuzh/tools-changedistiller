@@ -49,7 +49,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertModifiersCorrectness(getFirstChild(), "private");
         Node type = getFieldType();
         assertThat(getSource(type), is("String"));
-        assertThat(type.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(type.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -227,7 +227,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(getTreeString(), is("method {  { public },method: int,,, }"));
         Node returnType = getReturnType();
         assertThat(getSource(returnType), is("int"));
-        assertThat(returnType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(returnType.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -266,7 +266,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(parameter.getLabel(), is(JavaEntityType.PARAMETER));
         Node parameterType = (Node) parameters.getFirstLeaf();
         assertThat(getSource(parameterType), is("int"));
-        assertThat(parameterType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(parameterType.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -285,7 +285,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(firstParameter.getLabel(), is(JavaEntityType.PARAMETER));
         Node firstParameterType = (Node) parameters.getFirstLeaf();
         assertThat(getSource(firstParameterType), is("int"));
-        assertThat(firstParameterType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(firstParameterType.getLabel(), is(JavaEntityType.SINGLE_TYPE));
         Node secondParameter = (Node) firstParameter.getNextSibling();
         assertThat(getSource(secondParameter), is("aList"));
         assertThat(secondParameter.getLabel(), is(JavaEntityType.PARAMETER));
@@ -362,7 +362,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(exceptions.getLabel(), is(JavaEntityType.THROW));
         Node exception = (Node) exceptions.getFirstLeaf();
         assertThat(getSource(exception), is("IOException"));
-        assertThat(exception.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(exception.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -376,10 +376,10 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         Node firstException = (Node) exceptions.getFirstLeaf();
         assertThat(exceptions.getLabel(), is(JavaEntityType.THROW));
         assertThat(getSource(firstException), is("IOException"));
-        assertThat(firstException.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(firstException.getLabel(), is(JavaEntityType.SINGLE_TYPE));
         Node secondException = (Node) firstException.getNextSibling();
         assertThat(getSource(secondException), is("OutOfBoundException"));
-        assertThat(secondException.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(secondException.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -495,7 +495,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(getTreeString(), is("Bar { ,,Number, }"));
         Node superType = (Node) getLastChild().getPreviousSibling();
         assertThat(getSource(superType), is("Number"));
-        assertThat(superType.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(superType.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -509,7 +509,7 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(superInterfaces.getLabel(), is(JavaEntityType.SUPER_INTERFACE_TYPES));
         Node superInterface = (Node) superInterfaces.getFirstLeaf();
         assertThat(getSource(superInterface), is("Number"));
-        assertThat(superInterface.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(superInterface.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test
@@ -523,10 +523,10 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
         assertThat(superInterfaces.getLabel(), is(JavaEntityType.SUPER_INTERFACE_TYPES));
         Node firstSuperInterface = (Node) superInterfaces.getFirstLeaf();
         assertThat(getSource(firstSuperInterface), is("Number"));
-        assertThat(firstSuperInterface.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(firstSuperInterface.getLabel(), is(JavaEntityType.SINGLE_TYPE));
         Node secondSuperInterface = (Node) firstSuperInterface.getNextSibling();
         assertThat(getSource(secondSuperInterface), is("Serializable"));
-        assertThat(secondSuperInterface.getLabel(), is(JavaEntityType.SIMPLE_TYPE));
+        assertThat(secondSuperInterface.getLabel(), is(JavaEntityType.SINGLE_TYPE));
     }
 
     @Test

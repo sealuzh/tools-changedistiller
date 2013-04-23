@@ -83,7 +83,7 @@ public enum JavaEntityType implements EntityType {
     RETURN_STATEMENT(true),
     ROOT_NODE(true),
     SIMPLE_NAME(true),
-    SIMPLE_TYPE(true),
+    SINGLE_TYPE(true),
     STRING_LITERAL(true),
     SUPER_INTERFACE_TYPES(false),
     SWITCH_CASE(true),
@@ -143,7 +143,7 @@ public enum JavaEntityType implements EntityType {
             case PARAMETERIZED_TYPE:
             case PRIMITIVE_TYPE:
             case QUALIFIED_TYPE:
-            case SIMPLE_TYPE:
+            case SINGLE_TYPE:
             case WILDCARD_TYPE:
                 return true;
             default:

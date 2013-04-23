@@ -27,12 +27,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller;
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
+import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
+import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
+import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeEntity;
+import ch.uzh.ifi.seal.changedistiller.model.entities.Update;
 import ch.uzh.ifi.seal.changedistiller.util.CompilationUtils;
 
 public class WhenExamplesFromRealProjectsAreDistilled {
@@ -95,5 +100,27 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         } catch (NullPointerException ex) {
         	fail("Source code change extraction failed.");
         }
+    }
+    
+    @Test
+    public void primitiveTypesShouldNotBeSimpleTypes() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "14/PrimitiveVsSimpleTypeLeft.java");
+    	File right = CompilationUtils.getFile(TEST_DATA + "14/PrimitiveVsSimpleTypeRight.java");
+    	
+    	distiller.extractClassifiedSourceCodeChanges(left, right);
+    	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+    	
+    	List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+    	assertThat(changes.size(), is(1));
+    	
+    	SourceCodeChange singleChange = changes.get(0);
+    	
+    	if(singleChange instanceof Update) {
+    		Update update = (Update) singleChange;
+    		SourceCodeEntity entity = update.getNewEntity();
+    		assertThat((JavaEntityType) entity.getType(), is(JavaEntityType.SINGLE_TYPE));
+    	} else {
+    		fail("Should be Update but was " + singleChange.getClass());
+    	}
     }
 }

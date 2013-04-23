@@ -59,7 +59,7 @@ import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityT
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.QUALIFIED_TYPE;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.RETURN_STATEMENT;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.SIMPLE_NAME;
-import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.SIMPLE_TYPE;
+import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.SINGLE_TYPE;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.STRING_LITERAL;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.SWITCH_CASE;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.SWITCH_STATEMENT;
@@ -183,7 +183,7 @@ public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
         sConversionMap.put(ReturnStatement.class, RETURN_STATEMENT);
         sConversionMap.put(SwitchStatement.class, SWITCH_STATEMENT);
         sConversionMap.put(CaseStatement.class, SWITCH_CASE);
-        sConversionMap.put(SingleTypeReference.class, SIMPLE_TYPE);
+        sConversionMap.put(SingleTypeReference.class, SINGLE_TYPE); // Bug #14: Cannot distinguish between primitive and simple types without resolving bindings
         sConversionMap.put(SynchronizedStatement.class, SYNCHRONIZED_STATEMENT);
         sConversionMap.put(ThrowStatement.class, THROW_STATEMENT);
         sConversionMap.put(TryStatement.class, TRY_STATEMENT);
