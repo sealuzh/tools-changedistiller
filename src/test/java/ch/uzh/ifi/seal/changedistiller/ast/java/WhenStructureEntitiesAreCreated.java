@@ -68,6 +68,16 @@ public class WhenStructureEntitiesAreCreated {
     }
 
     @Test
+    public void abstractModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "Test2Left.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = structureTree.getChildren().get(0);
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isPublic(), is(true));
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isAbstract(), is(true));
+    }
+
+    @Test
     public void protectedModifierShouldBeConverted() throws Exception {
         File left = CompilationUtils.getFile(TEST_DATA + "TestRight.java");
         ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);

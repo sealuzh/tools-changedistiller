@@ -429,6 +429,24 @@ public class WhenDeclarationsAreConverted extends WhenASTsAreConverted {
     }
 
     @Test
+    public void abstractTypeDeclarationShouldBeConverted() throws Exception {
+    	fSnippet = "abstract class Bar {}";
+    	prepareCompilation();
+    	convertClass("Bar");
+    	assertThat(getTreeString(), is("Bar {  { abstract },, }"));
+    	assertModifiersCorrectness(getFirstChild(), "abstract");
+    }
+    
+    @Test
+    public void publicAbstractTypeDeclarationShouldBeConverted() throws Exception {
+    	fSnippet = "public abstract class Bar {}";
+    	prepareCompilation();
+    	convertClass("Bar");
+    	assertThat(getTreeString(), is("Bar {  { public,abstract },, }"));
+    	assertModifiersCorrectness(getFirstChild(), "public", "abstract");
+    }
+
+    @Test
     public void typeDeclarationWithTypeArgumentShouldBeConverted() throws Exception {
         fSnippet = "class Bar<T> {}";
         prepareCompilation();
