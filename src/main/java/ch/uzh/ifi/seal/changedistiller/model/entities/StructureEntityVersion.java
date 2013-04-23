@@ -35,6 +35,7 @@ import ch.uzh.ifi.seal.changedistiller.model.classifiers.EntityType;
  * @author Beat Fluri
  * @author Giacomo Ghezzi
  * @author zubi
+ * @author Michael Wuersch
  */
 public class StructureEntityVersion {
 
@@ -110,6 +111,10 @@ public class StructureEntityVersion {
         return ChangeModifier.isFinal(fModifiers);
     }
 
+    public boolean isStatic() {
+    	return ChangeModifier.isStatic(fModifiers);
+    }
+
     public boolean isPrivate() {
         return ChangeModifier.isPrivate(fModifiers);
     }
@@ -120,6 +125,30 @@ public class StructureEntityVersion {
 
     public boolean isPublic() {
         return ChangeModifier.isPublic(fModifiers);
+    }
+    
+    public boolean isAbstract() {
+    	return ChangeModifier.isAbstract(fModifiers);
+    }
+
+    public boolean isNative() {
+    	return ChangeModifier.isNative(fModifiers);
+    }
+
+    public boolean isSynchronized() {
+    	return ChangeModifier.isSynchronized(fModifiers);
+    }
+
+    public boolean isTransient() {
+    	return ChangeModifier.isTransient(fModifiers);
+    }
+
+    public boolean isVolatile() {
+    	return ChangeModifier.isVolatile(fModifiers);
+    }
+
+    public boolean isStrictfp() {
+    	return ChangeModifier.isStrictfp(fModifiers);
     }
 
     public final void setModifiers(int modifiers) {

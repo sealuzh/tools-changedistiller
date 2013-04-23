@@ -86,12 +86,66 @@ public class WhenStructureEntitiesAreCreated {
     }
 
     @Test
+    public void nativeModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = findNode(structureTree, "nativeMethod()");
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isNative(), is(true));
+    }
+
+    @Test
+    public void strictfpModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = findNode(structureTree, "strictfpMethod()");
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isStrictfp(), is(true));
+    }
+
+    @Test
     public void publicFieldModifierShouldBeConverted() throws Exception {
         File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
         ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
         StructureNode structureTree = astHelper.createStructureTree();
         StructureNode classNode = findNode(structureTree, "aField : String");
         assertThat(astHelper.createStructureEntityVersion(classNode).isPublic(), is(true));
+    }
+
+    @Test
+    public void staticFieldModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = findNode(structureTree, "sField : String");
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isStatic(), is(true));
+    }
+
+    @Test
+    public void volatileFieldModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = findNode(structureTree, "vField : int");
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isVolatile(), is(true));
+    }
+
+    @Test
+    public void synchronizedFieldModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = findNode(structureTree, "synchField : long");
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isSynchronized(), is(true));
+    }
+
+    @Test
+    public void transientFieldModifierShouldBeConverted() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
+    	ASTHelper<StructureNode> astHelper = sInjector.getInstance(ASTHelperFactory.class).create(left);
+    	StructureNode structureTree = astHelper.createStructureTree();
+    	StructureNode classNode = findNode(structureTree, "tField : String");
+    	assertThat(astHelper.createStructureEntityVersion(classNode).isTransient(), is(true));
     }
 
     private StructureNode findNode(StructureNode root, String name) {

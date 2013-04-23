@@ -211,8 +211,29 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
 
     private int convertECJModifier(int ecjModifer) {
         int modifier = 0x0;
+        if (isAbstract(ecjModifer)) {
+            modifier |= ChangeModifier.ABSTRACT;
+        }
         if (isFinal(ecjModifer)) {
             modifier |= ChangeModifier.FINAL;
+        }
+        if (isNative(ecjModifer)) {
+        	modifier |= ChangeModifier.NATIVE;
+        }
+        if (isStatic(ecjModifer)) {
+        	modifier |= ChangeModifier.STATIC;
+        }
+        if (isStrictFP(ecjModifer)) {
+        	modifier |= ChangeModifier.STRICTFP;
+        }
+        if (isSynchronized(ecjModifer)) {
+        	modifier |= ChangeModifier.SYNCHRONIZED;
+        }
+        if (isTransient(ecjModifer)) {
+        	modifier |= ChangeModifier.TRANSIENT;
+        }
+        if (isVolatile(ecjModifer)) {
+        	modifier |= ChangeModifier.VOLATILE;
         }
         if (isPublic(ecjModifer)) {
             modifier |= ChangeModifier.PUBLIC;
@@ -225,7 +246,36 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
         }
         return modifier;
     }
+    
+    private boolean isNative(int ecjModifier) {
+    	return (ecjModifier & ClassFileConstants.AccNative) != 0;
+    }
+    
+    private boolean isStatic(int ecjModifier) {
+    	return (ecjModifier & ClassFileConstants.AccStatic) != 0;
+    }
+    
+    private boolean isStrictFP(int ecjModifier) {
+    	return (ecjModifier & ClassFileConstants.AccStrictfp) != 0;
+    }
 
+    private boolean isSynchronized(int ecjModifier) {
+    	return (ecjModifier & ClassFileConstants.AccSynchronized) != 0;
+    }
+
+    private boolean isTransient(int ecjModifier) {
+    	return (ecjModifier & ClassFileConstants.AccTransient) != 0;
+    }
+
+    private boolean isVolatile(int ecjModifier) {
+    	return (ecjModifier & ClassFileConstants.AccVolatile) != 0;
+    }
+    
+
+    private boolean isAbstract(int ecjModifier) {
+        return (ecjModifier & ClassFileConstants.AccAbstract) != 0;
+    }
+    
     private boolean isPrivate(int ecjModifier) {
         return (ecjModifier & ClassFileConstants.AccPrivate) != 0;
     }

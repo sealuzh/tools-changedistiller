@@ -174,7 +174,7 @@ public class BestLeafTreeMatcher implements TreeMatcher {
                                             x.getValue(),
                                             y.getValue());
 
-                            // Important! Otherwhise nodes that match poorly will make it into final matching set,
+                            // Important! Otherwise nodes that match poorly will make it into final matching set,
                             // if no better matches are found!
                             if (similarity >= fLeafGenericStringSimilarityThreshold) {
                                 matchedLeafs.add(new LeafPair(x, y, similarity));

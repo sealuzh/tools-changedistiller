@@ -185,10 +185,17 @@ public class JavaDeclarationConverter extends ASTVisitor {
                 int token;
                 while ((token = fScanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
                     switch (token) {
+                    	case TerminalTokens.TokenNameabstract:
                         case TerminalTokens.TokenNamepublic:
                         case TerminalTokens.TokenNameprotected:
                         case TerminalTokens.TokenNameprivate:
                         case TerminalTokens.TokenNamefinal:
+                        case TerminalTokens.TokenNamestatic:
+                        case TerminalTokens.TokenNamevolatile:
+                        case TerminalTokens.TokenNamestrictfp:
+                        case TerminalTokens.TokenNamenative:
+                        case TerminalTokens.TokenNamesynchronized:
+                        case TerminalTokens.TokenNametransient:
                             push(
                                     JavaEntityType.MODIFIER,
                                     fScanner.getCurrentTokenString(),

@@ -155,6 +155,7 @@ import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
  * Implementation of {@link ASTNodeTypeConverter} for the Java programming language.
  * 
  * @author Beat Fluri
+ * @author Michael Wuersch
  */
 public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
 

@@ -15,6 +15,11 @@ public class Test {
 	 * Scarab Lord Kungen
 	 */
 	public String aField;
+
+	public static String sField;
+	public volatile int vField;
+	public transient String tField;
+	public synchronized long synchField;
 	
 	public Integer anInteger = new Integer(1);
 	
@@ -64,4 +69,9 @@ public class Test {
 		System.out.println("aString");
 	}
 
+	public native void nativeMethod();
+	
+	public strictfp float strictfpMethod() {
+		return 2.0f * 3.3f;
+	}
 }
