@@ -58,7 +58,7 @@ public class WhenFilesAreDistilled {
         File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
         File right = CompilationUtils.getFile(TEST_DATA + "TestRight.java");
         distiller.extractClassifiedSourceCodeChanges(left, right);
-        assertThat(distiller.getSourceCodeChanges().size(), is(22));
+        assertThat(distiller.getSourceCodeChanges().size(), is(23));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class WhenFilesAreDistilled {
         File right = CompilationUtils.getFile(TEST_DATA + "TestRight.java");
         distiller.extractClassifiedSourceCodeChanges(left, right);
         ClassHistory classHistory = distiller.getClassHistory();
-        assertThat(classHistory.getAttributeHistories().size(), is(2));
+        assertThat(classHistory.getAttributeHistories().size(), is(3));
         assertThat(classHistory.getMethodHistories().size(), is(1));
         assertThat(classHistory.getInnerClassHistories().size(), is(1));
         classHistory = classHistory.getInnerClassHistories().values().iterator().next();

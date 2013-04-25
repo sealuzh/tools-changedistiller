@@ -28,6 +28,7 @@ import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
+import org.eclipse.jdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.Block;
 import org.eclipse.jdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.Expression;
@@ -421,6 +422,16 @@ public class JavaDeclarationConverter extends ASTVisitor {
     }
 
     @Override
+    public boolean visit(ArrayTypeReference arrayType, ClassScope scope) {
+    	return visit(arrayType, (BlockScope) null);
+    }
+    
+    @Override
+    public void endVisit(ArrayTypeReference arrayType, ClassScope scope) {
+    	endVisit(arrayType, (BlockScope) null);
+    }
+
+    @Override
     public boolean visit(SingleTypeReference type, BlockScope scope) {
         pushValuedNode(type, prefixWithNameOfParrentIfInMethodDeclaration() + String.valueOf(type.token));
         return false;
@@ -432,6 +443,17 @@ public class JavaDeclarationConverter extends ASTVisitor {
     }
 
     @Override
+	public boolean visit(ArrayTypeReference arrayType, BlockScope scope) {
+    	pushValuedNode(arrayType, prefixWithNameOfParrentIfInMethodDeclaration() + String.valueOf(arrayType.token));
+		return false;
+	}
+    
+    @Override
+    public void endVisit(ArrayTypeReference arrayType, BlockScope scope) {
+    	pop();
+    }
+
+	@Override
     public boolean visit(TypeDeclaration typeDeclaration, ClassScope scope) {
         return visit(typeDeclaration, (BlockScope) null);
     }

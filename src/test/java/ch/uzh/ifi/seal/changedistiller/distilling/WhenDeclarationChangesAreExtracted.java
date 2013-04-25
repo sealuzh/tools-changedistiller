@@ -22,13 +22,19 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+
+import java.util.List;
 
 import org.junit.Test;
 
 import ch.uzh.ifi.seal.changedistiller.ast.java.JavaCompilation;
 import ch.uzh.ifi.seal.changedistiller.distilling.Distiller;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
+import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
+import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeEntity;
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
+import ch.uzh.ifi.seal.changedistiller.model.entities.Update;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 import ch.uzh.ifi.seal.changedistiller.util.CompilationUtils;
 
@@ -60,4 +66,27 @@ public class WhenDeclarationChangesAreExtracted extends WhenChangesAreExtracted 
         assertThat(structureEntity.getSourceCodeChanges().size(), is(2));
     }
 
+    @Test
+    public void changedFieldShouldHaveChanges() throws Exception {
+    	JavaCompilation compilationLeft = CompilationUtils.compileFile(TEST_DATA + "TestLeft.java");
+    	JavaCompilation compilationRight = CompilationUtils.compileFile(TEST_DATA + "TestRight.java");
+    	Node rootLeft = convertFieldDeclaration("arrayField", compilationLeft);
+    	Node rootRight = convertFieldDeclaration("arrayField", compilationRight);
+    	StructureEntityVersion structureEntity = new StructureEntityVersion(JavaEntityType.FIELD, "arrayField", 0);
+    	Distiller distiller = getDistiller(structureEntity);
+    	distiller.extractClassifiedSourceCodeChanges(rootLeft, rootRight);
+    	
+    	List<SourceCodeChange> changes = structureEntity.getSourceCodeChanges();
+    	assertThat(changes.size(), is(1));
+    	
+    	SourceCodeChange singleChange = changes.get(0);
+    	
+    	if(singleChange instanceof Update) {
+    		Update update = (Update) singleChange;
+    		SourceCodeEntity entity = update.getNewEntity();
+    		assertThat((JavaEntityType) entity.getType(), is(JavaEntityType.ARRAY_TYPE));
+    	} else {
+    		fail("Should be Update but was " + singleChange.getClass());
+    	}
+    }
 }

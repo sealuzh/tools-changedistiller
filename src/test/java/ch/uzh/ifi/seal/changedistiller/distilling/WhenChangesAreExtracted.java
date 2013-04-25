@@ -23,7 +23,9 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
 import java.util.List;
 
 import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.jdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.junit.BeforeClass;
 
 import ch.uzh.ifi.seal.changedistiller.ast.java.Comment;
@@ -31,8 +33,6 @@ import ch.uzh.ifi.seal.changedistiller.ast.java.JavaCompilation;
 import ch.uzh.ifi.seal.changedistiller.ast.java.JavaDeclarationConverter;
 import ch.uzh.ifi.seal.changedistiller.ast.java.JavaDistillerTestCase;
 import ch.uzh.ifi.seal.changedistiller.ast.java.JavaMethodBodyConverter;
-import ch.uzh.ifi.seal.changedistiller.distilling.Distiller;
-import ch.uzh.ifi.seal.changedistiller.distilling.DistillerFactory;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.SourceRange;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeEntity;
@@ -78,4 +78,14 @@ public abstract class WhenChangesAreExtracted extends JavaDistillerTestCase {
         return root;
     }
 
+    public Node convertFieldDeclaration(String fieldName, JavaCompilation compilation) {
+    	FieldDeclaration field = CompilationUtils.findField(compilation.getCompilationUnit(), fieldName);
+    	Node root = new Node(JavaEntityType.FIELD, fieldName);
+    	root.setEntity(new SourceCodeEntity(fieldName, JavaEntityType.FIELD, new SourceRange(
+    			field.declarationSourceStart,
+    			field.declarationSourceEnd)));
+    	sDeclarationConverter.initialize(root, compilation.getScanner());
+    	field.traverse(sDeclarationConverter, (MethodScope) null);
+    	return root;
+    }
 }

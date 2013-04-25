@@ -21,6 +21,8 @@ public final class Test {
 	public transient String tField;
 	public synchronized long synchField;
 	
+	private String[] arrayField;
+	
 	/**
 	 * Yet another method with a better comment
 	 * @param number

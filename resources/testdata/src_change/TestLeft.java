@@ -21,6 +21,8 @@ public class Test {
 	public transient String tField;
 	public synchronized long synchField;
 	
+	private String arrayField;
+	
 	public Integer anInteger = new Integer(1);
 	
 	/**
