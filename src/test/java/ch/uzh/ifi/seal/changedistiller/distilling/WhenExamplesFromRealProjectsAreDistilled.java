@@ -101,6 +101,20 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         	fail("Source code change extraction failed.");
         }
     }
+
+    @Test
+    public void noNullPointerExceptionShouldOccur3() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "19/AstNodeLeft.java");
+    	File right = CompilationUtils.getFile(TEST_DATA + "19/AstNodeRight.java");
+    	
+    	try {
+    		distiller.extractClassifiedSourceCodeChanges(left, right);
+    		assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+    	} catch (NullPointerException ex) {
+    		ex.printStackTrace();
+    		fail("Source code change extraction failed.");
+    	}
+    }
     
     @Test
     public void primitiveTypesShouldNotBeSimpleTypes() throws Exception {
