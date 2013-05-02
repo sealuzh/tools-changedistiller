@@ -21,10 +21,12 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  */
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +35,7 @@ import ch.uzh.ifi.seal.changedistiller.ChangeDistiller;
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
 import ch.uzh.ifi.seal.changedistiller.distilling.FileDistiller;
 import ch.uzh.ifi.seal.changedistiller.model.entities.ClassHistory;
+import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import ch.uzh.ifi.seal.changedistiller.util.CompilationUtils;
 
 public class WhenFilesAreDistilled {
@@ -50,7 +53,9 @@ public class WhenFilesAreDistilled {
         File left = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
         File right = CompilationUtils.getFile(TEST_DATA + "TestLeft.java");
         distiller.extractClassifiedSourceCodeChanges(left, right);
-        assertThat(distiller.getSourceCodeChanges(), is(nullValue()));
+        List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+        assertThat(changes, is(not(nullValue())));
+        assertThat(changes.size(), is(0));
     }
 
     @Test

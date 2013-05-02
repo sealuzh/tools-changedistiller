@@ -72,6 +72,7 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         	distiller.extractClassifiedSourceCodeChanges(left, right);
         	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
         } catch (IllegalArgumentException ex) {
+        	ex.printStackTrace();
         	fail("Source code change extraction failed because a node became its own ancestor.");
         }
     }
@@ -85,6 +86,7 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         	distiller.extractClassifiedSourceCodeChanges(left, right);
         	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
         } catch (NullPointerException ex) {
+        	ex.printStackTrace();
         	fail("Source code change extraction failed.");
         }
     }
@@ -98,6 +100,7 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         	distiller.extractClassifiedSourceCodeChanges(left, right);
         	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
         } catch (NullPointerException ex) {
+        	ex.printStackTrace();
         	fail("Source code change extraction failed.");
         }
     }
@@ -124,6 +127,22 @@ public class WhenExamplesFromRealProjectsAreDistilled {
     	try {
     		distiller.extractClassifiedSourceCodeChanges(left, right);
     		assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+    	} catch (NullPointerException ex) {
+    		ex.printStackTrace();
+    		fail("Source code change extraction failed.");
+    	}
+    }
+
+    @Test
+    public void noNullPointerExceptionShouldOccur5() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "21/ASTConverterLeft.java");
+    	File right = CompilationUtils.getFile(TEST_DATA + "21/ASTConverterRight.java");
+    	
+    	try {
+    		distiller.extractClassifiedSourceCodeChanges(left, right);
+    		List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+    		assertThat(changes, is(not(nullValue())));
+    		assertThat(changes.size(), is(0));
     	} catch (NullPointerException ex) {
     		ex.printStackTrace();
     		fail("Source code change extraction failed.");

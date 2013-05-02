@@ -21,6 +21,7 @@ package ch.uzh.ifi.seal.changedistiller.distilling;
  */
 
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,17 +75,21 @@ public class FileDistiller {
      */
     @SuppressWarnings("unchecked")
     public void extractClassifiedSourceCodeChanges(File left, File right) {
-        fLeftASTHelper = fASTHelperFactory.create(left);
+
+    	fLeftASTHelper = fASTHelperFactory.create(left);
         fRightASTHelper = fASTHelperFactory.create(right);
+        
         StructureDifferencer structureDifferencer = new StructureDifferencer();
         structureDifferencer.extractDifferences(
                 fLeftASTHelper.createStructureTree(),
                 fRightASTHelper.createStructureTree());
         StructureDiffNode structureDiff = structureDifferencer.getDifferences();
         if (structureDiff != null) {
-            fChanges = new LinkedList<SourceCodeChange>();
+        	fChanges = new LinkedList<SourceCodeChange>();
             // first node is (usually) the compilation unit
             processRootChildren(structureDiff);
+        } else {
+        	fChanges = Collections.emptyList();
         }
     }
 
