@@ -702,11 +702,43 @@ public class WhenSourceCodeChangesAreClassified extends WhenChangesAreExtracted 
     }
 
     @Test
+    public void postfixExpressionInsertShouldBeDetected() throws Exception {
+    	fLeftSnippet = createMethodSourceCode("System.out.println();");
+    	fRightSnippet = createMethodSourceCode("System.out.println(); this.insert++;");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_INSERT));
+    }
+
+    @Test
+    public void prefixExpressionInsertShouldBeDetected() throws Exception {
+    	fLeftSnippet = createMethodSourceCode("System.out.println();");
+    	fRightSnippet = createMethodSourceCode("System.out.println(); ++this.insert;");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_INSERT));
+    }
+
+    @Test
     public void statementDeleteShouldBeDetected() throws Exception {
         fLeftSnippet = createMethodSourceCode("System.out.println(); statement.delete();");
         fRightSnippet = createMethodSourceCode("System.out.println();");
         extractMethodChanges("method");
         assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_DELETE));
+    }
+
+    @Test
+    public void postfixExpressionDeleteShouldBeDetected() throws Exception {
+    	fLeftSnippet = createMethodSourceCode("System.out.println(); this.delete++;");
+    	fRightSnippet = createMethodSourceCode("System.out.println();");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_DELETE));
+    }
+
+    @Test
+    public void prefixExpressionDeleteShouldBeDetected() throws Exception {
+    	fLeftSnippet = createMethodSourceCode("System.out.println(); ++this.delete;");
+    	fRightSnippet = createMethodSourceCode("System.out.println();");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_DELETE));
     }
 
     @Test

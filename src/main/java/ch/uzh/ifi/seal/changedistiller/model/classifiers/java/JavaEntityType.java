@@ -176,6 +176,10 @@ public enum JavaEntityType implements EntityType {
             case VARIABLE_DECLARATION_STATEMENT:
             case WHILE_STATEMENT:
             case FOREACH_STATEMENT:
+            // Fix for https://bitbucket.org/sealuzh/tools-changedistiller/issue/22
+            case PREFIX_EXPRESSION:
+            case POSTFIX_EXPRESSION:
+            //
                 return true;
             default:
                 return false;
