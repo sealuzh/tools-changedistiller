@@ -170,4 +170,26 @@ public class WhenExamplesFromRealProjectsAreDistilled {
     		fail("Should be Update but was " + singleChange.getClass());
     	}
     }
+
+    @Test
+    public void postfixExpressionUpdateShouldBeDetected() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "22/TestLeft.java");
+    	File right = CompilationUtils.getFile(TEST_DATA + "22/TestRight.java");
+    	
+    	distiller.extractClassifiedSourceCodeChanges(left, right);
+    	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+    	
+    	List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+    	assertThat(changes.size(), is(1));
+    	
+    	SourceCodeChange singleChange = changes.get(0);
+    	
+    	if(singleChange instanceof Update) {
+    		Update update = (Update) singleChange;
+    		SourceCodeEntity entity = update.getNewEntity();
+    		assertThat((JavaEntityType) entity.getType(), is(JavaEntityType.POSTFIX_EXPRESSION));
+    	} else {
+    		fail("Should be Update but was " + singleChange.getClass());
+    	}
+    }
 }

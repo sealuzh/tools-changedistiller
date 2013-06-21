@@ -710,6 +710,21 @@ public class WhenSourceCodeChangesAreClassified extends WhenChangesAreExtracted 
     }
 
     @Test
+    public void postfixExpressionUpdateShouldBeDetected() throws Exception {
+    	fLeftSnippet = createMethodSourceCode("System.out.println(); this.counter++;");
+        fRightSnippet = createMethodSourceCode("System.out.println(); this.counter--;");
+        extractMethodChanges("method");
+        assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_UPDATE));
+    }
+    @Test
+    public void prefixExpressionUpdateShouldBeDetected() throws Exception {
+    	fLeftSnippet = createMethodSourceCode("System.out.println(); ++this.counter;");
+    	fRightSnippet = createMethodSourceCode("System.out.println(); --this.counter;");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_UPDATE));
+    }
+    
+    @Test
     public void prefixExpressionInsertShouldBeDetected() throws Exception {
     	fLeftSnippet = createMethodSourceCode("System.out.println();");
     	fRightSnippet = createMethodSourceCode("System.out.println(); ++this.insert;");
