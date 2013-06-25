@@ -74,4 +74,28 @@ public final class SourceRange {
         return "(" + fStart + "," + fEnd + ")";
     }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + fEnd;
+		result = prime * result + fStart;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SourceRange other = (SourceRange) obj;
+		if (fEnd != other.fEnd)
+			return false;
+		if (fStart != other.fStart)
+			return false;
+		return true;
+	}
 }
