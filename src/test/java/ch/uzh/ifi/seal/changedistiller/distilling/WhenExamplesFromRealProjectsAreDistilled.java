@@ -35,6 +35,7 @@ import org.junit.Test;
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller;
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
+import ch.uzh.ifi.seal.changedistiller.model.entities.Insert;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeEntity;
 import ch.uzh.ifi.seal.changedistiller.model.entities.Update;
@@ -190,6 +191,28 @@ public class WhenExamplesFromRealProjectsAreDistilled {
     		assertThat((JavaEntityType) entity.getType(), is(JavaEntityType.POSTFIX_EXPRESSION));
     	} else {
     		fail("Should be Update but was " + singleChange.getClass());
+    	}
+    }
+    
+    @Test
+    public void statementInsertIntoSwitchShouldBeDetected() throws Exception {
+    	File left = CompilationUtils.getFile(TEST_DATA + "26/TestLeft.java");
+    	File right = CompilationUtils.getFile(TEST_DATA + "26/TestRight.java");
+    	
+    	distiller.extractClassifiedSourceCodeChanges(left, right);
+    	assertThat(distiller.getSourceCodeChanges(), is(not(nullValue())));
+    	
+    	List<SourceCodeChange> changes = distiller.getSourceCodeChanges();
+    	assertThat(changes.size(), is(1));
+    	
+    	SourceCodeChange singleChange = changes.get(0);
+    	
+    	if(singleChange instanceof Insert) {
+    		Insert insert = (Insert) singleChange;
+    		SourceCodeEntity entity = insert.getChangedEntity();
+    		assertThat((JavaEntityType) entity.getType(), is(JavaEntityType.POSTFIX_EXPRESSION));
+    	} else {
+    		fail("Should be Insert but was " + singleChange.getClass());
     	}
     }
 }

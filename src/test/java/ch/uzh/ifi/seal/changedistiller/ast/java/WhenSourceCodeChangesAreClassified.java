@@ -104,6 +104,16 @@ public class WhenSourceCodeChangesAreClassified extends WhenChangesAreExtracted 
         extractMethodChanges("method");
         assertThat(getResultingChangeType(), is(ChangeType.ALTERNATIVE_PART_INSERT));
     }
+    
+    @Test
+    public void statementInsertIntoSwitchShouldBeDetected() throws Exception {
+    	fLeftSnippet =
+    			createMethodSourceCode("switch(var) { case 1: break; default: System.out.println(\"default\"); }");
+    	fRightSnippet =
+    			createMethodSourceCode("switch(var) { case 1: System.out.println(\"first case\"); break; default: System.out.println(\"default\"); }");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_INSERT));
+    }
 
     @Test
     @Ignore("not yet implemented")
