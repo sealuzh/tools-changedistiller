@@ -104,6 +104,46 @@ public class WhenSourceCodeChangesAreClassified extends WhenChangesAreExtracted 
         extractMethodChanges("method");
         assertThat(getResultingChangeType(), is(ChangeType.ALTERNATIVE_PART_INSERT));
     }
+
+    @Test
+    public void forInitInsertShouldBeDetected() throws Exception {
+    	fLeftSnippet =
+    			createMethodSourceCode("for(; i < 10; i++) { System.out.println(i); }");
+    	fRightSnippet =
+    			createMethodSourceCode("for(int i = 0; i < 10; i++) { System.out.println(i); }");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_INSERT));
+    }
+
+    @Test
+    public void forInitDeleteShouldBeDetected() throws Exception {
+    	fLeftSnippet =
+    			createMethodSourceCode("for(int i = 0; i < 10; i++) { System.out.println(i); }");
+    	fRightSnippet =
+    			createMethodSourceCode("for( ; i < 10; i++) { System.out.println(i); }");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_DELETE));
+    }
+
+    @Test
+    public void forIncrementInsertShouldBeDetected() throws Exception {
+    	fLeftSnippet =
+    			createMethodSourceCode("for(int i = 0; i < 10;) { System.out.println(i); }");
+    	fRightSnippet =
+    			createMethodSourceCode("for(int i = 0; i < 10; i++) { System.out.println(i); }");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_INSERT));
+    }
+
+    @Test
+    public void forIncrementDeleteShouldBeDetected() throws Exception {
+    	fLeftSnippet =
+    			createMethodSourceCode("for(int i = 0; i < 10; i++) { System.out.println(i); }");
+    	fRightSnippet =
+    			createMethodSourceCode("for(int i = 0; i < 10;) { System.out.println(i); }");
+    	extractMethodChanges("method");
+    	assertThat(getResultingChangeType(), is(ChangeType.STATEMENT_DELETE));
+    }
     
     @Test
     public void statementInsertIntoSwitchShouldBeDetected() throws Exception {

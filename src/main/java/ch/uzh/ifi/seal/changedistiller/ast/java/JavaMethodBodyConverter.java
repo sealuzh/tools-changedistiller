@@ -52,6 +52,7 @@ import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.jdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
+import org.eclipse.jdt.internal.compiler.ast.Statement;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
@@ -557,12 +558,46 @@ public class JavaMethodBodyConverter extends ASTVisitor {
     @Override
     public boolean visit(ForStatement forStatement, BlockScope scope) {
         preVisit(forStatement);
+        // loop condition
         String value = "";
         if (forStatement.condition != null) {
-            value = forStatement.condition.toString();
+        	value = forStatement.condition.toString();
         }
         pushValuedNode(forStatement, value);
         forStatement.action.traverse(this, scope);
+       
+        // loop init
+        if(forStatement.initializations != null && forStatement.initializations.length > 0) {
+        	for(Statement initStatement : forStatement.initializations) {
+        		push(
+        			JavaEntityType.FOR_INIT,
+        			initStatement.toString(),
+        			initStatement.sourceStart(),
+        			initStatement.sourceEnd()
+        		);
+        		
+        		initStatement.traverse(this, scope);
+        		
+        		pop(initStatement);
+        	}
+        }
+        
+        // loop afterthought
+        if(forStatement.increments != null && forStatement.increments.length > 0) {
+        	for(Statement incrementStatement : forStatement.increments) {
+        		push(
+        			JavaEntityType.FOR_INCR,
+        			incrementStatement.toString(),
+        			incrementStatement.sourceStart(),
+        			incrementStatement.sourceEnd()
+        		);
+        		
+        		incrementStatement.traverse(this, scope);
+        		
+        		pop(incrementStatement);
+        	}
+        }
+        
         return false;
     }
 

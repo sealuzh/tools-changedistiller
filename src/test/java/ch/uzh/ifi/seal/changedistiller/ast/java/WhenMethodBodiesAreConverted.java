@@ -189,7 +189,7 @@ public class WhenMethodBodiesAreConverted extends WhenASTsAreConverted {
         prepareCompilation();
         convert();
         assertThat(getFirstChild().getLabel(), is(JavaEntityType.FOR_STATEMENT));
-        assertThat(getTreeString(), is("method { (i < list.size()) { System.out.print('.'); } }"));
+        assertThat(getTreeString(), is("method { (i < list.size()) { System.out.print('.');,int i = 0; { int i = 0; },i ++ { i ++; } } }"));
         assertSourceRangeCorrectness(getFirstChild());
     }
 
