@@ -59,7 +59,7 @@ public final class JavaCompilationUtils {
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
         JavaCompilation javaCompilation = new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
         if (compilationResult.hasProblems()) {
-        	throw new CompilationError(compilationResult.toString());
+        	throw new CompilationError(new String(compilationResult.getFileName()), compilationResult.toString());
         }
 		return javaCompilation;
     }
