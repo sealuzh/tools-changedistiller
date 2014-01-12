@@ -34,6 +34,7 @@ import org.junit.Test;
 
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller;
 import ch.uzh.ifi.seal.changedistiller.ChangeDistiller.Language;
+import ch.uzh.ifi.seal.changedistiller.ast.CompilationError;
 import ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType;
 import ch.uzh.ifi.seal.changedistiller.model.entities.Insert;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeChange;
@@ -214,5 +215,12 @@ public class WhenExamplesFromRealProjectsAreDistilled {
     	} else {
     		fail("Should be Insert but was " + singleChange.getClass());
     	}
+    }
+
+    @Test(expected = CompilationError.class)
+    public void changedFilesShouldProduceSourceCodeChanges() {
+        File left = CompilationUtils.getFile(TEST_DATA + "32/jEditLeft2.java");
+        File right = CompilationUtils.getFile(TEST_DATA + "32/jEditRight2.java");
+        distiller.extractClassifiedSourceCodeChanges(left, right);
     }
 }

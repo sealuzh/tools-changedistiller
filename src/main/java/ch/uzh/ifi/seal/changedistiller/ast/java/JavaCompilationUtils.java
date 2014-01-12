@@ -33,6 +33,7 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.jdt.internal.core.util.CommentRecorderParser;
 
+import ch.uzh.ifi.seal.changedistiller.ast.CompilationError;
 import ch.uzh.ifi.seal.changedistiller.ast.FileUtils;
 
 /**
@@ -56,7 +57,11 @@ public final class JavaCompilationUtils {
         Parser parser = createCommentRecorderParser(options);
         ICompilationUnit cu = createCompilationUnit(FileUtils.getContent(file), file.getName());
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
-        return new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
+        JavaCompilation javaCompilation = new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
+        if (compilationResult.hasProblems()) {
+        	throw new CompilationError(compilationResult.toString());
+        }
+		return javaCompilation;
     }
 
     private static CompilationResult createDefaultCompilationResult(ICompilationUnit cu, CompilerOptions options) {
