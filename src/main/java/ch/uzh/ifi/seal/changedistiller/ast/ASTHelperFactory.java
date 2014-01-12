@@ -23,7 +23,7 @@ package ch.uzh.ifi.seal.changedistiller.ast;
 import java.io.File;
 
 /**
- * Factory interface to create {@link ASTHelper} from a {@link File}.
+ * Factory interface to create {@link ASTHelper} from a {@link File} and a version number.
  * 
  * @author Beat Fluri
  */
@@ -34,9 +34,10 @@ public interface ASTHelperFactory {
      * 
      * @param file
      *            the AST helper acts on
+     * @param version
+     * 		of the language the AST helper uses to parse the file
      * @return the AST helper acting on the file
      */
     @SuppressWarnings("rawtypes")
-    ASTHelper create(File file);
-
+    ASTHelper create(File file, String version);
 }
