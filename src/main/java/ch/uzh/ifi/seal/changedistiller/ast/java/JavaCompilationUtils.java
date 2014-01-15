@@ -32,8 +32,8 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.jdt.internal.core.util.CommentRecorderParser;
 
-import ch.uzh.ifi.seal.changedistiller.ast.InvalidSyntaxException;
 import ch.uzh.ifi.seal.changedistiller.ast.FileUtils;
+import ch.uzh.ifi.seal.changedistiller.ast.InvalidSyntaxException;
 
 /**
  * Utility class for Java compilation.
@@ -48,21 +48,18 @@ public final class JavaCompilationUtils {
     private JavaCompilationUtils() {}
 
     /**
-     * Returns the compiled file as a {@link JavaCompilation}.
+     * Returns the compiled source as a {@link JavaCompilation}.
      * 
-     * @param file
+     * @param Java source
      *            to compile
-     * @param version
-     * 			  of Java used in the file
-     * @return the compilation of the file
+     * @return the compilation of the Java source
      * @throws InvalidSyntaxException if the file has syntax errors.
      */
-    public static JavaCompilation compile(File file, long version) {
+    public static JavaCompilation compile(String source, String fileName, long version) {
         CompilerOptions options = getDefaultCompilerOptions(version);
         Parser parser = createCommentRecorderParser(options);
-        ICompilationUnit cu = createCompilationUnit(FileUtils.getContent(file), file.getName());
+        ICompilationUnit cu = createCompilationUnit(source, fileName);
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
-
         JavaCompilation javaCompilation = new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
         
         if (compilationResult.hasSyntaxError) {
@@ -70,6 +67,18 @@ public final class JavaCompilationUtils {
         }
 		
         return javaCompilation;
+    }
+    
+    /**
+     * Returns the compiled file as a {@link JavaCompilation}.
+     * 
+     * @param file
+     *            to compile
+     * @return the compilation of the file
+     * @throws InvalidSyntaxException if the file has syntax errors.
+     */
+    public static JavaCompilation compile(File file, long version) {
+    	return compile(FileUtils.getContent(file), file.getName(), version);
     }
 
     private static CompilationResult createDefaultCompilationResult(ICompilationUnit cu, CompilerOptions options) {
