@@ -25,7 +25,6 @@ import java.io.File;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.jdt.internal.compiler.batch.CompilationUnit;
-import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.parser.Parser;
@@ -53,14 +52,17 @@ public final class JavaCompilationUtils {
      * 
      * @param file
      *            to compile
+     * @param version
+     * 			  of Java used in the file
      * @return the compilation of the file
      * @throws InvalidSyntaxException if the file has syntax errors.
      */
-    public static JavaCompilation compile(File file) {
-        CompilerOptions options = getDefaultCompilerOptions();
+    public static JavaCompilation compile(File file, long version) {
+        CompilerOptions options = getDefaultCompilerOptions(version);
         Parser parser = createCommentRecorderParser(options);
         ICompilationUnit cu = createCompilationUnit(FileUtils.getContent(file), file.getName());
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
+
         JavaCompilation javaCompilation = new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
         
         if (compilationResult.hasSyntaxError) {
@@ -78,12 +80,12 @@ public final class JavaCompilationUtils {
         return new CompilationUnit(source.toCharArray(), filename, null);
     }
 
-    private static CompilerOptions getDefaultCompilerOptions() {
+    private static CompilerOptions getDefaultCompilerOptions(long version) {
         CompilerOptions options = new CompilerOptions();
         options.docCommentSupport = true;
-        options.complianceLevel = ClassFileConstants.JDK1_6;
-        options.sourceLevel = ClassFileConstants.JDK1_6;
-        options.targetJDK = ClassFileConstants.JDK1_6;
+        options.complianceLevel = version;
+        options.sourceLevel = version;
+        options.targetJDK = version;
         return options;
     }
 

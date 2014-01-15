@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -222,5 +223,13 @@ public class WhenExamplesFromRealProjectsAreDistilled {
         File left = CompilationUtils.getFile(TEST_DATA + "32/jEditLeft2.java");
         File right = CompilationUtils.getFile(TEST_DATA + "32/jEditRight2.java");
         distiller.extractClassifiedSourceCodeChanges(left, right);
+    }
+    
+    @Test
+    public void fileDistillerShouldParseJava14() {
+        File left = CompilationUtils.getFile(TEST_DATA + "32/jEditLeft.java");
+        File right = CompilationUtils.getFile(TEST_DATA + "32/jEditRight.java");
+        distiller.extractClassifiedSourceCodeChanges(left, "1.4", right, "1.4");
+        assertThat(distiller.getSourceCodeChanges().size(), greaterThan(0)); 	
     }
 }

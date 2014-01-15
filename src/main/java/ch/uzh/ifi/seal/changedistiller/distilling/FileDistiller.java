@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelperFactory;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateProcessor;
@@ -41,114 +40,132 @@ import com.google.inject.Inject;
  * Distills {@link SourceCodeChange}s between two {@link File}.
  * 
  * @author Beat Fluri
- * @author Giacomo Ghezzi
+ * @author Giacomo Ghezzi 
+ * @author Michael Wuersch
+ * @author Zhongpeng Lin
  */
 public class FileDistiller {
 
-    private DistillerFactory fDistillerFactory;
-    private ASTHelperFactory fASTHelperFactory;
-    private RefactoringCandidateProcessor fRefactoringProcessor;
+	private DistillerFactory fDistillerFactory;
+	private ASTHelperFactory fASTHelperFactory;
+	private RefactoringCandidateProcessor fRefactoringProcessor;
 
-    private List<SourceCodeChange> fChanges;
-    private ASTHelper<StructureNode> fLeftASTHelper;
-    private ASTHelper<StructureNode> fRightASTHelper;
-    private ClassHistory fClassHistory;
-    private String fVersion;
+	private List<SourceCodeChange> fChanges;
+	private ASTHelper<StructureNode> fLeftASTHelper;
+	private ASTHelper<StructureNode> fRightASTHelper;
+	private ClassHistory fClassHistory;
+	private String fVersion;
 
-    @Inject
-    FileDistiller(
-            DistillerFactory distillerFactory,
-            ASTHelperFactory factory,
-            RefactoringCandidateProcessor refactoringProcessor) {
-        fDistillerFactory = distillerFactory;
-        fASTHelperFactory = factory;
-        fRefactoringProcessor = refactoringProcessor;
-    }
+	@Inject
+	FileDistiller(DistillerFactory distillerFactory, ASTHelperFactory factory,
+			RefactoringCandidateProcessor refactoringProcessor) {
+		fDistillerFactory = distillerFactory;
+		fASTHelperFactory = factory;
+		fRefactoringProcessor = refactoringProcessor;
+	}
 
-    /**
-     * Extracts classified {@link SourceCodeChange}s between two {@link File}s.
-     * 
-     * @param left
-     *            file to extract changes
-     * @param right
-     *            file to extract changes
-     */
-    @SuppressWarnings("unchecked")
-    public void extractClassifiedSourceCodeChanges(File left, File right) {
+	/**
+	 * Extracts classified {@link SourceCodeChange}s between two {@link File}s.
+	 * 
+	 * @param left
+	 *            file to extract changes
+	 * @param right
+	 *            file to extract changes
+	 */
+	public void extractClassifiedSourceCodeChanges(File left, File right) {
+		extractClassifiedSourceCodeChanges(left, "defaultVersion", right,
+				"defaultVersion");
+	}
 
-    	fLeftASTHelper = fASTHelperFactory.create(left);
-        fRightASTHelper = fASTHelperFactory.create(right);
-        
-        StructureDifferencer structureDifferencer = new StructureDifferencer();
-        structureDifferencer.extractDifferences(
-                fLeftASTHelper.createStructureTree(),
-                fRightASTHelper.createStructureTree());
-        StructureDiffNode structureDiff = structureDifferencer.getDifferences();
-        if (structureDiff != null) {
-        	fChanges = new LinkedList<SourceCodeChange>();
-            // first node is (usually) the compilation unit
-            processRootChildren(structureDiff);
-        } else {
-        	fChanges = Collections.emptyList();
-        }
-    }
+	/**
+	 * Extracts classified {@link SourceCodeChange}s between two {@link File}s.
+	 * 
+	 * @param left
+	 *            file to extract changes
+	 * @param leftVersion
+	 *            version of the language in the left file
+	 * @param right
+	 *            file to extract changes
+	 * @param leftVersion
+	 *            version of the language in the right file
+	 */
+	@SuppressWarnings("unchecked")
+	public void extractClassifiedSourceCodeChanges(File left,
+			String leftVersion, File right, String rightVersion) {
 
-    public void extractClassifiedSourceCodeChanges(File left, File right, String version) {
-    	fVersion = version;
-    	this.extractClassifiedSourceCodeChanges(left, right);
-    }
-    
-    private void processRootChildren(StructureDiffNode diffNode) {
-        for (StructureDiffNode child : diffNode.getChildren()) {
-            if (child.isClassOrInterfaceDiffNode() && mayHaveChanges(child.getLeft(), child.getRight())) {
-                if (fClassHistory == null) {
-                	if (fVersion != null) {
-                		fClassHistory = new ClassHistory(fRightASTHelper.createStructureEntityVersion(child.getRight(), fVersion));
-                	} else {
-                		fClassHistory = new ClassHistory(fRightASTHelper.createStructureEntityVersion(child.getRight()));
-                	}
-                }
-                processClassDiffNode(child);
-            }
-        }
-    }
+		fLeftASTHelper = fASTHelperFactory.create(left, leftVersion);
+		fRightASTHelper = fASTHelperFactory.create(right, rightVersion);
 
-    private void processClassDiffNode(StructureDiffNode child) {
-    	ClassDistiller classDistiller;
-    	if (fVersion != null) {
-        classDistiller =
-                new ClassDistiller(
-                        child,
-                        fClassHistory,
-                        fLeftASTHelper,
-                        fRightASTHelper,
-                        fRefactoringProcessor,
-                        fDistillerFactory,
-                        fVersion);
-    	} else {
-    		classDistiller =
-                new ClassDistiller(
-                        child,
-                        fClassHistory,
-                        fLeftASTHelper,
-                        fRightASTHelper,
-                        fRefactoringProcessor,
-                        fDistillerFactory);
-    	}
-        classDistiller.extractChanges();
-        fChanges.addAll(classDistiller.getSourceCodeChanges());
-    }
+		extractDifferences();
+	}
 
-    private boolean mayHaveChanges(StructureNode left, StructureNode right) {
-        return (left != null) && (right != null);
-    }
+	private void extractDifferences() {
+		StructureDifferencer structureDifferencer = new StructureDifferencer();
+		structureDifferencer.extractDifferences(
+				fLeftASTHelper.createStructureTree(),
+				fRightASTHelper.createStructureTree());
+		StructureDiffNode structureDiff = structureDifferencer.getDifferences();
+		if (structureDiff != null) {
+			fChanges = new LinkedList<SourceCodeChange>();
+			// first node is (usually) the compilation unit
+			processRootChildren(structureDiff);
+		} else {
+			fChanges = Collections.emptyList();
+		}
+	}
 
-    public List<SourceCodeChange> getSourceCodeChanges() {
-        return fChanges;
-    }
+	public void extractClassifiedSourceCodeChanges(File left, File right,
+			String version) {
+		fVersion = version;
+		this.extractClassifiedSourceCodeChanges(left, right);
+	}
 
-    public ClassHistory getClassHistory() {
-        return fClassHistory;
-    }
+	private void processRootChildren(StructureDiffNode diffNode) {
+		for (StructureDiffNode child : diffNode.getChildren()) {
+			if (child.isClassOrInterfaceDiffNode()
+					&& mayHaveChanges(child.getLeft(), child.getRight())) {
+				if (fClassHistory == null) {
+					if (fVersion != null) {
+						fClassHistory = new ClassHistory(
+								fRightASTHelper.createStructureEntityVersion(
+										child.getRight(), fVersion));
+					} else {
+						fClassHistory = new ClassHistory(
+								fRightASTHelper
+										.createStructureEntityVersion(child
+												.getRight()));
+					}
+				}
+				processClassDiffNode(child);
+			}
+		}
+	}
+
+	private void processClassDiffNode(StructureDiffNode child) {
+		ClassDistiller classDistiller;
+		if (fVersion != null) {
+			classDistiller = new ClassDistiller(child, fClassHistory,
+					fLeftASTHelper, fRightASTHelper, fRefactoringProcessor,
+					fDistillerFactory, fVersion);
+		} else {
+			classDistiller = new ClassDistiller(child, fClassHistory,
+					fLeftASTHelper, fRightASTHelper, fRefactoringProcessor,
+					fDistillerFactory);
+		}
+		classDistiller.extractChanges();
+		fChanges.addAll(classDistiller.getSourceCodeChanges());
+	}
+
+	private boolean mayHaveChanges(StructureNode left, StructureNode right) {
+		return (left != null) && (right != null);
+	}
+
+	public List<SourceCodeChange> getSourceCodeChanges() {
+		return fChanges;
+	}
+
+	public ClassHistory getClassHistory() {
+		return fClassHistory;
+	}
 
 }
