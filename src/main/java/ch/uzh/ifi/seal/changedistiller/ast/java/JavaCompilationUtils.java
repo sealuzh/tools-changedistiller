@@ -33,13 +33,16 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.jdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.jdt.internal.core.util.CommentRecorderParser;
 
-import ch.uzh.ifi.seal.changedistiller.ast.CompilationError;
+import ch.uzh.ifi.seal.changedistiller.ast.InvalidSyntaxException;
 import ch.uzh.ifi.seal.changedistiller.ast.FileUtils;
 
 /**
  * Utility class for Java compilation.
  * 
  * @author Beat Fluri
+ * @author linzhp
+ * @author wuersch
+ * 
  */
 public final class JavaCompilationUtils {
 
@@ -51,6 +54,7 @@ public final class JavaCompilationUtils {
      * @param file
      *            to compile
      * @return the compilation of the file
+     * @throws InvalidSyntaxException if the file has syntax errors.
      */
     public static JavaCompilation compile(File file) {
         CompilerOptions options = getDefaultCompilerOptions();
@@ -58,10 +62,12 @@ public final class JavaCompilationUtils {
         ICompilationUnit cu = createCompilationUnit(FileUtils.getContent(file), file.getName());
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
         JavaCompilation javaCompilation = new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
+        
         if (compilationResult.hasSyntaxError) {
-        	throw new CompilationError(new String(compilationResult.getFileName()), compilationResult.toString());
+        	throw new InvalidSyntaxException(new String(compilationResult.getFileName()), compilationResult.toString());
         }
-		return javaCompilation;
+		
+        return javaCompilation;
     }
 
     private static CompilationResult createDefaultCompilationResult(ICompilationUnit cu, CompilerOptions options) {
