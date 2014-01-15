@@ -58,7 +58,7 @@ public final class JavaCompilationUtils {
         ICompilationUnit cu = createCompilationUnit(FileUtils.getContent(file), file.getName());
         CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
         JavaCompilation javaCompilation = new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
-        if (compilationResult.hasMandatoryErrors()) {
+        if (compilationResult.hasSyntaxError) {
         	throw new CompilationError(new String(compilationResult.getFileName()), compilationResult.toString());
         }
 		return javaCompilation;
