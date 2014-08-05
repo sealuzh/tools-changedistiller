@@ -42,8 +42,8 @@ import ch.uzh.ifi.seal.changedistiller.model.entities.MethodHistory;
 import ch.uzh.ifi.seal.changedistiller.model.entities.SourceCodeEntity;
 import ch.uzh.ifi.seal.changedistiller.model.entities.StructureEntityVersion;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode;
-import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureTreeBuilder;
 import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureNode.Type;
+import ch.uzh.ifi.seal.changedistiller.structuredifferencing.java.JavaStructureTreeBuilder;
 import ch.uzh.ifi.seal.changedistiller.treedifferencing.Node;
 
 import com.google.inject.Inject;
@@ -66,16 +66,28 @@ public class JavaASTHelper implements ASTHelper<JavaStructureNode> {
     @Inject
     JavaASTHelper(
             @Assisted File file,
+            @Assisted String javaVersion,
             JavaASTNodeTypeConverter astHelper,
             JavaDeclarationConverter declarationConverter,
             JavaMethodBodyConverter bodyConverter) {
-        fCompilation = JavaCompilationUtils.compile(file);
+    	long versionNumber;
+    	switch (javaVersion) {
+    	case "1.1": versionNumber = ClassFileConstants.JDK1_1;break;
+    	case "1.2": versionNumber = ClassFileConstants.JDK1_2;break;
+    	case "1.3": versionNumber = ClassFileConstants.JDK1_3;break;
+    	case "1.4": versionNumber = ClassFileConstants.JDK1_4;break;
+    	case "1.5": versionNumber = ClassFileConstants.JDK1_5;break;
+    	case "1.6": versionNumber = ClassFileConstants.JDK1_6;break;
+    	case "1.7": versionNumber = ClassFileConstants.JDK1_7;break;
+    	default: versionNumber = ClassFileConstants.JDK1_6;
+    	}
+        fCompilation = JavaCompilationUtils.compile(file, versionNumber);
         prepareComments();
         fASTHelper = astHelper;
         fDeclarationConverter = declarationConverter;
         fBodyConverter = bodyConverter;
     }
-
+    
     private void prepareComments() {
         cleanComments(collectComments());
     }

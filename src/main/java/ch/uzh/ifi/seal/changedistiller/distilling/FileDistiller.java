@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelper;
 import ch.uzh.ifi.seal.changedistiller.ast.ASTHelperFactory;
 import ch.uzh.ifi.seal.changedistiller.distilling.refactoring.RefactoringCandidateProcessor;
@@ -73,13 +72,33 @@ public class FileDistiller {
      * @param right
      *            file to extract changes
      */
-    @SuppressWarnings("unchecked")
     public void extractClassifiedSourceCodeChanges(File left, File right) {
+    	extractClassifiedSourceCodeChanges(left, "default", right, "default");
+    }
 
-    	fLeftASTHelper = fASTHelperFactory.create(left);
-        fRightASTHelper = fASTHelperFactory.create(right);
+    /**
+     * Extracts classified {@link SourceCodeChange}s between two {@link File}s.
+     * 
+     * @param left
+     *            file to extract changes
+     * @param leftVersion
+     * 			  version of the language in the left file
+     * @param right
+     *            file to extract changes
+     * @param leftVersion
+     * 			  version of the language in the right file
+     */
+    @SuppressWarnings("unchecked")
+    public void extractClassifiedSourceCodeChanges(File left, String leftVersion, File right, String rightVersion) {
+
+    	fLeftASTHelper = fASTHelperFactory.create(left, leftVersion);
+        fRightASTHelper = fASTHelperFactory.create(right, rightVersion);
         
-        StructureDifferencer structureDifferencer = new StructureDifferencer();
+        extractDifferences();
+    }
+
+	private void extractDifferences() {
+		StructureDifferencer structureDifferencer = new StructureDifferencer();
         structureDifferencer.extractDifferences(
                 fLeftASTHelper.createStructureTree(),
                 fRightASTHelper.createStructureTree());
@@ -91,7 +110,7 @@ public class FileDistiller {
         } else {
         	fChanges = Collections.emptyList();
         }
-    }
+	}
 
     public void extractClassifiedSourceCodeChanges(File left, File right, String version) {
     	fVersion = version;

@@ -75,11 +75,17 @@ public final class JavaCompilationUtils {
      * 
      * @param file
      *            to compile
+     * @param version
+     * 			  of Java used in the file
      * @return the compilation of the file
      * @throws InvalidSyntaxException if the file has syntax errors.
      */
-    public static JavaCompilation compile(File file) {
-    	return compile(FileUtils.getContent(file), file.getName());
+    public static JavaCompilation compile(File file, long version) {
+        CompilerOptions options = getDefaultCompilerOptions(version);
+        Parser parser = createCommentRecorderParser(options);
+        ICompilationUnit cu = createCompilationUnit(FileUtils.getContent(file), file.getName());
+        CompilationResult compilationResult = createDefaultCompilationResult(cu, options);
+        return new JavaCompilation(parser.parse(cu, compilationResult), parser.scanner);
     }
 
     private static CompilationResult createDefaultCompilationResult(ICompilationUnit cu, CompilerOptions options) {
@@ -88,6 +94,15 @@ public final class JavaCompilationUtils {
 
     private static ICompilationUnit createCompilationUnit(String source, String filename) {
         return new CompilationUnit(source.toCharArray(), filename, null);
+    }
+
+    private static CompilerOptions getDefaultCompilerOptions(long version) {
+        CompilerOptions options = new CompilerOptions();
+        options.docCommentSupport = true;
+        options.complianceLevel = version;
+        options.sourceLevel = version;
+        options.targetJDK = version;
+        return options;
     }
 
     private static CompilerOptions getDefaultCompilerOptions() {
