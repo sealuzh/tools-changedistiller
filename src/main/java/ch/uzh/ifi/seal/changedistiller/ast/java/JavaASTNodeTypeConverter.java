@@ -68,9 +68,9 @@ import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityT
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.TRY_STATEMENT;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.TYPE_LITERAL;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.TYPE_PARAMETER;
-import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.WILDCARD_TYPE;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.VARIABLE_DECLARATION_STATEMENT;
 import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.WHILE_STATEMENT;
+import static ch.uzh.ifi.seal.changedistiller.model.classifiers.java.JavaEntityType.WILDCARD_TYPE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -112,6 +112,7 @@ import org.eclipse.jdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.jdt.internal.compiler.ast.ForStatement;
 import org.eclipse.jdt.internal.compiler.ast.ForeachStatement;
 import org.eclipse.jdt.internal.compiler.ast.IfStatement;
+import org.eclipse.jdt.internal.compiler.ast.Initializer;
 import org.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.jdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.jdt.internal.compiler.ast.IntLiteralMinValue;
@@ -241,6 +242,7 @@ public final class JavaASTNodeTypeConverter implements ASTNodeTypeConverter {
         sConversionMap.put(Clinit.class, METHOD);
         sConversionMap.put(ConstructorDeclaration.class, METHOD);
         sConversionMap.put(TypeDeclaration.class, CLASS);
+        sConversionMap.put(Initializer.class, FIELD);
     }
 
     @Override
